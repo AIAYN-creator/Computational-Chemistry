@@ -42,22 +42,10 @@ r<sub>e</sub> comes from a parabola through the three points around each minimum
 
 ## Scripts
 
-### `extract.sh` — reading the scan table
+Both scripts are commented line by line.
 
-At the end of a scan, Gaussian prints a summary table:
-
-```
- Summary of the potential surface scan:
-   N      r1          SCF
- ----  ---------  -----------
-    1     0.6000     -1.10472
-    2     0.6300     -1.11271
-  ...
-   11     0.9000     -1.10836
- ----  ---------  -----------
-```
-
-The first version used `grep -A 13 ... | tail -11`, which only works if the scan has exactly 11 points. The version here reads the table with a small `awk` state machine: it switches on at the title, prints every row that looks like *integer, number, number*, and stops at the first line that doesn't. The same code works for any scan length, and it is reused in Ex. 4–6. The [Bash guide](../../../docs/bash-for-gaussian.md#3-reading-a-table-of-any-length-with-awk) explains it line by line.
+- [`generate.sh`](generate.sh): the same template trick as Ex. 2, for two basis sets. Pattern: [generating inputs from a template](../../../docs/bash-for-gaussian.md#5-generating-inputs-from-a-template).
+- [`extract.sh`](extract.sh) reads Gaussian's scan summary table with a small `awk` state machine that works for any number of points. The first version, `grep -A 13 … | tail -11`, only worked for exactly 11. Pattern: [reading a table of any length with awk](../../../docs/bash-for-gaussian.md#3-reading-a-table-of-any-length-with-awk). It is reused in every exercise that follows.
 
 ## Files
 

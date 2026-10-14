@@ -28,16 +28,7 @@ The curve is plotted together with Ex. 5 in the [session README](../#ex-4-and-5-
 
 ## Scripts
 
-### `extract.sh`
-
-```bash
-EH=$(grep "SCF Done" h_sto3g.log | awk '{print $5}')
-
-echo "# E(H) = $EH hartree"
-awk -v eh="$EH" '...scan table reader...  { print $2, $3 - 2*eh }' h2_rhf_sto3g.log
-```
-
-The atomic energy is read once into a shell variable and handed to `awk` with `-v`, which subtracts it at every point. `awk` does the arithmetic because Bash only handles integers. The value of E(H) is written as a `#` comment at the top of the file, so it stays on record without breaking the two-column data.
+[`extract.sh`](extract.sh), commented line by line, reads the energy of the H atom once, then runs the scan-table reader from Ex. 3, subtracting 2 E(H) at every point. Bash only handles integers, so the subtraction happens in `awk`, with the shell value passed in through `-v`. E(H) is kept as a `#` comment at the top of the output. Patterns: [reading a table](../../../docs/bash-for-gaussian.md#3-reading-a-table-of-any-length-with-awk), [arithmetic with shell values](../../../docs/bash-for-gaussian.md#4-doing-arithmetic-with-shell-values).
 
 ## Files
 

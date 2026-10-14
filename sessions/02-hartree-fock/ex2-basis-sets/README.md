@@ -36,31 +36,10 @@ Energies and the figure are in the [session README](../#ex-2--how-the-basis-set-
 
 ## Scripts
 
-### `generate.sh` — build the inputs and run them
+Both scripts are commented line by line.
 
-```bash
-for mol in h2 hf co n2 ch4 h2o; do
-	for b in 3-21G 4-31G "6-31G(d)" "6-31G(d,p)"; do
-		n=$(echo "$b" | tr -d '(),-' | tr 'A-Z' 'a-z')    # "6-31G(d,p)" -> "631gdp"
-		sed "s#STO-3G#$b#g" "${mol}_sto3g.com" > "${mol}_${n}.com"
-	done
-done
-
-../run.sh    # launch every .com, skipping finished jobs
-```
-
-The basis name has to become part of a file name, so `tr` removes the characters that would cause trouble (`(`, `)`, `,`, `-`) and lowercases the rest. The `sed` replacement also changes the title line, so every output says which basis it used.
-
-### `extract.sh` — one row per output
-
-```bash
-E=$(grep "SCF Done" "$f" | tail -1 | awk '{print $5}')
-homo=$(grep "occ. eigenvalues" "$f" | tail -1 | awk '{print $NF}')
-mu=$(grep -A 1 "Dipole moment" "$f" | tail -1 | awk '{print $NF}')
-q1=$(grep -A 2 "Mulliken charges:" "$f" | tail -1 | awk '{print $3}')
-```
-
-Each property is found by a line of text that always comes with it, and then picked by its position on that line. The HOMO is the **last number of the last line** of occupied eigenvalues, because Gaussian prints them in ascending order. The [Bash guide](../../../docs/bash-for-gaussian.md#2-pulling-one-number-out-of-a-log) shows the real output lines each command reads.
+- [`generate.sh`](generate.sh) turns each STO-3G template into the other four basis sets with `sed`, then launches all 30 jobs. Pattern: [generating inputs from a template](../../../docs/bash-for-gaussian.md#5-generating-inputs-from-a-template).
+- [`extract.sh`](extract.sh) writes one row per output: energy, HOMO, dipole and two Mulliken charges, each found by a fixed piece of text and picked by its position on the line. Pattern: [pulling one number out of a log](../../../docs/bash-for-gaussian.md#2-pulling-one-number-out-of-a-log), which shows the real Gaussian line behind every command.
 
 ## Files
 

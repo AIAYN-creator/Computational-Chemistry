@@ -24,7 +24,7 @@ RHF cannot break a bond: its closed-shell determinant keeps a constant 50 % ioni
 
 ## Contents
 
-Each exercise folder has its own README with the task, the reasoning behind each step and a walkthrough of its scripts. The Bash patterns they share are explained in the **[Bash for Gaussian guide](../../docs/bash-for-gaussian.md)**.
+Each exercise folder has its own README with the task and the reasoning behind each step, and its scripts are commented line by line. The Bash patterns they share are explained in the **[Bash for Gaussian guide](../../docs/bash-for-gaussian.md)**.
 
 | Exercise | Question | Level of theory |
 |---|---|---|

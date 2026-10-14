@@ -32,31 +32,7 @@ The full discussion is in the **[report](../report/report.pdf)**, and the summar
 
 ## Scripts
 
-### `extract.sh` — functions instead of copy-paste
-
-H₂ and LiH need the same two operations, reading a scan relative to a reference and reading ⟨Ŝ²⟩, so they are written once as Bash functions:
-
-```bash
-scan() {  # scan <log> <reference energy>
-	awk -v ref="$2" '...scan table reader... { print $2, $3 - ref }' "$1"
-}
-
-s2() {    # s2 <log>
-	grep "S\*\*2 before annihilation" "$1" | awk '{print $4}' | tr -d ','
-}
-```
-
-The loop then only decides which reference goes with which molecule:
-
-```bash
-for mol in h2 lih; do
-	[ "$mol" = h2 ] && ref=$REF_H2 || ref=$REF_LIH
-	scan "${mol}_rhf_321g.log" "$ref" >> "${mol}_rhf.dat"
-	paste -d ' ' <(scan "${mol}_uhfmix_321g.log" "$ref") <(s2 "${mol}_uhfmix_321g.log") >> "${mol}_uhfmix.dat"
-done
-```
-
-The first version of this script repeated the extraction for each molecule, with the number of scan points fixed by hand (39 for H₂, 22 for LiH). With functions, adding a third molecule only takes another reference energy.
+[`extract.sh`](extract.sh), commented line by line, does for H₂ and LiH what Ex. 4 and 5 did for H₂ alone. The two repeated operations, reading a scan relative to a reference and reading ⟨Ŝ²⟩, are written once as Bash functions (`scan` and `s2`), and the loop only picks the right reference energy for each molecule. The first version repeated the extraction for each molecule, with the number of points fixed by hand (39 and 22). Now adding a third molecule only takes another reference energy. Pattern: [functions: write it once](../../../docs/bash-for-gaussian.md#7-functions-write-it-once).
 
 ## Files
 

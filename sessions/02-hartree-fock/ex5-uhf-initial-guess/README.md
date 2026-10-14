@@ -33,22 +33,13 @@ Repeat the H₂ dissociation curve of Ex. 4 with UHF/STO-3G, once with the defau
 
 ## Scripts
 
-### `extract.sh` — energy and ⟨Ŝ²⟩ side by side
-
-```bash
-paste -d ' ' \
-	<(awk ...scan table reader... "$f") \
-	<(grep "S\*\*2 before annihilation" "$f" | awk '{print $4}' | tr -d ',') \
-	>> "$out"
-```
-
-The energies come from the scan summary table, and ⟨Ŝ²⟩ comes from a line that Gaussian prints once per converged point:
+[`extract.sh`](extract.sh), commented line by line, builds two lists for each scan: r and ΔE from the summary table, and ⟨Ŝ²⟩ from the line Gaussian prints at every converged point,
 
 ```
  S**2 before annihilation     1.0000,   after     0.0000
 ```
 
-Both lists have one entry per point in the same order, so `paste` glues them into columns. `<( ... )` lets `paste` read each command's output as if it were a file. `tr -d ','` removes the comma Gaussian puts after the number. The value *before* annihilation is the true ⟨Ŝ²⟩ of the UHF determinant.
+then glues them into columns with `paste` and process substitution, with no temporary files. The value *before* annihilation is the true ⟨Ŝ²⟩ of the UHF determinant. Patterns: [pulling one number out of a log](../../../docs/bash-for-gaussian.md#2-pulling-one-number-out-of-a-log), [gluing columns together](../../../docs/bash-for-gaussian.md#6-gluing-columns-together).
 
 ## Files
 

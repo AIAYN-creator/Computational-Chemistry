@@ -2,9 +2,20 @@
 
 Most of the work in a computational chemistry course does not happen inside the quantum chemistry program. It happens around it: writing dozens of nearly identical inputs, launching them, checking they finished, and digging a handful of numbers out of output files thousands of lines long. Doing that by hand is slow and error-prone. Doing it with a few lines of Bash makes it fast and repeatable, and a mistake gets fixed once instead of thirty times.
 
-This guide collects the patterns used across the repository, each one with the real Gaussian output it works on. Examples come from [Session 02](../sessions/02-hartree-fock/).
+This guide is built from the scripts in this repository. Each section explains one pattern on the real Gaussian output it reads, and ends with **📍 In the code**: links to the exact lines of every script that uses it. The scripts themselves are commented line by line, so either one can be the entry point.
 
-**Contents**
+| Script | Patterns |
+|---|---|
+| [`run.sh`](../sessions/02-hartree-fock/run.sh) | [1](#1-running-every-job-in-a-folder-safely) |
+| [`ex2-basis-sets/generate.sh`](../sessions/02-hartree-fock/ex2-basis-sets/generate.sh) | [5](#5-generating-inputs-from-a-template) |
+| [`ex2-basis-sets/extract.sh`](../sessions/02-hartree-fock/ex2-basis-sets/extract.sh) | [2](#2-pulling-one-number-out-of-a-log) |
+| [`ex3-bond-scans/generate.sh`](../sessions/02-hartree-fock/ex3-bond-scans/generate.sh) | [5](#5-generating-inputs-from-a-template) |
+| [`ex3-bond-scans/extract.sh`](../sessions/02-hartree-fock/ex3-bond-scans/extract.sh) | [3](#3-reading-a-table-of-any-length-with-awk) |
+| [`ex4-rhf-dissociation/extract.sh`](../sessions/02-hartree-fock/ex4-rhf-dissociation/extract.sh) | [2](#2-pulling-one-number-out-of-a-log), [3](#3-reading-a-table-of-any-length-with-awk), [4](#4-doing-arithmetic-with-shell-values) |
+| [`ex5-uhf-initial-guess/extract.sh`](../sessions/02-hartree-fock/ex5-uhf-initial-guess/extract.sh) | [2](#2-pulling-one-number-out-of-a-log), [3](#3-reading-a-table-of-any-length-with-awk), [4](#4-doing-arithmetic-with-shell-values), [6](#6-gluing-columns-together) |
+| [`ex6-rhf-vs-uhf/extract.sh`](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh) | [2](#2-pulling-one-number-out-of-a-log), [3](#3-reading-a-table-of-any-length-with-awk), [4](#4-doing-arithmetic-with-shell-values), [6](#6-gluing-columns-together), [7](#7-functions-write-it-once) |
+
+**Patterns**
 
 1. [Running every job in a folder, safely](#1-running-every-job-in-a-folder-safely)
 2. [Pulling one number out of a log](#2-pulling-one-number-out-of-a-log)
@@ -18,8 +29,6 @@ This guide collects the patterns used across the repository, each one with the r
 ---
 
 ## 1. Running every job in a folder, safely
-
-[`run.sh`](../sessions/02-hartree-fock/run.sh):
 
 ```bash
 for f in *.com; do
@@ -50,6 +59,8 @@ done
 
 With this check, the script can be launched again after any interruption and it picks up where it stopped.
 
+**📍 In the code:** [`run.sh` L10–L28](../sessions/02-hartree-fock/run.sh#L10-L28), called by [`ex2/generate.sh` L28](../sessions/02-hartree-fock/ex2-basis-sets/generate.sh#L28) and [`ex3/generate.sh` L18](../sessions/02-hartree-fock/ex3-bond-scans/generate.sh#L18), and directly as `../run.sh` in Ex. 4–6.
+
 ---
 
 ## 2. Pulling one number out of a log
@@ -61,8 +72,6 @@ grep "some fixed text" file.log | tail -1 | awk '{print $N}'
 ```
 
 `awk` splits each line into fields separated by whitespace: `$1`, `$2`, …, and `$NF` is the last one (`NF` is the number of fields). `tail -1` keeps the last occurrence, because many blocks repeat during optimisations and scans, and the final one is the converged result.
-
-Real examples from [Ex. 2](../sessions/02-hartree-fock/ex2-basis-sets/):
 
 **Total energy**: field 5 of the `SCF Done` line.
 
@@ -102,7 +111,7 @@ grep -A 1 "Dipole moment" "$f" | tail -1 | awk '{print $NF}'
      2  H    0.337291        ← grep -A 3 | tail -1
 ```
 
-**⟨Ŝ²⟩ of a UHF wavefunction**: field 4, with a trailing comma that `tr -d ','` removes.
+**⟨Ŝ²⟩ of a UHF wavefunction**: field 4, with a trailing comma that `tr -d ','` removes. Gaussian prints this line once per converged point, so a scan gives a whole list.
 
 ```
  S**2 before annihilation     1.0000,   after     0.0000
@@ -112,6 +121,11 @@ grep "S\*\*2 before annihilation" "$f" | awk '{print $4}' | tr -d ','
 ```
 
 The `*` must be escaped as `\*` because, in a `grep` pattern, `*` means "repeat the previous character".
+
+**📍 In the code:**
+- Energy, HOMO, dipole and Mulliken charges: [`ex2/extract.sh` L16–L37](../sessions/02-hartree-fock/ex2-basis-sets/extract.sh#L16-L37)
+- Atomic reference energies: [`ex4/extract.sh` L10](../sessions/02-hartree-fock/ex4-rhf-dissociation/extract.sh#L10), [`ex5/extract.sh` L10](../sessions/02-hartree-fock/ex5-uhf-initial-guess/extract.sh#L10), [`ex6/extract.sh` L10–L11](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L10-L11)
+- ⟨Ŝ²⟩: [`ex5/extract.sh` L34](../sessions/02-hartree-fock/ex5-uhf-initial-guess/extract.sh#L34), [`ex6/extract.sh` L29–L31](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L29-L31)
 
 ---
 
@@ -136,9 +150,9 @@ At the end of a scan, Gaussian prints a summary table:
 
 ```bash
 awk '
-	/Summary of the potential surface scan/ { s = 1; next }        # (1)
+	/Summary of the potential surface scan/ { s = 1; next }                 # (1)
 	s && /^ *[0-9]+ +[-0-9.]+ +[-0-9.]+ *$/ { print $2, $3; n++; next }   # (2)
-	s && n { exit }                                                # (3)
+	s && n { exit }                                                         # (3)
 ' file.log
 ```
 
@@ -149,6 +163,8 @@ An `awk` program is a list of `condition { action }` rules, applied to every lin
 3. If the flag is up, at least one row has been read, and this line is *not* a row, the table is over: stop reading the file.
 
 The header lines (`N r1 SCF` and the dashes) do not match the row pattern, so they are skipped automatically. The same few lines work for 11, 22 or 39 points.
+
+**📍 In the code:** [`ex3/extract.sh` L31–L35](../sessions/02-hartree-fock/ex3-bond-scans/extract.sh#L31-L35) (the plain version), then reused with a reference energy in [`ex4/extract.sh` L21–L25](../sessions/02-hartree-fock/ex4-rhf-dissociation/extract.sh#L21-L25), [`ex5/extract.sh` L29–L33](../sessions/02-hartree-fock/ex5-uhf-initial-guess/extract.sh#L29-L33) and [`ex6/extract.sh` L18–L24](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L18-L24).
 
 ---
 
@@ -167,14 +183,16 @@ Inside `awk`, `eh` is a normal variable. Note the two layers of quoting: the `aw
 For a single calculation with no file to read, use a `BEGIN` block:
 
 ```bash
-REF=$(awk -v eh="$EH" -v eli="$ELI" 'BEGIN { printf "%.10f", eh + eli }')
+REF_LIH=$(awk -v eh="$EH" -v eli="$ELI" 'BEGIN { printf "%.10f", eh + eli }')
 ```
+
+**📍 In the code:** ΔE at every point in [`ex4/extract.sh` L21–L25](../sessions/02-hartree-fock/ex4-rhf-dissociation/extract.sh#L21-L25) and [`ex5/extract.sh` L29–L33](../sessions/02-hartree-fock/ex5-uhf-initial-guess/extract.sh#L29-L33). The `BEGIN` block, building the references of H₂ and LiH: [`ex6/extract.sh` L35–L36](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L35-L36).
 
 ---
 
 ## 5. Generating inputs from a template
 
-When 30 inputs differ only in the basis set, write one and generate the rest ([Ex. 2](../sessions/02-hartree-fock/ex2-basis-sets/generate.sh)):
+When 30 inputs differ only in the basis set, write one and generate the rest:
 
 ```bash
 for b in 3-21G 4-31G "6-31G(d)" "6-31G(d,p)"; do
@@ -190,11 +208,13 @@ done
 
 Besides saving typing, it guarantees that the geometry is *identical* across the series, so any difference in the results comes from the basis alone.
 
+**📍 In the code:** [`ex2/generate.sh` L10–L25](../sessions/02-hartree-fock/ex2-basis-sets/generate.sh#L10-L25) (6 molecules × 4 basis sets) and [`ex3/generate.sh` L6–L15](../sessions/02-hartree-fock/ex3-bond-scans/generate.sh#L6-L15), which also takes the molecule name from the template's file name with `${f%_sto3g.com}`.
+
 ---
 
 ## 6. Gluing columns together
 
-In [Ex. 5](../sessions/02-hartree-fock/ex5-uhf-initial-guess/extract.sh) the energies come from the scan table, and ⟨Ŝ²⟩ comes from lines spread through the log. Both are lists with one entry per point, in the same order. `paste` joins them side by side:
+In Ex. 5 the energies come from the scan table, and ⟨Ŝ²⟩ comes from lines spread through the log. Both are lists with one entry per point, in the same order. `paste` joins them side by side:
 
 ```bash
 paste -d ' ' <(command producing "r ΔE") <(command producing "S2") > out.dat
@@ -203,11 +223,13 @@ paste -d ' ' <(command producing "r ΔE") <(command producing "S2") > out.dat
 - `paste` joins line 1 of each input, then line 2, and so on. `-d ' '` uses a space as separator instead of a tab.
 - `<( ... )` is **process substitution**: Bash runs the command and gives `paste` something that behaves like a file containing its output. It avoids writing temporary files.
 
+**📍 In the code:** [`ex5/extract.sh` L28–L35](../sessions/02-hartree-fock/ex5-uhf-initial-guess/extract.sh#L28-L35) (written out in full) and [`ex6/extract.sh` L47–L48](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L47-L48), where it shrinks to one line thanks to the functions of the next section.
+
 ---
 
 ## 7. Functions: write it once
 
-When the same pipeline is needed for several molecules, a function keeps it in one place ([Ex. 6](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh)):
+When the same pipeline is needed for several molecules, a function keeps it in one place:
 
 ```bash
 scan() {  # scan <log> <reference energy>
@@ -219,6 +241,14 @@ scan lih_rhf_321g.log "$REF_LIH" > lih_rhf.dat
 ```
 
 Inside a function, `$1`, `$2`, … are the function's own arguments, not the script's. Careful: inside the single-quoted `awk` program, `$2` and `$3` are `awk` fields and have nothing to do with the function's arguments. That is exactly why the reference is passed in through `-v ref="$2"`.
+
+The loop that uses them only decides which reference goes with which molecule, with a short form of *if/else*: if the test succeeds `&&` runs, otherwise `||` does.
+
+```bash
+[ "$mol" = h2 ] && ref=$REF_H2 || ref=$REF_LIH
+```
+
+**📍 In the code:** the functions `scan` and `s2` in [`ex6/extract.sh` L18–L31](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L18-L31), and the loop that uses them in [L38–L51](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L38-L51).
 
 ---
 
@@ -232,4 +262,4 @@ Real mistakes found while cleaning up the scripts. Each one *seemed* to work.
 | `2</dev/null` | Opens `/dev/null` for *reading* on the error channel instead of sending errors there. The messages vanished anyway, since they could not be written, but only by accident. | `2>/dev/null` |
 | Skip if the `.log` exists | A crashed job leaves a `.log`, so it was never re-run. | Check for `Normal termination` ([§1](#1-running-every-job-in-a-folder-safely)) |
 | `grep -A 41 ... \| tail -39` | Correct only for a 39-point scan. Each new scan needed new numbers. | `awk` table reader ([§3](#3-reading-a-table-of-any-length-with-awk)) |
-| Windows line endings | Scripts edited on Windows can be saved with CRLF endings, and on Linux they fail with `$'\r': command not found`. | `.gitattributes` forces LF on `*.sh` and `*.com` |
+| Windows line endings | Scripts edited on Windows can be saved with CRLF endings, and on Linux they fail with `$'\r': command not found`. | [`.gitattributes`](../.gitattributes) forces LF on `*.sh` and `*.com` |
