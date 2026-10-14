@@ -24,13 +24,15 @@ RHF cannot break a bond: its closed-shell determinant keeps a constant 50 % ioni
 
 ## Contents
 
+Each exercise folder has its own README with the task, the reasoning behind each step and a walkthrough of its scripts. The Bash patterns they share are explained in the **[Bash for Gaussian guide](../../docs/bash-for-gaussian.md)**.
+
 | Exercise | Question | Level of theory |
 |---|---|---|
-| [Ex. 2 — Basis sets](#ex-2--how-the-basis-set-changes-the-answer) | How do energy, dipole and charges change with the basis? | HF, STO-3G → 6-31G(d,p) |
-| [Ex. 3 — Bond scans](#ex-3--equilibrium-bond-lengths) | How good are HF bond lengths? | HF, 3 basis sets |
-| [Ex. 4 — RHF dissociation](#ex-4-and-5--rhf-dissociation-and-the-uhf-initial-guess) | What happens to RHF when a bond is stretched? | RHF/STO-3G |
-| [Ex. 5 — UHF initial guess](#ex-4-and-5--rhf-dissociation-and-the-uhf-initial-guess) | Does UHF fix it on its own? | UHF/STO-3G ± `guess=mix` |
-| [Ex. 6 — RHF vs UHF](#ex-6--rhf-vs-uhf-for-h-and-lih-report) | Full comparison for H₂ and LiH (**report**) | RHF, UHF/3-21G |
+| [Ex. 2 — Basis sets](ex2-basis-sets/) | How do energy, dipole and charges change with the basis? | HF, STO-3G → 6-31G(d,p) |
+| [Ex. 3 — Bond scans](ex3-bond-scans/) | How good are HF bond lengths? | HF, 3 basis sets |
+| [Ex. 4 — RHF dissociation](ex4-rhf-dissociation/) | What happens to RHF when a bond is stretched? | RHF/STO-3G |
+| [Ex. 5 — UHF initial guess](ex5-uhf-initial-guess/) | Does UHF fix it on its own? | UHF/STO-3G ± `guess=mix` |
+| [Ex. 6 — RHF vs UHF](ex6-rhf-vs-uhf/) | Full comparison for H₂ and LiH (**report**) | RHF, UHF/3-21G |
 
 ---
 
@@ -80,7 +82,7 @@ H₂ is stretched from 10 Å down to 0.5 Å, and every point is referenced to tw
 
 - **RHF (ex. 4)** ends 0.361 hartree (**9.8 eV**) above two H atoms at 10 Å, almost twice the bond energy at this level (5.0 eV).
 - **UHF with the default guess (ex. 5)** reproduces RHF *point by point*, with ⟨Ŝ²⟩ = 0 everywhere. For a closed-shell singlet the default guess has α and β orbitals identical, and the SCF has no reason to break that symmetry.
-- **UHF with `guess=mix`** mixes HOMO and LUMO in the guess, which lets the solution break symmetry. Beyond the Coulson–Fischer point (between 1.5 and 1.75 Å at this level) it drops to the correct limit, ΔE → 0.
+- **UHF with `guess=mix`** mixes HOMO and LUMO in the guess, which lets the solution break symmetry, and it drops to the correct limit, ΔE → 0. Near 1.5 Å it jumps back onto RHF, which looks like the SCF falling into the restricted solution rather than a genuine Coulson–Fischer point. [Ex. 5](ex5-uhf-initial-guess/) discusses it.
 
 Files: [ex. 4](ex4-rhf-dissociation/) ([results](ex4-rhf-dissociation/results.txt)) · [ex. 5](ex5-uhf-initial-guess/) ([no mix](ex5-uhf-initial-guess/h2_uhf.dat), [mix](ex5-uhf-initial-guess/h2_uhfmix.dat), including ⟨Ŝ²⟩)
 
@@ -121,6 +123,6 @@ cd ex6-rhf-vs-uhf && ../run.sh && ./extract.sh && cd ..
 python plot_figures.py   # numpy + matplotlib
 ```
 
-[`run.sh`](run.sh) launches every input in a folder and skips the jobs that already finished normally, so it can be re-run safely after an interruption.
+[`run.sh`](run.sh) launches every input in a folder and skips the jobs that already finished normally, so it can be re-run safely after an interruption. How each script works is explained in the [Bash guide](../../docs/bash-for-gaussian.md).
 
 Gaussian output files (`.log`, `.chk`) are not stored. Everything the analysis needs is in the extracted data files.
