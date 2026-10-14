@@ -1,0 +1,10 @@
+#RHF/STO-3G Scan
+
+H2 RHF STO-3G
+
+0 1
+H
+H 1 r1
+
+r1 10.0 38 -0.25
+
