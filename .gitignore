@@ -1,0 +1,23 @@
+# Gaussian binary / large files
+*.chk
+*.fchk
+*.rwf
+*.int
+*.d2e
+*.scr
+Gau-*
+
+# LaTeX build artefacts
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.synctex.gz
+*.toc
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+*~
