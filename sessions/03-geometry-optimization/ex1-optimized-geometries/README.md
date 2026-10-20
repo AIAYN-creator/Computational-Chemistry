@@ -57,15 +57,34 @@ Experimental equilibrium values: NIST CCCBDB. "Steps" is the number of geometrie
 
 ![Error against experiment vs basis set](../figures/error_vs_basis.png)
 
-## Reading
+## Conclusions
 
-- **Bonds end up too short.** With 6-31G**, every bond is 0.002–0.016 Å shorter than experiment. This is the systematic Hartree–Fock trend near the basis-set limit, already seen in the bond scan of [Session 02](../../02-hartree-fock/ex3-bond-scans/): without electron correlation, which mixes in configurations with antibonding character, bonds come out too short.
-- **C–H is insensitive to the basis.** CH₄ stays at 1.083–1.084 Å with every basis set, within 0.003 Å of experiment. A nonpolar bond between two light atoms is the easy case.
-- **3-21G flattens NH₃.** Its H–N–H angle opens to 112.4°, 5.7° too wide, and water opens too (107.6°). Adding d functions on the heavy atom (6-31G*) brings both back to within about 1° of experiment. Without polarisation functions, the lone pairs on N and O are described too poorly to hold the molecule in its true shape, and it relaxes towards a flatter one. A well-known consequence: without d functions, the inversion barrier of NH₃ comes out far too low.
-- **6-31G* → 6-31G\*\* barely matters for geometry.** Polarisation on hydrogen moves bond lengths by at most 0.004 Å and angles by at most 0.5°.
-- **Dipoles are overestimated.** With the larger basis sets, μ is 0.1–0.45 D too large, the usual HF result: without correlation the charge distribution is too ionic. NH₃ is the extreme case, at +25 %. Geometry and dipole are also linked: at 3-21G, NH₃ is flatter and its dipole drops (1.75 D against 1.92 D with 6-31G*), as it must, since a planar NH₃ would have no dipole at all.
+### 1. Bond lengths: the basis set converges to the HF limit, not to experiment
 
-### Cross-checks with Session 02
+- **STO-3G lengthens every polar bond**, by 0.02–0.04 Å.
+- **Larger basis sets shorten the bonds until they fall below experiment.** With 6-31G**, the polar bonds are about 0.01–0.02 Å too short.
+- **Interpretation:** a better basis set only removes the *basis* error. What remains is the error of the method: Hartree–Fock has no electron correlation, and without it bonds come out too short. When 3-21G looks right in some cases, it is because the two errors cancel, not because the basis is good.
+- **CH₄ barely changes** because a nonpolar C–H bond is only weakly sensitive to the basis.
+
+### 2. Bond angles: polarisation functions are the key
+
+- **3-21G overestimates the angles considerably**, and ammonia becomes much flatter (112.4° against 106.7°).
+- **The d functions of 6-31G\* bring the angles to within 1° of experiment.** They give the central atom the angular flexibility it needs to describe its lone pairs.
+- **Adding p functions on hydrogen (6-31G\*\*) does not improve the angles**, and can even make them slightly worse.
+- **CH₄ is not a real test here:** its Z-matrix keeps the four C–H bonds equivalent, and the optimiser only has to settle on the tetrahedral angle (109.47°), starting from 109.5°.
+
+### 3. Dipole moments: HF overestimates them even with polarised basis sets
+
+- **STO-3G gives erratic results:** it underestimates the dipoles of HF and H₂O and overestimates that of NH₃.
+- **3-21G overestimates them strongly**, by up to +0.54 D.
+- **6-31G\* and 6-31G\*\* still overestimate them.** Doing better would need a larger basis set with diffuse functions, and even then an error would remain, because Hartree–Fock overweights the ionic contribution to the bonds.
+- **NH₃ shows that the dipole depends on the geometry:** at 3-21G the molecule is flatter, and its dipole is lower.
+
+### Overall
+
+For simple molecules like these, **6-31G\* is a good compromise between cost and accuracy.** The errors that remain come from Hartree–Fock itself, which is what motivates correlated methods.
+
+## Cross-checks with Session 02
 
 **Two methods, one minimum.** In [Session 02, Ex. 3](../../02-hartree-fock/ex3-bond-scans/), the HF bond length came from a parabola fitted to a scan. Here it comes from an optimiser. They agree to 0.001 Å:
 
