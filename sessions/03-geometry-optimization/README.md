@@ -63,7 +63,7 @@ On a machine with Gaussian 09 (`g09` in the `PATH`):
 
 ```bash
 cd ex1-optimized-geometries && ./generate.sh && ./extract.sh > results.txt && cd ..
-cd ex2-vibrational-frequencies && ../run.sh && ./extract.sh h2o_freq.log > frequencies.txt && cd ..
+cd ex2-vibrational-frequencies && ../run.sh && cd ..   # frequencies read by hand into frequencies.txt
 python plot_figures.py   # numpy + matplotlib
 ```
 

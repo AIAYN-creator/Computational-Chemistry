@@ -1,3 +1,4 @@
+# Read by hand from the normal-mode table of h2o_freq.log (HF/6-31G*)
 # ZPE = 0.022977 hartree
 mode symmetry freq(cm-1) IR(km/mol) force_const(mDyne/A)
 1 A1 1826.6059 107.2633 2.1276

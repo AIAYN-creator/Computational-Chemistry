@@ -17,7 +17,6 @@ This guide is built from the scripts in this repository. Each section explains o
 | [`ex6-rhf-vs-uhf/extract.sh`](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh) | [2](#2-pulling-one-number-out-of-a-log), [3](#3-reading-a-table-of-any-length-with-awk), [4](#4-doing-arithmetic-with-shell-values), [6](#6-gluing-columns-together), [7](#7-functions-write-it-once) |
 | **Session 03** | |
 | [`ex1-optimized-geometries/generate.sh`](../sessions/03-geometry-optimization/ex1-optimized-geometries/generate.sh) | [5](#5-generating-inputs-from-a-template), [8](#8-mapping-names-with-case), [9](#9-splitting-file-names-and-default-values) |
-| [`ex2-vibrational-frequencies/extract.sh`](../sessions/03-geometry-optimization/ex2-vibrational-frequencies/extract.sh) | [2](#2-pulling-one-number-out-of-a-log), [6](#6-gluing-columns-together), [7](#7-functions-write-it-once), [9](#9-splitting-file-names-and-default-values) |
 | [`ex1-optimized-geometries/extract.sh`](../sessions/03-geometry-optimization/ex1-optimized-geometries/extract.sh) | [1](#1-running-every-job-in-a-folder-safely), [2](#2-pulling-one-number-out-of-a-log), [9](#9-splitting-file-names-and-default-values) |
 
 **Patterns**
@@ -249,7 +248,7 @@ paste -d ' ' <(command producing "r ΔE") <(command producing "S2") > out.dat
 - `paste` joins line 1 of each input, then line 2, and so on. `-d ' '` uses a space as separator instead of a tab.
 - `<( ... )` is **process substitution**: Bash runs the command and gives `paste` something that behaves like a file containing its output. It avoids writing temporary files.
 
-**In the code:** [`ex5/extract.sh` L28–L35](../sessions/02-hartree-fock/ex5-uhf-initial-guess/extract.sh#L28-L35) (written out in full) and [`ex6/extract.sh` L47–L48](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L47-L48), where it shrinks to one line thanks to the functions of the next section. The widest use is in [`S03 ex2/extract.sh` L45–L47](../sessions/03-geometry-optimization/ex2-vibrational-frequencies/extract.sh#L45-L47): five lists (mode number from `seq`, symmetry, frequency, IR intensity, force constant) pasted into one table. Gaussian prints normal modes in blocks of three columns, and turning each row into a list first makes the script work for any number of modes.
+**In the code:** [`ex5/extract.sh` L28–L35](../sessions/02-hartree-fock/ex5-uhf-initial-guess/extract.sh#L28-L35) (written out in full) and [`ex6/extract.sh` L47–L48](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L47-L48), where it shrinks to one line thanks to the functions of the next section.
 
 ---
 
@@ -274,7 +273,7 @@ The loop that uses them only decides which reference goes with which molecule, w
 [ "$mol" = h2 ] && ref=$REF_H2 || ref=$REF_LIH
 ```
 
-**In the code:** the functions `scan` and `s2` in [`ex6/extract.sh` L18–L31](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L18-L31), and the loop that uses them in [L38–L51](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L38-L51). In [`S03 ex2/extract.sh` L25–L36](../sessions/03-geometry-optimization/ex2-vibrational-frequencies/extract.sh#L25-L36), `row` prints every value after the `--` marker of a Gaussian row, whether its label has one word (`Frequencies --`) or two (`IR Inten --`), so one function reads every row of the normal-mode table.
+**In the code:** the functions `scan` and `s2` in [`ex6/extract.sh` L18–L31](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L18-L31), and the loop that uses them in [L38–L51](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L38-L51).
 
 ---
 
@@ -328,8 +327,6 @@ echo "$mol $basis $r ${a:--} $mu"     # hf 631gs 0.911 - 1.9719
 ```
 
 The general form is `${var:-default}`. Here the default happens to be `-`, hence the odd-looking `:--`.
-
-The same default works for script arguments: `f=${1:-h2o_freq.log}` uses the first argument if one is given and falls back to `h2o_freq.log` otherwise ([`S03 ex2/extract.sh` L19](../sessions/03-geometry-optimization/ex2-vibrational-frequencies/extract.sh#L19)).
 
 **In the code:** [`S03 ex1/extract.sh` L23–L25](../sessions/03-geometry-optimization/ex1-optimized-geometries/extract.sh#L23-L25) and [L53](../sessions/03-geometry-optimization/ex1-optimized-geometries/extract.sh#L53).
 

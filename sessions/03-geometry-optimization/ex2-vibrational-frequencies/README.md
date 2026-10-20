@@ -57,16 +57,24 @@ The bending mode has a force constant about five times smaller than the stretchi
 
 **Comparison with experiment.** HF overestimates all three frequencies, by 11–15 % with respect to the experimental gas-phase values (1595, 3657 and 3756 cm⁻¹). There are two causes: the lack of electron correlation, which gives bonds that are too short and too stiff, and the harmonic approximation, whereas experimental frequencies include anharmonicity. Applying the usual scale factor for HF/6-31G* (0.8953) brings the results into good agreement with experiment.
 
-## Scripts
+## Data
 
-[`extract.sh`](extract.sh), commented line by line, reads the normal-mode block of the output: symmetry labels, frequencies, IR intensities and force constants, plus the zero-point energy. Gaussian prints modes in columns of three, so the script turns each row into a list and pastes the lists side by side. It works for any molecule, whatever its number of modes. Patterns: [pulling one number out of a log](../../../docs/bash-for-gaussian.md#2-pulling-one-number-out-of-a-log), [gluing columns together](../../../docs/bash-for-gaussian.md#6-gluing-columns-together), [functions](../../../docs/bash-for-gaussian.md#7-functions-write-it-once).
+There is no script for this exercise. With a single molecule and three modes, the numbers were read by hand from the normal-mode table at the end of the output:
+
+```
+                     A1                     A1                     B2
+ Frequencies --   1826.6059              4070.3974              4188.6160
+ Red. masses --      1.0823                 1.0455                 1.0828
+ Frc consts  --      2.1276                10.2061                11.1933
+ IR Inten    --    107.2633                18.2076                58.0946
+ Raman Activ --      5.7242                75.5376                39.0902
+```
+
+and copied into [`frequencies.txt`](frequencies.txt), which [`plot_figures.py`](../plot_figures.py) uses for the simulated spectrum.
 
 ## Files
 
 | File | What it is |
 |---|---|
 | [`h2o_freq.com`](h2o_freq.com) | Optimisation + frequencies of water, HF/6-31G* |
-| [`extract.sh`](extract.sh) | Writes mode, symmetry, frequency, IR intensity and force constant |
-| [`frequencies.txt`](frequencies.txt) | Output of `extract.sh` |
-
-Run with `../run.sh && ./extract.sh h2o_freq.log > frequencies.txt`.
+| [`frequencies.txt`](frequencies.txt) | Symmetry, frequency, IR intensity and force constant of each mode, read by hand from the output |
