@@ -1,0 +1,5 @@
+# ZPE = 0.022977 hartree
+mode symmetry freq(cm-1) IR(km/mol) force_const(mDyne/A)
+1 A1 1826.6059 107.2633 2.1276
+2 A1 4070.3974 18.2076 10.2061
+3 B2 4188.6160 58.0946 11.1933

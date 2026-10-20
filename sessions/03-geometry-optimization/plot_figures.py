@@ -125,5 +125,53 @@ def fig_errors():
     save(fig, "error_vs_basis.png")
 
 
+# --- Figure 2: simulated IR spectrum of water (ex2) -------------------------
+# Experimental fundamentals of H2O (NIST CCCBDB), cm-1, in mode order
+# (bend, symmetric stretch, antisymmetric stretch)
+EXP_FUND = [1595, 3657, 3756]
+# Scale factor for HF/6-31G(d) harmonic frequencies (Scott & Radom, 1996)
+SCALE = 0.8953
+MODE_NAMES = ["bend", "sym. stretch", "asym. stretch"]
+
+
+def fig_ir_spectrum():
+    rows = [l.split() for l in (HERE / "ex2-vibrational-frequencies/frequencies.txt")
+            .read_text().splitlines() if l and l[0].isdigit()]
+    freq = np.array([float(r[2]) for r in rows])
+    inten = np.array([float(r[3]) for r in rows])
+
+    nu = np.linspace(1400, 4400, 6000)
+    hwhm = 12.0
+
+    def spectrum(centres):
+        # Sum of Lorentzians with the computed IR intensities as weights
+        return sum(i * hwhm**2 / ((nu - c)**2 + hwhm**2) for c, i in zip(centres, inten))
+
+    raw, scaled = spectrum(freq), spectrum(freq * SCALE)
+    top = raw.max()
+
+    fig, ax = plt.subplots(figsize=(9, 3.8))
+    ax.plot(nu, raw / top, color=BLUE, lw=1.6, label="HF/6-31G*, harmonic")
+    ax.plot(nu, scaled / top, color=ORANGE, lw=1.6, ls="--",
+            label=f"HF/6-31G*, scaled × {SCALE}")
+    for k, e in enumerate(EXP_FUND):
+        ax.axvline(e, color=INK_2, lw=1, ls=":", label="experiment (fundamentals)" if k == 0 else None)
+
+    for c, i, name in zip(freq, inten, MODE_NAMES):
+        ax.annotate(f"{name}\n{c:.0f}", xy=(c, i / top), xytext=(0, 6), textcoords="offset points",
+                    ha="center", va="bottom", fontsize=8.5, color=INK)
+
+    ax.set_xlim(4400, 1400)  # IR convention: wavenumber decreases to the right
+    ax.set_ylim(0, 1.3)
+    ax.set_yticks([])
+    ax.grid(axis="y", visible=False)
+    ax.set_xlabel(r"Wavenumber (cm$^{-1}$)")
+    ax.set_ylabel("IR intensity (arb. units)")
+    ax.set_title(r"H$_2$O: simulated IR spectrum (Lorentzian, HWHM 12 cm$^{-1}$)", loc="left")
+    ax.legend(loc="upper center", fontsize=8.5, ncol=3)
+    save(fig, "ir_spectrum.png")
+
+
 if __name__ == "__main__":
     fig_errors()
+    fig_ir_spectrum()

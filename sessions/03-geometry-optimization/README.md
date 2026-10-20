@@ -1,6 +1,6 @@
-# Session 03 — Geometry Optimisation
+# Session 03 — Geometry Optimisation and Frequencies
 
-From fixed geometries to optimised ones: letting Hartree–Fock find the structure of a molecule, and seeing how far that structure is from experiment with each basis set.
+From fixed geometries to optimised ones: letting Hartree–Fock find the structure of a molecule, seeing how far that structure is from experiment with each basis set, and then probing the curvature of the minimum through its vibrational frequencies.
 
 ![Error of HF optimised geometries and dipoles against experiment](figures/error_vs_basis.png)
 
@@ -11,6 +11,7 @@ Each exercise folder has its own README with the task and the reasoning behind e
 | Exercise | Question | Level of theory |
 |---|---|---|
 | [Ex. 1 — Optimised geometries](ex1-optimized-geometries/) | How close do HF geometries and dipoles get to experiment, and how does the basis set change them? | HF, STO-3G → 6-31G** |
+| [Ex. 2 — Vibrational frequencies](ex2-vibrational-frequencies/) | What are the normal modes of water, and how good are harmonic HF frequencies? | HF/6-31G* |
 
 More exercises will be added as the session goes on.
 
@@ -32,7 +33,27 @@ CH₄, H₂O, HF and NH₃ are optimised with four basis sets, 16 optimisations 
 - **Dipoles are too large** with the larger basis sets, by 0.1–0.45 D: the HF charge distribution is too ionic.
 - **Consistent with Session 02:** the optimised HF bond lengths match the scans of [S02 Ex. 3](../02-hartree-fock/ex3-bond-scans/) to 0.001 Å, and every optimised energy is below the fixed-geometry energy of [S02 Ex. 2](../02-hartree-fock/ex2-basis-sets/) with the same basis set.
 
-Full table, NH₃ symmetry check and discussion: [Ex. 1 README](ex1-optimized-geometries/).
+Full table, NH₃ symmetry check and conclusions: [Ex. 1 README](ex1-optimized-geometries/).
+
+---
+
+## Ex. 2 — Vibrational frequencies of water
+
+Water is optimised and its harmonic frequencies computed in a single job (`opt freq`) at HF/6-31G*. The optimised geometry is identical to Ex. 1, and three real frequencies confirm it is a true minimum.
+
+![Simulated IR spectrum of water](figures/ir_spectrum.png)
+
+| Mode | Symmetry | Harmonic | Scaled × 0.8953 | Exp. | IR (km/mol) |
+|---|---|---|---|---|---|
+| Bend | A₁ | 1827 | 1635 | 1595 | 107 |
+| Symmetric stretch | A₁ | 4070 | 3644 | 3657 | 18 |
+| Antisymmetric stretch | B₂ | 4189 | 3750 | 3756 | 58 |
+
+- **Harmonic HF frequencies are 11–15 % too high:** the harmonic approximation ignores anharmonicity, and HF bonds are too stiff.
+- **A single scale factor** (0.8953 for HF/6-31G(d)) brings both stretches within 15 cm⁻¹ of experiment; the bend stays 40 cm⁻¹ high.
+- **IR intensity follows the change in dipole, not the stiffness:** the soft bend is the strongest band.
+
+Normal-mode diagrams, GaussView views and discussion: [Ex. 2 README](ex2-vibrational-frequencies/).
 
 ---
 
@@ -42,6 +63,7 @@ On a machine with Gaussian 09 (`g09` in the `PATH`):
 
 ```bash
 cd ex1-optimized-geometries && ./generate.sh && ./extract.sh > results.txt && cd ..
+cd ex2-vibrational-frequencies && ../run.sh && ./extract.sh h2o_freq.log > frequencies.txt && cd ..
 python plot_figures.py   # numpy + matplotlib
 ```
 
