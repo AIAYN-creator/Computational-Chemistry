@@ -6,7 +6,8 @@ This guide is built from the scripts in this repository. Each section explains o
 
 | Script | Patterns |
 |---|---|
-| [`run.sh`](../sessions/02-hartree-fock/run.sh) | [1](#1-running-every-job-in-a-folder-safely) |
+| **Session 02** | |
+| [`run.sh`](../sessions/02-hartree-fock/run.sh) (same file in every session) | [1](#1-running-every-job-in-a-folder-safely) |
 | [`ex2-basis-sets/generate.sh`](../sessions/02-hartree-fock/ex2-basis-sets/generate.sh) | [5](#5-generating-inputs-from-a-template) |
 | [`ex2-basis-sets/extract.sh`](../sessions/02-hartree-fock/ex2-basis-sets/extract.sh) | [2](#2-pulling-one-number-out-of-a-log) |
 | [`ex3-bond-scans/generate.sh`](../sessions/02-hartree-fock/ex3-bond-scans/generate.sh) | [5](#5-generating-inputs-from-a-template) |
@@ -14,6 +15,9 @@ This guide is built from the scripts in this repository. Each section explains o
 | [`ex4-rhf-dissociation/extract.sh`](../sessions/02-hartree-fock/ex4-rhf-dissociation/extract.sh) | [2](#2-pulling-one-number-out-of-a-log), [3](#3-reading-a-table-of-any-length-with-awk), [4](#4-doing-arithmetic-with-shell-values) |
 | [`ex5-uhf-initial-guess/extract.sh`](../sessions/02-hartree-fock/ex5-uhf-initial-guess/extract.sh) | [2](#2-pulling-one-number-out-of-a-log), [3](#3-reading-a-table-of-any-length-with-awk), [4](#4-doing-arithmetic-with-shell-values), [6](#6-gluing-columns-together) |
 | [`ex6-rhf-vs-uhf/extract.sh`](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh) | [2](#2-pulling-one-number-out-of-a-log), [3](#3-reading-a-table-of-any-length-with-awk), [4](#4-doing-arithmetic-with-shell-values), [6](#6-gluing-columns-together), [7](#7-functions-write-it-once) |
+| **Session 03** | |
+| [`ex1-optimized-geometries/generate.sh`](../sessions/03-geometry-optimization/ex1-optimized-geometries/generate.sh) | [5](#5-generating-inputs-from-a-template), [8](#8-mapping-names-with-case), [9](#9-splitting-file-names-and-default-values) |
+| [`ex1-optimized-geometries/extract.sh`](../sessions/03-geometry-optimization/ex1-optimized-geometries/extract.sh) | [1](#1-running-every-job-in-a-folder-safely), [2](#2-pulling-one-number-out-of-a-log), [9](#9-splitting-file-names-and-default-values) |
 
 **Patterns**
 
@@ -24,7 +28,9 @@ This guide is built from the scripts in this repository. Each section explains o
 5. [Generating inputs from a template](#5-generating-inputs-from-a-template)
 6. [Gluing columns together](#6-gluing-columns-together)
 7. [Functions: write it once](#7-functions-write-it-once)
-8. [Bugs worth remembering](#8-bugs-worth-remembering)
+8. [Mapping names with case](#8-mapping-names-with-case)
+9. [Splitting file names and default values](#9-splitting-file-names-and-default-values)
+10. [Bugs worth remembering](#10-bugs-worth-remembering)
 
 ---
 
@@ -59,7 +65,7 @@ done
 
 With this check, the script can be launched again after any interruption and it picks up where it stopped.
 
-**📍 In the code:** [`run.sh` L10–L28](../sessions/02-hartree-fock/run.sh#L10-L28), called by [`ex2/generate.sh` L28](../sessions/02-hartree-fock/ex2-basis-sets/generate.sh#L28) and [`ex3/generate.sh` L18](../sessions/02-hartree-fock/ex3-bond-scans/generate.sh#L18), and directly as `../run.sh` in Ex. 4–6.
+**📍 In the code:** [`run.sh` L10–L28](../sessions/02-hartree-fock/run.sh#L10-L28), called by [`ex2/generate.sh` L28](../sessions/02-hartree-fock/ex2-basis-sets/generate.sh#L28) and [`ex3/generate.sh` L18](../sessions/02-hartree-fock/ex3-bond-scans/generate.sh#L18), and directly as `../run.sh` in Ex. 4–6. Session 03 has an identical copy, called from [`S03 ex1/generate.sh` L30](../sessions/03-geometry-optimization/ex1-optimized-geometries/generate.sh#L30). The same idea, applied to results instead of jobs, appears in [`S03 ex1/extract.sh` L29–L32](../sessions/03-geometry-optimization/ex1-optimized-geometries/extract.sh#L29-L32): an optimisation that never printed `Stationary point found` is reported as `NOT-CONVERGED` instead of being read as if it had finished.
 
 ---
 
@@ -122,9 +128,28 @@ grep "S\*\*2 before annihilation" "$f" | awk '{print $4}' | tr -d ','
 
 The `*` must be escaped as `\*` because, in a `grep` pattern, `*` means "repeat the previous character".
 
+**Optimised geometry**: at the end of an optimisation Gaussian prints the final value of every Z-matrix variable, each on a line that starts with `!`. The same layout is used for the *initial* parameters, so `tail -1` is what picks the optimised value.
+
+```
+ !       r1          1.0025   -DE/DX =    0.0004                        !
+ !       a2        112.3568   -DE/DX =    0.0002                        !
+```
+```bash
+grep "! *r1" "$f" | tail -1 | awk '{print $3}'
+```
+
+` *` in the pattern means "any number of spaces", so `"! *r1"` matches however much padding Gaussian puts between `!` and the name.
+
+**Counting instead of reading**: `grep -c` prints how many lines match. Every geometry step of an optimisation runs one SCF, so counting `SCF Done` lines gives the number of steps.
+
+```bash
+grep -c "SCF Done" "$f"
+```
+
 **📍 In the code:**
 - Energy, HOMO, dipole and Mulliken charges: [`ex2/extract.sh` L16–L37](../sessions/02-hartree-fock/ex2-basis-sets/extract.sh#L16-L37)
 - Atomic reference energies: [`ex4/extract.sh` L10](../sessions/02-hartree-fock/ex4-rhf-dissociation/extract.sh#L10), [`ex5/extract.sh` L10](../sessions/02-hartree-fock/ex5-uhf-initial-guess/extract.sh#L10), [`ex6/extract.sh` L10–L11](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L10-L11)
+- Optimised r and angle, dipole, energy and step count: [`S03 ex1/extract.sh` L36–L49](../sessions/03-geometry-optimization/ex1-optimized-geometries/extract.sh#L36-L49)
 - ⟨Ŝ²⟩: [`ex5/extract.sh` L34](../sessions/02-hartree-fock/ex5-uhf-initial-guess/extract.sh#L34), [`ex6/extract.sh` L29–L31](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L29-L31)
 
 ---
@@ -208,7 +233,7 @@ done
 
 Besides saving typing, it guarantees that the geometry is *identical* across the series, so any difference in the results comes from the basis alone.
 
-**📍 In the code:** [`ex2/generate.sh` L10–L25](../sessions/02-hartree-fock/ex2-basis-sets/generate.sh#L10-L25) (6 molecules × 4 basis sets) and [`ex3/generate.sh` L6–L15](../sessions/02-hartree-fock/ex3-bond-scans/generate.sh#L6-L15), which also takes the molecule name from the template's file name with `${f%_sto3g.com}`.
+**📍 In the code:** [`ex2/generate.sh` L10–L25](../sessions/02-hartree-fock/ex2-basis-sets/generate.sh#L10-L25) (6 molecules × 4 basis sets) and [`ex3/generate.sh` L6–L15](../sessions/02-hartree-fock/ex3-bond-scans/generate.sh#L6-L15), which also takes the molecule name from the template's file name with `${f%_sto3g.com}`. Session 03 adds a twist: [`S03 ex1/generate.sh` L8–L27](../sessions/03-geometry-optimization/ex1-optimized-geometries/generate.sh#L8-L27) loops over file-name tags and translates them with `case` ([§8](#8-mapping-names-with-case)).
 
 ---
 
@@ -252,7 +277,62 @@ The loop that uses them only decides which reference goes with which molecule, w
 
 ---
 
-## 8. Bugs worth remembering
+## 8. Mapping names with case
+
+Basis-set names are awkward in file names: `6-31G*` contains a `*`, which the shell treats as a wildcard. [Pattern 5](#5-generating-inputs-from-a-template) cleaned the name with `tr`. The other way round is to loop over clean **file-name tags** and translate each one into the name Gaussian expects:
+
+```bash
+for b in 321g 631gs 631gss; do
+	case $b in
+		321g)   basis="3-21G" ;;
+		631gs)  basis="6-31G*" ;;
+		631gss) basis="6-31G**" ;;
+	esac
+	sed "s#sto-3g#$basis#g" "$f" > "${m}_${b}.com"
+done
+```
+
+- `case $b in … esac` compares `$b` against each pattern in turn and runs the commands of the first one that matches.
+- Each branch ends with `;;`.
+- Inside a `case`, the patterns are shell patterns, so `6-31G*)` *as a pattern* would match anything starting with `6-31G`. Here the patterns are the plain tags, and the `*` only appears in the values, safely inside quotes.
+
+`tr` derives the tag from the name; `case` derives the name from the tag. The `case` version is longer, but every mapping is written out, and it works for names that no character substitution could produce.
+
+**📍 In the code:** [`S03 ex1/generate.sh` L12–L26](../sessions/03-geometry-optimization/ex1-optimized-geometries/generate.sh#L12-L26).
+
+---
+
+## 9. Splitting file names and default values
+
+When a file name encodes the calculation, as `h2o_631gs.log` does, Bash can take it apart without calling any external program:
+
+```bash
+m=${f%.log}       # h2o_631gs.log -> h2o_631gs
+mol=${m%_*}       # remove the shortest "_..." from the END:   -> h2o
+basis=${m#*_}     # remove the shortest "..._" from the START: -> 631gs
+```
+
+| Expansion | Removes | Mnemonic |
+|---|---|---|
+| `${var%pattern}` | shortest match from the **end** | `%` comes after `$` on the keyboard: the end |
+| `${var#pattern}` | shortest match from the **start** | `#` comes before `$`: the start |
+| `${var%%pattern}`, `${var##pattern}` | the *longest* match instead | doubled = greedy |
+
+The difference matters when the separator appears twice: for `h2o_rhf_321g`, `${m%_*}` gives `h2o_rhf` but `${m%%_*}` gives `h2o`.
+
+**Default values.** HF is diatomic, so there is no angle to read and `$a` is empty. Printed as is, the row would have one column fewer and every column after it would shift. `${a:--}` prints `$a` if it has a value and `-` otherwise:
+
+```bash
+echo "$mol $basis $r ${a:--} $mu"     # hf 631gs 0.911 - 1.9719
+```
+
+The general form is `${var:-default}`. Here the default happens to be `-`, hence the odd-looking `:--`.
+
+**📍 In the code:** [`S03 ex1/extract.sh` L23–L25](../sessions/03-geometry-optimization/ex1-optimized-geometries/extract.sh#L23-L25) and [L53](../sessions/03-geometry-optimization/ex1-optimized-geometries/extract.sh#L53).
+
+---
+
+## 10. Bugs worth remembering
 
 Real mistakes found while cleaning up the scripts. Each one *seemed* to work.
 
