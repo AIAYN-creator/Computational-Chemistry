@@ -32,7 +32,7 @@ The window sits around the experimental distance (0.741 Å for H₂, 0.917 Å fo
 | H₂ | 0.713 | 0.735 | 0.733 | 0.741 |
 | HF | 0.956 | 0.938 | 0.901 | 0.917 |
 
-r<sub>e</sub> comes from a parabola through the three points around each minimum ([`plot_figures.py`](../plot_figures.py)).
+r<sub>e</sub> comes from a parabola through the three points around each minimum ([`plot_figures.py`](../plot_figures.py)). Geometry optimisations in [Session 03, Ex. 1](../../03-geometry-optimization/ex1-optimized-geometries/#cross-checks-with-session-02) land on the same values to 0.001 Å.
 
 - Beyond the minimal basis, HF bond lengths land within about 0.02 Å of experiment. That is why Hartree–Fock geometries are often good enough as a starting point for more expensive methods.
 - STO-3G misses in opposite directions: H₂ comes out too short and HF too long. A minimal basis does not err systematically, it just lacks flexibility.

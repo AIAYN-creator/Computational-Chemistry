@@ -9,6 +9,7 @@ The aim is to show the whole workflow, not only the final numbers: how each calc
 | # | Topic | Methods | Highlights |
 |---|-------|---------|------------|
 | 02 | [**Hartree–Fock in practice**](sessions/02-hartree-fock/) | HF, RHF/UHF · STO-3G → 6-31G(d,p) · Gaussian 09 | Basis-set convergence, bond-length scans, and the dissociation problem of RHF (H₂, LiH), with a [full report](sessions/02-hartree-fock/report/report.pdf) |
+| 03 | [**Geometry optimisation**](sessions/03-geometry-optimization/) | HF · STO-3G → 6-31G** · Gaussian 09 | Optimised geometries and dipoles of CH₄, H₂O, HF and NH₃ against experiment; cross-checked with Session 02 *(in progress)* |
 
 <p align="center">
   <a href="sessions/02-hartree-fock/"><img src="sessions/02-hartree-fock/figures/rhf_vs_uhf.png" width="720" alt="RHF vs UHF dissociation curves of H2 and LiH"></a>
@@ -24,22 +25,30 @@ More sessions will be added as the course goes on.
 ├── docs/
 │   └── bash-for-gaussian.md       # Bash patterns used in every session, linked to the exact script lines
 └── sessions/
-    └── 02-hartree-fock/
-        ├── README.md              # Session overview: figures, key results, conclusions
-        ├── report/
-        │   ├── report.pdf         # Written report (Ex. 6)
-        │   └── preview.png        # Thumbnail shown in the README
-        ├── figures/               # PNG figures, built by plot_figures.py
-        ├── plot_figures.py        # Rebuilds every figure from the data files
-        ├── run.sh                 # Runs all Gaussian inputs in a folder, skipping finished jobs
-        ├── ex2-basis-sets/        # One folder per exercise:
-        ├── ex3-bond-scans/        #   README.md    task, approach, results
-        ├── ex4-rhf-dissociation/  #   *.com        Gaussian inputs
-        ├── ex5-uhf-initial-guess/ #   *.sh         Bash scripts, commented line by line
-        └── ex6-rhf-vs-uhf/        #   *.txt, *.dat extracted data
+    ├── 02-hartree-fock/
+    │   ├── README.md              # Session overview: figures, key results, conclusions
+    │   ├── report/
+    │   │   ├── report.pdf         # Written report (Ex. 6)
+    │   │   └── preview.png        # Thumbnail shown in the README
+    │   ├── figures/               # PNG figures, built by plot_figures.py
+    │   ├── plot_figures.py        # Rebuilds every figure from the data files
+    │   ├── run.sh                 # Runs all Gaussian inputs in a folder, skipping finished jobs
+    │   ├── ex2-basis-sets/        # One folder per exercise:
+    │   ├── ex3-bond-scans/        #   README.md    task, approach, results
+    │   ├── ex4-rhf-dissociation/  #   *.com        Gaussian inputs
+    │   ├── ex5-uhf-initial-guess/ #   *.sh         Bash scripts, commented line by line
+    │   └── ex6-rhf-vs-uhf/        #   *.txt, *.dat extracted data
+    └── 03-geometry-optimization/  # Same layout, no report (yet)
+        ├── README.md
+        ├── figures/
+        ├── plot_figures.py
+        ├── run.sh
+        └── ex1-optimized-geometries/
 ```
 
-**Where to start:** the [session README](sessions/02-hartree-fock/) for the results, an exercise README for the reasoning behind each step, and the [Bash guide](docs/bash-for-gaussian.md) for how the scripts work.
+Every session follows the same layout. A `report/` folder appears only when the session has a written report.
+
+**Where to start:** a session README ([02](sessions/02-hartree-fock/), [03](sessions/03-geometry-optimization/)) for the results, an exercise README for the reasoning behind each step, and the [Bash guide](docs/bash-for-gaussian.md) for how the scripts work.
 
 **What is tracked:** inputs, scripts, extracted data, figures, reports and their READMEs. Raw Gaussian outputs (`.log`, `.chk`) are left out, since everything the analysis needs is in the extracted data, and every figure can be rebuilt from the repository alone. [`.gitattributes`](.gitattributes) keeps Unix line endings on scripts and inputs, so they run on Linux even after passing through Windows.
 
