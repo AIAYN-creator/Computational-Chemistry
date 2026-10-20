@@ -11,12 +11,12 @@ The session builds up in five exercises. The last one is written up as a full re
 <td width="190"><a href="report/report.pdf"><img src="report/preview.png" width="170" alt="First page of the report"></a></td>
 <td>
 
-### 📄 Report: *The Dissociation Problem in Hartree–Fock Theory*
+### Report: *The Dissociation Problem in Hartree–Fock Theory*
 **Restricted vs. unrestricted potential energy curves of H₂ and LiH**
 
 RHF cannot break a bond: its closed-shell determinant keeps a constant 50 % ionic weight, so H₂ ends up 7.6 eV above two H atoms. UHF with a symmetry-broken guess dissociates correctly beyond the Coulson–Fischer point, at the price of spin contamination.
 
-**[Read the report (PDF, 3 pages) →](report/report.pdf)**
+**[Read the report (PDF, 3 pages)](report/report.pdf)**
 
 </td>
 </tr>

@@ -2,7 +2,7 @@
 
 Most of the work in a computational chemistry course does not happen inside the quantum chemistry program. It happens around it: writing dozens of nearly identical inputs, launching them, checking they finished, and digging a handful of numbers out of output files thousands of lines long. Doing that by hand is slow and error-prone. Doing it with a few lines of Bash makes it fast and repeatable, and a mistake gets fixed once instead of thirty times.
 
-This guide is built from the scripts in this repository. Each section explains one pattern on the real Gaussian output it reads, and ends with **📍 In the code**: links to the exact lines of every script that uses it. The scripts themselves are commented line by line, so either one can be the entry point.
+This guide is built from the scripts in this repository. Each section explains one pattern on the real Gaussian output it reads, and ends with **In the code**: links to the exact lines of every script that uses it. The scripts themselves are commented line by line, so either one can be the entry point.
 
 | Script | Patterns |
 |---|---|
@@ -66,7 +66,7 @@ done
 
 With this check, the script can be launched again after any interruption and it picks up where it stopped.
 
-**📍 In the code:** [`run.sh` L10–L28](../sessions/02-hartree-fock/run.sh#L10-L28), called by [`ex2/generate.sh` L28](../sessions/02-hartree-fock/ex2-basis-sets/generate.sh#L28) and [`ex3/generate.sh` L18](../sessions/02-hartree-fock/ex3-bond-scans/generate.sh#L18), and directly as `../run.sh` in Ex. 4–6. Session 03 has an identical copy, called from [`S03 ex1/generate.sh` L30](../sessions/03-geometry-optimization/ex1-optimized-geometries/generate.sh#L30). The same idea, applied to results instead of jobs, appears in [`S03 ex1/extract.sh` L29–L32](../sessions/03-geometry-optimization/ex1-optimized-geometries/extract.sh#L29-L32): an optimisation that never printed `Stationary point found` is reported as `NOT-CONVERGED` instead of being read as if it had finished.
+**In the code:** [`run.sh` L10–L28](../sessions/02-hartree-fock/run.sh#L10-L28), called by [`ex2/generate.sh` L28](../sessions/02-hartree-fock/ex2-basis-sets/generate.sh#L28) and [`ex3/generate.sh` L18](../sessions/02-hartree-fock/ex3-bond-scans/generate.sh#L18), and directly as `../run.sh` in Ex. 4–6. Session 03 has an identical copy, called from [`S03 ex1/generate.sh` L30](../sessions/03-geometry-optimization/ex1-optimized-geometries/generate.sh#L30). The same idea, applied to results instead of jobs, appears in [`S03 ex1/extract.sh` L29–L32](../sessions/03-geometry-optimization/ex1-optimized-geometries/extract.sh#L29-L32): an optimisation that never printed `Stationary point found` is reported as `NOT-CONVERGED` instead of being read as if it had finished.
 
 ---
 
@@ -147,7 +147,7 @@ grep "! *r1" "$f" | tail -1 | awk '{print $3}'
 grep -c "SCF Done" "$f"
 ```
 
-**📍 In the code:**
+**In the code:**
 - Energy, HOMO, dipole and Mulliken charges: [`ex2/extract.sh` L16–L37](../sessions/02-hartree-fock/ex2-basis-sets/extract.sh#L16-L37)
 - Atomic reference energies: [`ex4/extract.sh` L10](../sessions/02-hartree-fock/ex4-rhf-dissociation/extract.sh#L10), [`ex5/extract.sh` L10](../sessions/02-hartree-fock/ex5-uhf-initial-guess/extract.sh#L10), [`ex6/extract.sh` L10–L11](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L10-L11)
 - Optimised r and angle, dipole, energy and step count: [`S03 ex1/extract.sh` L36–L49](../sessions/03-geometry-optimization/ex1-optimized-geometries/extract.sh#L36-L49)
@@ -190,7 +190,7 @@ An `awk` program is a list of `condition { action }` rules, applied to every lin
 
 The header lines (`N r1 SCF` and the dashes) do not match the row pattern, so they are skipped automatically. The same few lines work for 11, 22 or 39 points.
 
-**📍 In the code:** [`ex3/extract.sh` L31–L35](../sessions/02-hartree-fock/ex3-bond-scans/extract.sh#L31-L35) (the plain version), then reused with a reference energy in [`ex4/extract.sh` L21–L25](../sessions/02-hartree-fock/ex4-rhf-dissociation/extract.sh#L21-L25), [`ex5/extract.sh` L29–L33](../sessions/02-hartree-fock/ex5-uhf-initial-guess/extract.sh#L29-L33) and [`ex6/extract.sh` L18–L24](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L18-L24).
+**In the code:** [`ex3/extract.sh` L31–L35](../sessions/02-hartree-fock/ex3-bond-scans/extract.sh#L31-L35) (the plain version), then reused with a reference energy in [`ex4/extract.sh` L21–L25](../sessions/02-hartree-fock/ex4-rhf-dissociation/extract.sh#L21-L25), [`ex5/extract.sh` L29–L33](../sessions/02-hartree-fock/ex5-uhf-initial-guess/extract.sh#L29-L33) and [`ex6/extract.sh` L18–L24](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L18-L24).
 
 ---
 
@@ -212,7 +212,7 @@ For a single calculation with no file to read, use a `BEGIN` block:
 REF_LIH=$(awk -v eh="$EH" -v eli="$ELI" 'BEGIN { printf "%.10f", eh + eli }')
 ```
 
-**📍 In the code:** ΔE at every point in [`ex4/extract.sh` L21–L25](../sessions/02-hartree-fock/ex4-rhf-dissociation/extract.sh#L21-L25) and [`ex5/extract.sh` L29–L33](../sessions/02-hartree-fock/ex5-uhf-initial-guess/extract.sh#L29-L33). The `BEGIN` block, building the references of H₂ and LiH: [`ex6/extract.sh` L35–L36](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L35-L36).
+**In the code:** ΔE at every point in [`ex4/extract.sh` L21–L25](../sessions/02-hartree-fock/ex4-rhf-dissociation/extract.sh#L21-L25) and [`ex5/extract.sh` L29–L33](../sessions/02-hartree-fock/ex5-uhf-initial-guess/extract.sh#L29-L33). The `BEGIN` block, building the references of H₂ and LiH: [`ex6/extract.sh` L35–L36](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L35-L36).
 
 ---
 
@@ -234,7 +234,7 @@ done
 
 Besides saving typing, it guarantees that the geometry is *identical* across the series, so any difference in the results comes from the basis alone.
 
-**📍 In the code:** [`ex2/generate.sh` L10–L25](../sessions/02-hartree-fock/ex2-basis-sets/generate.sh#L10-L25) (6 molecules × 4 basis sets) and [`ex3/generate.sh` L6–L15](../sessions/02-hartree-fock/ex3-bond-scans/generate.sh#L6-L15), which also takes the molecule name from the template's file name with `${f%_sto3g.com}`. Session 03 adds a twist: [`S03 ex1/generate.sh` L8–L27](../sessions/03-geometry-optimization/ex1-optimized-geometries/generate.sh#L8-L27) loops over file-name tags and translates them with `case` ([§8](#8-mapping-names-with-case)).
+**In the code:** [`ex2/generate.sh` L10–L25](../sessions/02-hartree-fock/ex2-basis-sets/generate.sh#L10-L25) (6 molecules × 4 basis sets) and [`ex3/generate.sh` L6–L15](../sessions/02-hartree-fock/ex3-bond-scans/generate.sh#L6-L15), which also takes the molecule name from the template's file name with `${f%_sto3g.com}`. Session 03 adds a twist: [`S03 ex1/generate.sh` L8–L27](../sessions/03-geometry-optimization/ex1-optimized-geometries/generate.sh#L8-L27) loops over file-name tags and translates them with `case` ([§8](#8-mapping-names-with-case)).
 
 ---
 
@@ -249,7 +249,7 @@ paste -d ' ' <(command producing "r ΔE") <(command producing "S2") > out.dat
 - `paste` joins line 1 of each input, then line 2, and so on. `-d ' '` uses a space as separator instead of a tab.
 - `<( ... )` is **process substitution**: Bash runs the command and gives `paste` something that behaves like a file containing its output. It avoids writing temporary files.
 
-**📍 In the code:** [`ex5/extract.sh` L28–L35](../sessions/02-hartree-fock/ex5-uhf-initial-guess/extract.sh#L28-L35) (written out in full) and [`ex6/extract.sh` L47–L48](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L47-L48), where it shrinks to one line thanks to the functions of the next section. The widest use is in [`S03 ex2/extract.sh` L45–L47](../sessions/03-geometry-optimization/ex2-vibrational-frequencies/extract.sh#L45-L47): five lists (mode number from `seq`, symmetry, frequency, IR intensity, force constant) pasted into one table. Gaussian prints normal modes in blocks of three columns, and turning each row into a list first makes the script work for any number of modes.
+**In the code:** [`ex5/extract.sh` L28–L35](../sessions/02-hartree-fock/ex5-uhf-initial-guess/extract.sh#L28-L35) (written out in full) and [`ex6/extract.sh` L47–L48](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L47-L48), where it shrinks to one line thanks to the functions of the next section. The widest use is in [`S03 ex2/extract.sh` L45–L47](../sessions/03-geometry-optimization/ex2-vibrational-frequencies/extract.sh#L45-L47): five lists (mode number from `seq`, symmetry, frequency, IR intensity, force constant) pasted into one table. Gaussian prints normal modes in blocks of three columns, and turning each row into a list first makes the script work for any number of modes.
 
 ---
 
@@ -274,7 +274,7 @@ The loop that uses them only decides which reference goes with which molecule, w
 [ "$mol" = h2 ] && ref=$REF_H2 || ref=$REF_LIH
 ```
 
-**📍 In the code:** the functions `scan` and `s2` in [`ex6/extract.sh` L18–L31](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L18-L31), and the loop that uses them in [L38–L51](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L38-L51). In [`S03 ex2/extract.sh` L25–L36](../sessions/03-geometry-optimization/ex2-vibrational-frequencies/extract.sh#L25-L36), `row` prints every value after the `--` marker of a Gaussian row, whether its label has one word (`Frequencies --`) or two (`IR Inten --`), so one function reads every row of the normal-mode table.
+**In the code:** the functions `scan` and `s2` in [`ex6/extract.sh` L18–L31](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L18-L31), and the loop that uses them in [L38–L51](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L38-L51). In [`S03 ex2/extract.sh` L25–L36](../sessions/03-geometry-optimization/ex2-vibrational-frequencies/extract.sh#L25-L36), `row` prints every value after the `--` marker of a Gaussian row, whether its label has one word (`Frequencies --`) or two (`IR Inten --`), so one function reads every row of the normal-mode table.
 
 ---
 
@@ -299,7 +299,7 @@ done
 
 `tr` derives the tag from the name; `case` derives the name from the tag. The `case` version is longer, but every mapping is written out, and it works for names that no character substitution could produce.
 
-**📍 In the code:** [`S03 ex1/generate.sh` L12–L26](../sessions/03-geometry-optimization/ex1-optimized-geometries/generate.sh#L12-L26).
+**In the code:** [`S03 ex1/generate.sh` L12–L26](../sessions/03-geometry-optimization/ex1-optimized-geometries/generate.sh#L12-L26).
 
 ---
 
@@ -331,7 +331,7 @@ The general form is `${var:-default}`. Here the default happens to be `-`, hence
 
 The same default works for script arguments: `f=${1:-h2o_freq.log}` uses the first argument if one is given and falls back to `h2o_freq.log` otherwise ([`S03 ex2/extract.sh` L19](../sessions/03-geometry-optimization/ex2-vibrational-frequencies/extract.sh#L19)).
 
-**📍 In the code:** [`S03 ex1/extract.sh` L23–L25](../sessions/03-geometry-optimization/ex1-optimized-geometries/extract.sh#L23-L25) and [L53](../sessions/03-geometry-optimization/ex1-optimized-geometries/extract.sh#L53).
+**In the code:** [`S03 ex1/extract.sh` L23–L25](../sessions/03-geometry-optimization/ex1-optimized-geometries/extract.sh#L23-L25) and [L53](../sessions/03-geometry-optimization/ex1-optimized-geometries/extract.sh#L53).
 
 ---
 

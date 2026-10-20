@@ -1,6 +1,6 @@
 # Ex. 6 — RHF vs UHF for H₂ and LiH
 
-[← Session 02](../) · [Bash guide](../../../docs/bash-for-gaussian.md) · **[📄 Report (PDF)](../report/report.pdf)**
+[← Session 02](../) · [Bash guide](../../../docs/bash-for-gaussian.md) · **[Report (PDF)](../report/report.pdf)**
 
 ## Task
 
