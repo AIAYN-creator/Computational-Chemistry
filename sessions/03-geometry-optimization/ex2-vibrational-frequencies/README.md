@@ -41,13 +41,21 @@ The diagram matches the displacement vectors printed in the output: in the bend,
 
 ![Simulated IR spectrum of water](../figures/ir_spectrum.png)
 
-## Reading
+## Conclusions
 
-- **Three modes, as expected.** A nonlinear molecule has 3N − 6 = 3 vibrations. Two are totally symmetric (A₁) and keep the C₂ᵥ symmetry; the antisymmetric stretch (B₂) breaks the equivalence of the two O–H bonds. All three change the dipole moment, so all three are IR active.
-- **Harmonic HF frequencies are 11–15 % too high.** Two errors add up. The harmonic approximation treats the well as a parabola, while the real one is anharmonic and softer, so real fundamentals are lower. And Hartree–Fock, with bonds that are too short, also gives force constants that are too large: a stiffer spring vibrates faster.
-- **One scale factor fixes most of it.** Multiplying by 0.8953, a factor fitted once for HF/6-31G(d) over many molecules, brings both stretches within 15 cm⁻¹ of experiment. The bend stays 40 cm⁻¹ too high: a single factor cannot correct every mode equally.
-- **Stretching is stiffer than bending.** The O–H stretching force constants (10–11 mDyne/Å) are five times larger than the bending one (2.1 mDyne/Å). It takes far more energy to stretch a bond than to open an angle.
-- **Intensity is not frequency.** The bend is the strongest band in the spectrum (107 km/mol) and the symmetric stretch the weakest (18 km/mol). IR intensity depends on how much the dipole moment changes during the vibration, not on how stiff the bond is.
+**True minimum.** All three vibrational frequencies (3N − 6 = 3) are real and positive, so the HF/6-31G* geometry is a minimum on the potential energy surface and not a saddle point.
+
+**Mode assignment.**
+
+- 1827 cm⁻¹ (A₁): H–O–H bending
+- 4070 cm⁻¹ (A₁): symmetric O–H stretching
+- 4189 cm⁻¹ (B₂): asymmetric O–H stretching
+
+The bending mode has a force constant about five times smaller than the stretching modes (2.1 vs. 10–11 mDyne/Å), which is why its frequency is much lower. The asymmetric stretch lies slightly above the symmetric one.
+
+**Symmetry and spectroscopy.** The two A₁ modes preserve the C₂ᵥ symmetry, while the B₂ mode breaks it. The bend dominates the IR spectrum (107 km/mol) and the symmetric stretch dominates the Raman spectrum (75.5 Å⁴/amu), which illustrates how the two techniques complement each other. Moreover, only the totally symmetric (A₁) modes give polarised Raman bands (depolarisation ratio below 0.75).
+
+**Comparison with experiment.** HF overestimates all three frequencies, by 11–15 % with respect to the experimental gas-phase values (1595, 3657 and 3756 cm⁻¹). There are two causes: the lack of electron correlation, which gives bonds that are too short and too stiff, and the harmonic approximation, whereas experimental frequencies include anharmonicity. Applying the usual scale factor for HF/6-31G* (0.8953) brings the results into good agreement with experiment.
 
 ## Scripts
 
