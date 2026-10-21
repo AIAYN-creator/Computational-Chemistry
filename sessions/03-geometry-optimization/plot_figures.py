@@ -172,6 +172,68 @@ def fig_ir_spectrum():
     save(fig, "ir_spectrum.png")
 
 
+# --- Figure 3: normal modes of ammonia (ex3) --------------------------------
+NH3_MODES = [
+    ("Umbrella", r"A$_1$"), ("Asymmetric bend", "E"), ("Asymmetric bend", "E"),
+    ("Symmetric stretch", r"A$_1$"), ("Asymmetric stretch", "E"), ("Asymmetric stretch", "E"),
+]
+
+
+def fig_nh3_modes():
+    rows = [l.split() for l in (HERE / "ex3-ammonia-frequencies/normal_modes.txt")
+            .read_text().splitlines() if l and not l.startswith("#")]
+    xyz = np.array([[float(v) for v in r[1:4]] for r in rows])
+    disp = np.array([[float(v) for v in r[4:]] for r in rows]).reshape(len(rows), 6, 3)
+    freqs = [float(l.split()[2]) for l in (HERE / "ex3-ammonia-frequencies/frequencies.txt")
+             .read_text().splitlines() if l and l[0].isdigit()]
+
+    # Oblique orthographic view: turn about the C3 axis (y), then tilt it
+    # towards the viewer so both the umbrella and the in-plane motions show
+    yaw, tilt = np.radians(25), np.radians(-30)
+    ry = np.array([[np.cos(yaw), 0, np.sin(yaw)], [0, 1, 0], [-np.sin(yaw), 0, np.cos(yaw)]])
+    rx = np.array([[1, 0, 0], [0, np.cos(tilt), -np.sin(tilt)], [0, np.sin(tilt), np.cos(tilt)]])
+    rot = rx @ ry
+
+    def view(v):
+        return (v @ rot.T)[..., :2]
+
+    pos = view(xyz)
+    fig, axes = plt.subplots(2, 3, figsize=(10, 6.6))
+    for m, ax in enumerate(axes.flat):
+        arrows = view(disp[:, m, :]) * 0.9
+        for h in range(1, 4):
+            ax.plot(*zip(pos[0], pos[h]), color="#8a8986", lw=4, zorder=1, solid_capstyle="round")
+        ax.scatter(*pos[0], s=650, color="#3b5bdb", edgecolor=INK, lw=1, zorder=2)
+        ax.scatter(pos[1:, 0], pos[1:, 1], s=260, color="#e4e3df", edgecolor=INK, lw=1, zorder=2)
+        for a in range(4):
+            if np.hypot(*arrows[a]) > 0.03:
+                ax.annotate("", xy=pos[a] + arrows[a], xytext=pos[a],
+                            arrowprops={"arrowstyle": "-|>", "color": ORANGE, "lw": 2,
+                                        "mutation_scale": 14}, zorder=3)
+        name, sym = NH3_MODES[m]
+        ax.set_title(f"{name} ({sym})\n{freqs[m]:.0f} cm$^{{-1}}$", fontsize=10.5)
+        ax.set_aspect("equal")
+        ax.set_xlim(-1.75, 1.75)
+        ax.set_ylim(-1.45, 1.0)
+        ax.axis("off")
+    fig.suptitle(r"NH$_3$, HF/6-31G*: normal modes (C$_{3v}$ labels)", x=0.01, ha="left", fontsize=11.5)
+    fig.tight_layout()
+    save(fig, "nh3_normal_modes.png")
+
+    # Stretch fraction: share of the H motion relative to N that lies along
+    # the N-H bonds (0 = pure bend, 1 = pure stretch)
+    print("NH3 stretch fraction per mode:")
+    for m in range(6):
+        along = total = 0.0
+        for h in range(1, 4):
+            bond = (xyz[h] - xyz[0]) / np.linalg.norm(xyz[h] - xyz[0])
+            rel = disp[h, m] - disp[0, m]
+            along += np.dot(rel, bond) ** 2
+            total += np.dot(rel, rel)
+        print(f"  mode {m + 1}: {along / total:.2f}")
+
+
 if __name__ == "__main__":
     fig_errors()
     fig_ir_spectrum()
+    fig_nh3_modes()

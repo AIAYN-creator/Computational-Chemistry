@@ -1,0 +1,11 @@
+# Copied from the normal-mode table of nh3_freq.log (HF/6-31G*)
+# Gaussian found point group Cs (see README), hence the A'/A" labels;
+# the C3v label is given in the last column.
+# ZPE = 0.036997 hartree
+mode sym_Cs freq(cm-1) IR(km/mol) raman(A4/amu) depolar_P force_const(mDyne/A) sym_C3v
+1 A'  1209.8740 218.0643   8.8111 0.1374 1.0181 A1
+2 A'  1849.6637  21.3144  10.5824 0.7500 2.1490 E
+3 A"  1849.7168  21.3115  10.5834 0.7500 2.1491 E
+4 A'  3688.1835   0.3166 116.2086 0.0750 8.2299 A1
+5 A'  3821.0759   0.4595  59.2873 0.7500 9.3838 E
+6 A"  3821.1083   0.4613  59.2783 0.7500 9.3841 E

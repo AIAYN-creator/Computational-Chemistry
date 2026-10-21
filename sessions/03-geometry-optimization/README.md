@@ -12,6 +12,7 @@ Each exercise folder has its own README with the task and the reasoning behind e
 |---|---|---|
 | [Ex. 1 — Optimised geometries](ex1-optimized-geometries/) | How close do HF geometries and dipoles get to experiment, and how does the basis set change them? | HF, STO-3G → 6-31G** |
 | [Ex. 2 — Vibrational frequencies](ex2-vibrational-frequencies/) | What are the normal modes of water, and how good are harmonic HF frequencies? | HF/6-31G* |
+| [Ex. 3 — Ammonia frequencies](ex3-ammonia-frequencies/) | Can the symmetry and the character of each mode be read from the displacement vectors alone? | HF/6-31G* |
 
 More exercises will be added as the session goes on.
 
@@ -53,7 +54,29 @@ Water is optimised and its harmonic frequencies computed in a single job (`opt f
 - **A single scale factor** (0.8953 for HF/6-31G(d)) brings both stretches within 15 cm⁻¹ of experiment; the bend stays 40 cm⁻¹ high.
 - **IR intensity follows the change in dipole, not the stiffness:** the soft bend is the strongest band.
 
-Normal-mode diagrams, GaussView views and discussion: [Ex. 2 README](ex2-vibrational-frequencies/).
+Normal-mode diagrams, GaussView views and conclusions: [Ex. 2 README](ex2-vibrational-frequencies/).
+
+---
+
+## Ex. 3 — Vibrational frequencies of ammonia
+
+The same `opt freq` job for NH₃. This time the six normal modes are worked out from the output alone: the displacement vectors give the C₃ axis, the position of each H and, through their projection on the N–H bonds, whether each mode is a bend or a stretch.
+
+![Normal modes of ammonia](figures/nh3_normal_modes.png)
+
+| Mode | C₃ᵥ | Harmonic (cm⁻¹) | Exp. (cm⁻¹) | IR (km/mol) | Raman (Å⁴/amu) |
+|---|---|---|---|---|---|
+| Umbrella | A₁ | 1210 | 950 | 218 | 8.8 |
+| Asymmetric bend | E | 1850 | 1627 | 21 | 10.6 |
+| Symmetric stretch | A₁ | 3688 | 3337 | 0.3 | 116 |
+| Asymmetric stretch | E | 3821 | 3444 | 0.5 | 59 |
+
+- **Bends and stretches separate cleanly:** the share of each mode's H motion along the N–H bonds is 0.00 for the three bends and 0.99–1.00 for the three stretches.
+- **The umbrella has the largest error, 27 %**, against 11–14 % for the other modes: inversion makes its potential a strongly anharmonic double well.
+- **IR and Raman are complementary:** the umbrella dominates the IR spectrum, while the stretches are almost IR-silent but dominate the Raman one.
+- **Gaussian found Cs, not C₃ᵥ:** the Z-matrix leaves the symmetry free, and a 10⁻⁴ Å asymmetry was enough to lose the C₃ axis. It splits the E pairs by 0.05 cm⁻¹ and gives the wrong rotational symmetry number in the thermochemistry.
+
+Full analysis, GaussView views and conclusions: [Ex. 3 README](ex3-ammonia-frequencies/).
 
 ---
 
@@ -64,6 +87,7 @@ On a machine with Gaussian 09 (`g09` in the `PATH`):
 ```bash
 cd ex1-optimized-geometries && ./generate.sh && ./extract.sh > results.txt && cd ..
 cd ex2-vibrational-frequencies && ../run.sh && cd ..   # frequencies read by hand into frequencies.txt
+cd ex3-ammonia-frequencies && ../run.sh && cd ..       # modes read by hand into frequencies.txt, normal_modes.txt
 python plot_figures.py   # numpy + matplotlib
 ```
 
