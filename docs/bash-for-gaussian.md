@@ -17,6 +17,8 @@ This guide is built from the scripts in this repository. Each section explains o
 | [`ex6-rhf-vs-uhf/extract.sh`](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh) | [2](#2-pulling-one-number-out-of-a-log), [3](#3-reading-a-table-of-any-length-with-awk), [4](#4-doing-arithmetic-with-shell-values), [6](#6-gluing-columns-together), [7](#7-functions-write-it-once) |
 | **Session 03** | |
 | [`ex1-optimized-geometries/generate.sh`](../sessions/03-geometry-optimization/ex1-optimized-geometries/generate.sh) | [5](#5-generating-inputs-from-a-template), [8](#8-mapping-names-with-case), [9](#9-splitting-file-names-and-default-values) |
+| [`ex4-hf-vs-b3lyp/generate.sh`](../sessions/03-geometry-optimization/ex4-hf-vs-b3lyp/generate.sh) | [5](#5-generating-inputs-from-a-template) |
+| [`ex4-hf-vs-b3lyp/extract.sh`](../sessions/03-geometry-optimization/ex4-hf-vs-b3lyp/extract.sh) | [2](#2-pulling-one-number-out-of-a-log) |
 | [`ex1-optimized-geometries/extract.sh`](../sessions/03-geometry-optimization/ex1-optimized-geometries/extract.sh) | [1](#1-running-every-job-in-a-folder-safely), [2](#2-pulling-one-number-out-of-a-log), [9](#9-splitting-file-names-and-default-values) |
 
 **Patterns**
@@ -149,6 +151,7 @@ grep -c "SCF Done" "$f"
 **In the code:**
 - Energy, HOMO, dipole and Mulliken charges: [`ex2/extract.sh` L16–L37](../sessions/02-hartree-fock/ex2-basis-sets/extract.sh#L16-L37)
 - Atomic reference energies: [`ex4/extract.sh` L10](../sessions/02-hartree-fock/ex4-rhf-dissociation/extract.sh#L10), [`ex5/extract.sh` L10](../sessions/02-hartree-fock/ex5-uhf-initial-guess/extract.sh#L10), [`ex6/extract.sh` L10–L11](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L10-L11)
+- Every optimised variable at once, whatever its name (`grep "! *[a-z]"` keeps the variable rows and drops the headers): [`S03 ex4/extract.sh` L23](../sessions/03-geometry-optimization/ex4-hf-vs-b3lyp/extract.sh#L23)
 - Optimised r and angle, dipole, energy and step count: [`S03 ex1/extract.sh` L36–L49](../sessions/03-geometry-optimization/ex1-optimized-geometries/extract.sh#L36-L49)
 - ⟨Ŝ²⟩: [`ex5/extract.sh` L34](../sessions/02-hartree-fock/ex5-uhf-initial-guess/extract.sh#L34), [`ex6/extract.sh` L29–L31](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L29-L31)
 
@@ -233,7 +236,7 @@ done
 
 Besides saving typing, it guarantees that the geometry is *identical* across the series, so any difference in the results comes from the basis alone.
 
-**In the code:** [`ex2/generate.sh` L10–L25](../sessions/02-hartree-fock/ex2-basis-sets/generate.sh#L10-L25) (6 molecules × 4 basis sets) and [`ex3/generate.sh` L6–L15](../sessions/02-hartree-fock/ex3-bond-scans/generate.sh#L6-L15), which also takes the molecule name from the template's file name with `${f%_sto3g.com}`. Session 03 adds a twist: [`S03 ex1/generate.sh` L8–L27](../sessions/03-geometry-optimization/ex1-optimized-geometries/generate.sh#L8-L27) loops over file-name tags and translates them with `case` ([§8](#8-mapping-names-with-case)).
+**In the code:** [`ex2/generate.sh` L10–L25](../sessions/02-hartree-fock/ex2-basis-sets/generate.sh#L10-L25) (6 molecules × 4 basis sets) and [`ex3/generate.sh` L6–L15](../sessions/02-hartree-fock/ex3-bond-scans/generate.sh#L6-L15), which also takes the molecule name from the template's file name with `${f%_sto3g.com}`. Session 03 adds a twist: [`S03 ex1/generate.sh` L8–L27](../sessions/03-geometry-optimization/ex1-optimized-geometries/generate.sh#L8-L27) loops over file-name tags and translates them with `case` ([§8](#8-mapping-names-with-case)). [`S03 ex4/generate.sh` L13](../sessions/03-geometry-optimization/ex4-hf-vs-b3lyp/generate.sh#L13) changes the *method* instead of the basis, with two substitutions in one call: `sed "s/#hf/#b3lyp/; s/ HF$/ B3LYP/"`. The `;` separates them, and the `$` anchors the second one to the end of the line, so only the last word of the title changes.
 
 ---
 
