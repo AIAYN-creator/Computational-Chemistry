@@ -12,9 +12,13 @@ The aim is to show the whole workflow, not only the final numbers: how each calc
 | 02 | [**Hartree–Fock in practice**](sessions/02-hartree-fock/) | HF, RHF/UHF · STO-3G → 6-31G(d,p) · Gaussian 09 | Basis-set convergence, bond-length scans, and the dissociation problem of RHF (H₂, LiH), with a [full report](sessions/02-hartree-fock/report/report.pdf) |
 | 03 | [**Geometry optimisation and frequencies**](sessions/03-geometry-optimization/) | HF, B3LYP · STO-3G → 6-311G* · Gaussian 09 | Optimised geometries and dipoles of CH₄, H₂O, HF and NH₃ against experiment, cross-checked with Session 02; normal modes of water and ammonia, read from the displacement vectors; HF vs B3LYP geometries *(in progress)* |
 
-<p align="center">
-  <a href="sessions/02-hartree-fock/"><img src="sessions/02-hartree-fock/figures/rhf_vs_uhf.png" width="720" alt="RHF vs UHF dissociation curves of H2 and LiH"></a>
-</p>
+<table>
+<tr>
+<td align="center" width="33%"><a href="sessions/01-linux-and-z-matrices/"><img src="sessions/01-linux-and-z-matrices/figures/z_matrices.png" alt="Session 01: Z-matrices converted to Cartesian coordinates"></a><br><sub><b>01</b> · Z-matrices, drawn</sub></td>
+<td align="center" width="33%"><a href="sessions/02-hartree-fock/"><img src="sessions/02-hartree-fock/figures/rhf_vs_uhf.png" alt="Session 02: RHF vs UHF dissociation curves of H2 and LiH"></a><br><sub><b>02</b> · RHF vs UHF dissociation</sub></td>
+<td align="center" width="33%"><a href="sessions/03-geometry-optimization/"><img src="sessions/03-geometry-optimization/figures/nh3_normal_modes.png" alt="Session 03: normal modes of ammonia"></a><br><sub><b>03</b> · Normal modes of NH₃</sub></td>
+</tr>
+</table>
 
 More sessions will be added as the course goes on.
 
