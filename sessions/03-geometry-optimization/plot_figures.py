@@ -294,8 +294,99 @@ def fig_hf_vs_b3lyp():
     save(fig, "hf_vs_b3lyp.png")
 
 
+# --- Figure 5: torsional profile of 1,2-dichloroethane (ex5) ---------------
+CL_GREEN, H_GREY = "#2f9e44", "#8a8986"
+
+
+def load_scan():
+    rows = [l.split() for l in (HERE / "ex5-dichloroethane-scan/scan.txt").read_text()
+            .splitlines() if l and not l.startswith(("#", "phi"))]
+    phi = np.array([float(r[0]) for r in rows])
+    de = np.array([float(r[2]) for r in rows])
+    return phi, de
+
+
+def cosine_fit(phi, de, order=6):
+    """Least-squares fit E(phi) = sum a_n cos(n phi), symmetric in phi."""
+    basis = lambda p: np.column_stack([np.cos(n * np.radians(p)) for n in range(order + 1)])
+    coef, *_ = np.linalg.lstsq(basis(phi), de, rcond=None)
+    return lambda p: basis(np.atleast_1d(p)) @ coef
+
+
+def newman(ax, phi, label):
+    """Newman projection along C-C: front bonds meet at the centre, back
+    bonds start at the circle. Cl on the front carbon points up; the back
+    carbon is rotated by the Cl-C-C-Cl dihedral phi. Eclipsed back bonds
+    are nudged and their labels pushed out, so both atoms stay readable."""
+    r_circle, r_bond = 0.42, 1.0
+    ax.add_patch(plt.Circle((0, 0), r_circle, fill=False, color=INK, lw=1.4))
+    eclipsed = min(phi % 120, 120 - phi % 120) < 1
+    nudge = 14 if eclipsed else 0
+    for start, atom in [(0, "Cl"), (120, "H"), (240, "H")]:
+        for front in (True, False):
+            ang = np.radians(90 - (start + (0 if front else phi + nudge)))
+            d = np.array([np.cos(ang), np.sin(ang)])
+            p0 = np.zeros(2) if front else d * r_circle
+            colour = CL_GREEN if atom == "Cl" else INK_2
+            ax.plot(*zip(p0, d * r_bond), color=colour, lw=2.2 if atom == "Cl" else 1.4,
+                    zorder=3 if front else 2)
+            r_text = r_bond + (0.22 if front or not eclipsed else 0.5)
+            ax.text(*(d * r_text), atom, ha="center", va="center",
+                    fontsize=8.5 if atom == "Cl" else 7.5,
+                    color=CL_GREEN if atom == "Cl" else INK_2,
+                    fontweight="bold" if atom == "Cl" else "normal")
+    ax.set_xlim(-1.6, 1.6)
+    ax.set_ylim(-1.6, 1.6)
+    ax.set_aspect("equal")
+    ax.axis("off")
+    ax.set_title(label, fontsize=9, pad=2)
+
+
+def fig_dce_scan():
+    phi, de = load_scan()
+    unique = phi >= 0
+    fit = cosine_fit(np.concatenate([phi[unique], -phi[unique]]),
+                     np.concatenate([de[unique], de[unique]]), order=5)
+    grid = np.linspace(-180, 180, 721)
+    curve = fit(grid)
+    window = (grid > 30) & (grid < 110)
+    phi_g = grid[window][np.argmin(curve[window])]
+    e_g = curve[window].min()
+
+    fig = plt.figure(figsize=(10, 6.6))
+    ax = fig.add_axes([0.08, 0.08, 0.88, 0.56])
+    ax.plot(grid, curve, color=BLUE, lw=1.6, zorder=1, label="cosine-series fit")
+    ax.plot(phi, de, "o", color=BLUE, ms=7, zorder=3, label="computed (relaxed scan)")
+    mirror = unique & (phi > 0) & (phi < 180)
+    ax.plot(np.append(-phi[mirror], -180), np.append(de[mirror], de[phi == 180]),
+            "o", mfc=SURFACE, mec=BLUE, mew=1.5, ms=7, zorder=3, label="mirrored, E(φ) = E(−φ)")
+    ax.set_xlim(-190, 190)
+    ax.set_ylim(-0.8, 11.5)
+    ax.set_xticks(range(-180, 181, 60))
+    ax.set_xlabel("Cl–C–C–Cl dihedral φ (°)")
+    ax.set_ylabel(r"$E - E_{\mathrm{trans}}$ (kcal/mol)")
+    ax.legend(loc="upper left", fontsize=8.5)
+
+    # Key conformers: letter on the curve, Newman projection in the row above
+    key = [(0, "Cl/Cl eclipsed, 0°"), (phi_g, f"gauche, ≈ {phi_g:.0f}°"),
+           (120, "Cl/H eclipsed, 120°"), (180, "trans (anti), 180°")]
+    for k, (x, label) in enumerate(key):
+        letter = "abcd"[k]
+        y = fit(x)[0]
+        ax.annotate(f"({letter})", xy=(x, y), xytext=(0, 9 if k != 1 else -16),
+                    textcoords="offset points", ha="center", fontsize=9.5,
+                    fontweight="bold", color=INK)
+        sub = fig.add_axes([0.08 + k * 0.22, 0.69, 0.2, 0.27])
+        newman(sub, x, f"({letter}) {label}")
+    fig.suptitle("1,2-Dichloroethane, HF/6-31G*: rotation about the C–C bond",
+                 x=0.01, ha="left", y=1.045, fontsize=11.5)
+    save(fig, "dce_torsion.png")
+    print(f"Gauche minimum from the fit: phi = {phi_g:.1f} deg, dE = {e_g:.2f} kcal/mol")
+
+
 if __name__ == "__main__":
     fig_errors()
     fig_ir_spectrum()
     fig_nh3_modes()
     fig_hf_vs_b3lyp()
+    fig_dce_scan()

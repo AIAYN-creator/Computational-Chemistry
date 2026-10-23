@@ -14,6 +14,7 @@ Each exercise folder has its own README with the task and the reasoning behind e
 | [Ex. 2 — Vibrational frequencies](ex2-vibrational-frequencies/) | What are the normal modes of water, and how good are harmonic HF frequencies? | HF/6-31G* |
 | [Ex. 3 — Ammonia frequencies](ex3-ammonia-frequencies/) | Can the symmetry and the character of each mode be read from the displacement vectors alone? | HF/6-31G* |
 | [Ex. 4 — HF vs B3LYP](ex4-hf-vs-b3lyp/) | How much does electron correlation (through B3LYP) improve optimised geometries? | HF, B3LYP / 6-31G*, 6-311G* |
+| [Ex. 5 — Dichloroethane conformers](ex5-dichloroethane-scan/) | How does the energy change as one CH₂Cl group rotates about the C–C bond? | HF/6-31G*, relaxed scan |
 
 More exercises will be added as the session goes on.
 
@@ -96,6 +97,21 @@ Full table and conclusions: [Ex. 4 README](ex4-hf-vs-b3lyp/).
 
 ---
 
+## Ex. 5 — Conformers of 1,2-dichloroethane
+
+A relaxed scan of the Cl–C–C–Cl dihedral from 180° to −20°: at each angle every other coordinate is optimised. The Z-matrix places each H relative to the Cl of its own carbon, so a single variable rotates a whole CH₂Cl group.
+
+![Torsional profile of 1,2-dichloroethane](figures/dce_torsion.png)
+
+- **Trans is the global minimum, gauche a local one** near 70°, about 2 kcal/mol higher.
+- **Two kinds of barrier:** 5.1 kcal/mol with Cl eclipsing H (120°), 10.0 kcal/mol with the two Cl atoms eclipsed (0°).
+- **The molecule makes room as the Cl atoms approach:** the C–C bond stretches from 1.516 to 1.547 Å and the C–C–Cl angle opens from 109° to 117°.
+- **Half a turn is enough:** E(φ) = E(−φ), and the extra point at −20° matches +20° to 0.0002 kcal/mol.
+
+Z-matrix design, full table and conclusions: [Ex. 5 README](ex5-dichloroethane-scan/).
+
+---
+
 ## Reproducing everything
 
 On a machine with Gaussian 09 (`g09` in the `PATH`):
@@ -105,6 +121,7 @@ cd ex1-optimized-geometries && ./generate.sh && ./extract.sh > results.txt && cd
 cd ex2-vibrational-frequencies && ../run.sh && cd ..   # frequencies read by hand into frequencies.txt
 cd ex3-ammonia-frequencies && ../run.sh && cd ..       # modes read by hand into frequencies.txt, normal_modes.txt
 cd ex4-hf-vs-b3lyp && ./generate.sh && ./extract.sh > results.txt && cd ..
+cd ex5-dichloroethane-scan && ../run.sh && cd ..        # scan points read from the output into scan.txt
 python plot_figures.py   # numpy + matplotlib
 ```
 
