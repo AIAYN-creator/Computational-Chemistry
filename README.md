@@ -9,7 +9,7 @@ The aim is to show the whole workflow, not only the final numbers: how each calc
 | # | Topic | Methods | Highlights |
 |---|-------|---------|------------|
 | 02 | [**Hartree–Fock in practice**](sessions/02-hartree-fock/) | HF, RHF/UHF · STO-3G → 6-31G(d,p) · Gaussian 09 | Basis-set convergence, bond-length scans, and the dissociation problem of RHF (H₂, LiH), with a [full report](sessions/02-hartree-fock/report/report.pdf) |
-| 03 | [**Geometry optimisation and frequencies**](sessions/03-geometry-optimization/) | HF · STO-3G → 6-31G** · Gaussian 09 | Optimised geometries and dipoles of CH₄, H₂O, HF and NH₃ against experiment, cross-checked with Session 02; normal modes of water and ammonia, read from the displacement vectors *(in progress)* |
+| 03 | [**Geometry optimisation and frequencies**](sessions/03-geometry-optimization/) | HF, B3LYP · STO-3G → 6-311G* · Gaussian 09 | Optimised geometries and dipoles of CH₄, H₂O, HF and NH₃ against experiment, cross-checked with Session 02; normal modes of water and ammonia, read from the displacement vectors; HF vs B3LYP geometries *(in progress)* |
 
 <p align="center">
   <a href="sessions/02-hartree-fock/"><img src="sessions/02-hartree-fock/figures/rhf_vs_uhf.png" width="720" alt="RHF vs UHF dissociation curves of H2 and LiH"></a>
@@ -45,7 +45,8 @@ More sessions will be added as the course goes on.
         ├── run.sh
         ├── ex1-optimized-geometries/
         ├── ex2-vibrational-frequencies/
-        └── ex3-ammonia-frequencies/
+        ├── ex3-ammonia-frequencies/
+        └── ex4-hf-vs-b3lyp/
 ```
 
 Every session follows the same layout. A `report/` folder appears only when the session has a written report.

@@ -233,7 +233,69 @@ def fig_nh3_modes():
         print(f"  mode {m + 1}: {along / total:.2f}")
 
 
+# --- Figure 4: HF vs B3LYP against experiment (ex4) ------------------------
+# Experimental geometries (NIST CCCBDB): (log stem, variable) -> value
+EXP_EX4 = {
+    ("hooh", "roo"): 1.452, ("hooh", "roh"): 0.965, ("hooh", "a"): 100.0, ("hooh", "z"): 111.5,
+    ("hcn", "rcn"): 1.153, ("hcn", "rch"): 1.065,
+}
+LABELS_EX4 = {
+    ("hooh", "roo"): r"O–O (H$_2$O$_2$)", ("hooh", "roh"): r"O–H (H$_2$O$_2$)",
+    ("hcn", "rcn"): "C≡N (HCN)", ("hcn", "rch"): "C–H (HCN)",
+    ("hooh", "a"): r"∠H–O–O (H$_2$O$_2$)", ("hooh", "z"): r"H–O–O–H dihedral (H$_2$O$_2$)",
+}
+
+
+def load_ex4():
+    """{(molecule, method): {variable: value}} from ex4/results.txt."""
+    data, key = {}, None
+    for line in (HERE / "ex4-hf-vs-b3lyp/results.txt").read_text().splitlines():
+        if line.startswith("=="):
+            key = tuple(line.split()[1].removesuffix(".log").split("_"))
+            data[key] = {}
+        else:
+            _, name, value, *_ = line.split()
+            data[key][name] = float(value)
+    return data
+
+
+def fig_hf_vs_b3lyp():
+    data = load_ex4()
+    panels = [
+        ("Bond lengths", "error against experiment (Å)",
+         [("hooh", "roo"), ("hooh", "roh"), ("hcn", "rcn"), ("hcn", "rch")]),
+        ("Angles", "error against experiment (°)", [("hooh", "a"), ("hooh", "z")]),
+    ]
+    fig, axes = plt.subplots(1, 2, figsize=(10, 3.4),
+                             gridspec_kw={"width_ratios": [1.25, 1], "wspace": 0.55})
+    for ax, (title, xlabel, keys) in zip(axes, panels):
+        ax.axvline(0, color=INK_2, lw=1, ls=":")
+        for i, key in enumerate(keys):
+            mol, var = key
+            hf = data[(mol, "hf")][var] - EXP_EX4[key]
+            b3 = data[(mol, "b3lyp")][var] - EXP_EX4[key]
+            y = len(keys) - 1 - i
+            ax.plot([hf, b3], [y, y], color=GRID, lw=3, zorder=1)
+            ax.plot(hf, y, "o", color=BLUE, ms=8, zorder=2, label="HF" if i == 0 else None)
+            ax.plot(b3, y, "s", color=ORANGE, ms=8, zorder=2, label="B3LYP" if i == 0 else None)
+        ax.set_yticks(range(len(keys)), [LABELS_EX4[k] for k in reversed(keys)])
+        ax.set_ylim(-0.6, len(keys) - 0.4)
+        ax.grid(axis="y", visible=False)
+        ax.yaxis.set_minor_locator(plt.NullLocator())
+        ax.set_xlabel(xlabel)
+        ax.set_title(title, loc="left")
+        lim = 1.15 * max(abs(v) for v in ax.get_xlim())
+        ax.set_xlim(-lim, lim)
+        ax.annotate("experiment", xy=(0, 1), xycoords=("data", "axes fraction"),
+                    xytext=(3, -12), textcoords="offset points", fontsize=8, color=INK_2)
+    axes[0].legend(loc="lower left", fontsize=8.5)
+    fig.suptitle(r"H$_2$O$_2$ (6-31G*) and HCN (6-311G*): HF vs B3LYP optimised geometries",
+                 x=0.01, ha="left", fontsize=11.5, y=1.02)
+    save(fig, "hf_vs_b3lyp.png")
+
+
 if __name__ == "__main__":
     fig_errors()
     fig_ir_spectrum()
     fig_nh3_modes()
+    fig_hf_vs_b3lyp()

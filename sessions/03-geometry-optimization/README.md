@@ -13,6 +13,7 @@ Each exercise folder has its own README with the task and the reasoning behind e
 | [Ex. 1 — Optimised geometries](ex1-optimized-geometries/) | How close do HF geometries and dipoles get to experiment, and how does the basis set change them? | HF, STO-3G → 6-31G** |
 | [Ex. 2 — Vibrational frequencies](ex2-vibrational-frequencies/) | What are the normal modes of water, and how good are harmonic HF frequencies? | HF/6-31G* |
 | [Ex. 3 — Ammonia frequencies](ex3-ammonia-frequencies/) | Can the symmetry and the character of each mode be read from the displacement vectors alone? | HF/6-31G* |
+| [Ex. 4 — HF vs B3LYP](ex4-hf-vs-b3lyp/) | How much does electron correlation (through B3LYP) improve optimised geometries? | HF, B3LYP / 6-31G*, 6-311G* |
 
 More exercises will be added as the session goes on.
 
@@ -80,6 +81,21 @@ Full analysis, GaussView views and conclusions: [Ex. 3 README](ex3-ammonia-frequ
 
 ---
 
+## Ex. 4 — HF vs B3LYP geometries
+
+H₂O₂ (6-31G*), HCN (6-311G*) and HCCH (6-31G*) are optimised with Hartree–Fock and with the B3LYP functional, from identical inputs that differ only in the method.
+
+![HF vs B3LYP: error against experiment](figures/hf_vs_b3lyp.png)
+
+- **HF shortens bonds between heavy atoms**, most where there are lone pairs or multiple bonds: O–O by 0.056 Å, C≡N by 0.026 Å.
+- **B3LYP brings both within 0.005 Å of experiment**, and the H–O–O angle from +2.1° to −0.3°.
+- **The H–O–O–H dihedral defeats both methods** (+4.5° and +7.0°): the torsional surface is very flat, and the experimental value is a vibrational average.
+- **Acetylene came out bent.** The Z-matrix defines the second H relative to a dummy atom that sits on the first carbon, so the C–C–H angle stayed at about 130°. The diagnosis, the corrected Z-matrix and the lesson are in the exercise README; the corrected run is pending.
+
+Full table and conclusions: [Ex. 4 README](ex4-hf-vs-b3lyp/).
+
+---
+
 ## Reproducing everything
 
 On a machine with Gaussian 09 (`g09` in the `PATH`):
@@ -88,6 +104,7 @@ On a machine with Gaussian 09 (`g09` in the `PATH`):
 cd ex1-optimized-geometries && ./generate.sh && ./extract.sh > results.txt && cd ..
 cd ex2-vibrational-frequencies && ../run.sh && cd ..   # frequencies read by hand into frequencies.txt
 cd ex3-ammonia-frequencies && ../run.sh && cd ..       # modes read by hand into frequencies.txt, normal_modes.txt
+cd ex4-hf-vs-b3lyp && ./generate.sh && ./extract.sh > results.txt && cd ..
 python plot_figures.py   # numpy + matplotlib
 ```
 

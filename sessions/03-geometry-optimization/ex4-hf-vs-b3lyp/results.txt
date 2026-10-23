@@ -1,0 +1,22 @@
+== hcch_b3lyp.log
+ !       rcc         1.2162   -DE/DX =    0.0                           !
+ !       rch         1.073    -DE/DX =    0.0                           !
+== hcch_hf.log
+ !       rcc         1.1965   -DE/DX =    0.0                           !
+ !       rch         1.0624   -DE/DX =    0.0                           !
+== hcn_b3lyp.log
+ !       rcn         1.1489   -DE/DX =    0.0                           !
+ !       rch         1.0681   -DE/DX =    0.0                           !
+== hcn_hf.log
+ !       rcn         1.1268   -DE/DX =    0.0                           !
+ !       rch         1.0581   -DE/DX =    0.0001                        !
+== hooh_b3lyp.log
+ !       roo         1.4556   -DE/DX =    0.0                           !
+ !       roh         0.9737   -DE/DX =    0.0                           !
+ !        a         99.7144   -DE/DX =   -0.0002                        !
+ !        z        118.4975   -DE/DX =    0.0                           !
+== hooh_hf.log
+ !       roo         1.3964   -DE/DX =    0.0001                        !
+ !       roh         0.9492   -DE/DX =    0.0                           !
+ !        a        102.0722   -DE/DX =    0.0001                        !
+ !        z        116.0353   -DE/DX =    0.0                           !
