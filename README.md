@@ -8,6 +8,7 @@ The aim is to show the whole workflow, not only the final numbers: how each calc
 
 | # | Topic | Methods | Highlights |
 |---|-------|---------|------------|
+| 01 | [**Linux and Z-matrices**](sessions/01-linux-and-z-matrices/) | HF/3-21G · Gaussian 09 | Building molecules as Z-matrices (conformers, dummy atoms for linear molecules) and the first single-point calculations |
 | 02 | [**Hartree–Fock in practice**](sessions/02-hartree-fock/) | HF, RHF/UHF · STO-3G → 6-31G(d,p) · Gaussian 09 | Basis-set convergence, bond-length scans, and the dissociation problem of RHF (H₂, LiH), with a [full report](sessions/02-hartree-fock/report/report.pdf) |
 | 03 | [**Geometry optimisation and frequencies**](sessions/03-geometry-optimization/) | HF, B3LYP · STO-3G → 6-311G* · Gaussian 09 | Optimised geometries and dipoles of CH₄, H₂O, HF and NH₃ against experiment, cross-checked with Session 02; normal modes of water and ammonia, read from the displacement vectors; HF vs B3LYP geometries *(in progress)* |
 
@@ -25,6 +26,7 @@ More sessions will be added as the course goes on.
 ├── docs/
 │   └── bash-for-gaussian.md       # Bash patterns used in every session, linked to the exact script lines
 └── sessions/
+    ├── 01-linux-and-z-matrices/   # Z-matrices and first calculations (no report)
     ├── 02-hartree-fock/
     │   ├── README.md              # Session overview: figures, key results, conclusions
     │   ├── report/

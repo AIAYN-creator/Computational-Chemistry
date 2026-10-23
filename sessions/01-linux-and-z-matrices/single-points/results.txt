@@ -1,0 +1,4 @@
+# Read from the outputs (h2oi.log, metoh.log), HF/3-21G single points
+molecule E(hartree) mu(D) point_group
+h2oi -75.5854232384 2.4354 C2V
+metoh -114.395889349 2.2088 CS

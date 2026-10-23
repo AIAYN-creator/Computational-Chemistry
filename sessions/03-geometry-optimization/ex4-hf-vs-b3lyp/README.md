@@ -61,7 +61,7 @@ H 1 rch 3 90.0 2 180.0
 H 2 rch 4 90.0 1 180.0
 ```
 
-Converting both Z-matrices to Cartesian coordinates confirms the diagnosis: the original one gives 129.8° for the second H, the same as Gaussian, and the corrected one gives 180.0° for both. The bent results (HF: r(C≡C) = 1.1965 Å, r(C–H) = 1.0624 Å; B3LYP: 1.2162 Å and 1.0730 Å) are kept in [`results.txt`](results.txt) for the record, but they are not the geometry of acetylene and are left out of the comparison. The inputs in this folder are the ones that were run. The calculation with the corrected Z-matrix is pending.
+This is exactly the Z-matrix already written in [Session 01](../../01-linux-and-z-matrices/z-matrices/hcch.zmat). Converting both Z-matrices to Cartesian coordinates confirms the diagnosis: the original one gives 129.8° for the second H, the same as Gaussian, and the corrected one gives 180.0° for both. The bent results (HF: r(C≡C) = 1.1965 Å, r(C–H) = 1.0624 Å; B3LYP: 1.2162 Å and 1.0730 Å) are kept in [`results.txt`](results.txt) for the record, but they are not the geometry of acetylene and are left out of the comparison. The inputs in this folder are the ones that were run. The calculation with the corrected Z-matrix is pending.
 
 **Lesson:** "Stationary point found" means the optimiser found the minimum *of the coordinates it was allowed to change*. It says nothing about whether the constraints were right. Checking the point group in the output (Cs where D∞h was expected) is the quickest way to catch this kind of error.
 
