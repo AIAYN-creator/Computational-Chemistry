@@ -384,9 +384,80 @@ def fig_dce_scan():
     print(f"Gauche minimum from the fit: phi = {phi_g:.1f} deg, dE = {e_g:.2f} kcal/mol")
 
 
+# --- Figure 6: gauche/trans thermochemistry (ex6) ---------------------------
+HARTREE_TO_KCAL = 627.5095
+R_KCAL = 1.987204e-3  # kcal/(mol K)
+
+
+def load_thermo():
+    def table(name):
+        lines = [l.split() for l in (HERE / "ex6-conformer-thermochemistry" / name)
+                 .read_text().splitlines() if l and not l.startswith("#")]
+        head, rows = lines[0], lines[1:]
+        return {r[0]: dict(zip(head[1:], map(float, r[1:]))) for r in rows}
+    return table("thermo.txt"), table("thermo_extra.txt")
+
+
+def thermo_summary():
+    """Gauche - trans differences (kcal/mol, cal/(mol K)) and K at 298.15 K."""
+    main, extra = load_thermo()
+    d = lambda t, k: (t["gauche"][k] - t["trans"][k]) * HARTREE_TO_KCAL
+    s = {
+        "dE": d(main, "E"), "dE0": d(extra, "E+ZPE"), "dH": d(main, "H"), "dG": d(main, "G"),
+        "dZPE": d(extra, "ZPE"), "dS": extra["gauche"]["S_total"] - extra["trans"]["S_total"],
+    }
+    s["K"] = np.exp(-s["dG"] / (R_KCAL * 298.15))
+    return s
+
+
+def fig_thermo():
+    s = thermo_summary()
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 3.8),
+                                   gridspec_kw={"width_ratios": [1, 1.25], "wspace": 0.3})
+
+    # (a) From electronic energy to free energy
+    steps = [("ΔE\nelectronic", s["dE"]), ("ΔE + ΔZPE", s["dE0"]),
+             ("ΔH\n298 K", s["dH"]), ("ΔG\n298 K", s["dG"])]
+    x = np.arange(len(steps))
+    ax1.bar(x, [v for _, v in steps], width=0.55, color=BLUE, zorder=2)
+    for xi, (_, v) in zip(x, steps):
+        ax1.text(xi, v + 0.04, f"{v:.2f}", ha="center", va="bottom", fontsize=9, color=INK)
+    ax1.set_xticks(x, [n for n, _ in steps], fontsize=8.5)
+    ax1.xaxis.set_minor_locator(plt.NullLocator())
+    ax1.set_ylim(0, 2.3)
+    ax1.set_ylabel("gauche − trans (kcal/mol)")
+    ax1.set_title("(a) Gauche − trans, step by step", loc="left")
+    ax1.grid(axis="x", visible=False)
+
+    # (b) Gauche population against temperature, with dH and dS fixed at 298 K
+    T = np.linspace(100, 1000, 400)
+    dG_T = s["dH"] - T * s["dS"] / 1000
+    for g, colour, style, label in ((2, BLUE, "-", "g⁺ + g⁻ (degeneracy 2)"),
+                                    (1, ORANGE, "--", "one gauche only")):
+        K = g * np.exp(-dG_T / (R_KCAL * T))
+        ax2.plot(T, 100 * K / (1 + K), color=colour, ls=style, label=label)
+    for g, colour in ((2, BLUE), (1, ORANGE)):
+        K = g * s["K"]
+        ax2.plot(298.15, 100 * K / (1 + K), "o", color=colour, ms=6, zorder=3)
+        ax2.annotate(f"{100 * K / (1 + K):.1f} %", (298.15, 100 * K / (1 + K)),
+                     xytext=(8, -2 if g == 2 else -12), textcoords="offset points",
+                     fontsize=8.5, color=INK)
+    ax2.axvline(298.15, color=INK_2, lw=1, ls=":")
+    ax2.set_xlabel("T (K)")
+    ax2.set_ylabel("gauche population (%)")
+    ax2.set_ylim(0, 50)
+    ax2.legend(loc="upper left", fontsize=8.5)
+    ax2.set_title("(b) Gauche population (ΔH, ΔS fixed)", loc="left")
+    fig.suptitle("1,2-Dichloroethane, HF/6-31G*: gauche/trans thermochemistry",
+                 x=0.01, ha="left", y=1.03, fontsize=11.5)
+    save(fig, "dce_thermo.png")
+    print("Gauche - trans: " + ", ".join(f"{k} = {v:.4g}" for k, v in s.items()))
+
+
 if __name__ == "__main__":
     fig_errors()
     fig_ir_spectrum()
     fig_nh3_modes()
     fig_hf_vs_b3lyp()
     fig_dce_scan()
+    fig_thermo()

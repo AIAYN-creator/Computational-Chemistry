@@ -1,0 +1,6 @@
+# Further thermochemistry, copied from the outputs (298.15 K, 1 atm).
+# Not required by the exercise; used in the "Beyond the exercise" section.
+# ZPE and E+ZPE in hartree; S and Cv in cal/(mol K).
+conf ZPE E+ZPE S_total S_trans S_rot S_vib Cv
+trans  0.062942 -996.967994 72.558 39.657 26.015 6.886 14.211
+gauche 0.062892 -996.964998 72.358 39.657 26.424 6.277 14.028

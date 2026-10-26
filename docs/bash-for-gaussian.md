@@ -19,6 +19,7 @@ This guide is built from the scripts in this repository. Each section explains o
 | [`ex1-optimized-geometries/generate.sh`](../sessions/03-geometry-optimization/ex1-optimized-geometries/generate.sh) | [5](#5-generating-inputs-from-a-template), [8](#8-mapping-names-with-case), [9](#9-splitting-file-names-and-default-values) |
 | [`ex4-hf-vs-b3lyp/generate.sh`](../sessions/03-geometry-optimization/ex4-hf-vs-b3lyp/generate.sh) | [5](#5-generating-inputs-from-a-template) |
 | [`ex4-hf-vs-b3lyp/extract.sh`](../sessions/03-geometry-optimization/ex4-hf-vs-b3lyp/extract.sh) | [2](#2-pulling-one-number-out-of-a-log) |
+| [`ex6-conformer-thermochemistry/extract.sh`](../sessions/03-geometry-optimization/ex6-conformer-thermochemistry/extract.sh) | [2](#2-pulling-one-number-out-of-a-log) |
 | [`ex1-optimized-geometries/extract.sh`](../sessions/03-geometry-optimization/ex1-optimized-geometries/extract.sh) | [1](#1-running-every-job-in-a-folder-safely), [2](#2-pulling-one-number-out-of-a-log), [9](#9-splitting-file-names-and-default-values) |
 
 **Patterns**
@@ -152,6 +153,7 @@ grep -c "SCF Done" "$f"
 - Energy, HOMO, dipole and Mulliken charges: [`ex2/extract.sh` L16–L37](../sessions/02-hartree-fock/ex2-basis-sets/extract.sh#L16-L37)
 - Atomic reference energies: [`ex4/extract.sh` L10](../sessions/02-hartree-fock/ex4-rhf-dissociation/extract.sh#L10), [`ex5/extract.sh` L10](../sessions/02-hartree-fock/ex5-uhf-initial-guess/extract.sh#L10), [`ex6/extract.sh` L10–L11](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L10-L11)
 - Every optimised variable at once, whatever its name (`grep "! *[a-z]"` keeps the variable rows and drops the headers): [`S03 ex4/extract.sh` L23](../sessions/03-geometry-optimization/ex4-hf-vs-b3lyp/extract.sh#L23)
+- Thermochemistry (enthalpy and free energy are the last field of their "Sum of electronic and thermal ..." lines, so `awk '{print $NF}'`): [`S03 ex6/extract.sh` L21–L26](../sessions/03-geometry-optimization/ex6-conformer-thermochemistry/extract.sh#L21-L26)
 - Optimised r and angle, dipole, energy and step count: [`S03 ex1/extract.sh` L36–L49](../sessions/03-geometry-optimization/ex1-optimized-geometries/extract.sh#L36-L49)
 - ⟨Ŝ²⟩: [`ex5/extract.sh` L34](../sessions/02-hartree-fock/ex5-uhf-initial-guess/extract.sh#L34), [`ex6/extract.sh` L29–L31](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L29-L31)
 

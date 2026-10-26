@@ -10,7 +10,7 @@ The aim is to show the whole workflow, not only the final numbers: how each calc
 |---|-------|---------|------------|
 | 01 | [**Linux and Z-matrices**](sessions/01-linux-and-z-matrices/) | HF/3-21G · Gaussian 09 | Building molecules as Z-matrices (conformers, dummy atoms for linear molecules) and the first single-point calculations |
 | 02 | [**Hartree–Fock in practice**](sessions/02-hartree-fock/) | HF, RHF/UHF · STO-3G → 6-31G(d,p) · Gaussian 09 | Basis-set convergence, bond-length scans, and the dissociation problem of RHF (H₂, LiH), with a [full report](sessions/02-hartree-fock/report/report.pdf) |
-| 03 | [**Geometry optimisation and frequencies**](sessions/03-geometry-optimization/) | HF, B3LYP · STO-3G → 6-311G* · Gaussian 09 | Optimised geometries and dipoles of CH₄, H₂O, HF and NH₃ against experiment, cross-checked with Session 02; normal modes of water and ammonia, read from the displacement vectors; HF vs B3LYP geometries; conformers of 1,2-dichloroethane from a relaxed scan *(in progress)* |
+| 03 | [**Geometry optimisation and frequencies**](sessions/03-geometry-optimization/) | HF, B3LYP · STO-3G → 6-311G* · Gaussian 09 | Optimised geometries and dipoles of CH₄, H₂O, HF and NH₃ against experiment, cross-checked with Session 02; normal modes of water and ammonia, read from the displacement vectors; HF vs B3LYP geometries; conformers of 1,2-dichloroethane from a relaxed scan, and their thermochemistry *(in progress)* |
 
 <p align="center">
   <img src="docs/banner.png" alt="Water followed through the course: Z-matrix, energy vs basis set, optimised angle and IR spectrum">
@@ -53,7 +53,8 @@ More sessions will be added as the course goes on.
         ├── ex2-vibrational-frequencies/
         ├── ex3-ammonia-frequencies/
         ├── ex4-hf-vs-b3lyp/
-        └── ex5-dichloroethane-scan/
+        ├── ex5-dichloroethane-scan/
+        └── ex6-conformer-thermochemistry/
 ```
 
 Every session follows the same layout. A `report/` folder appears only when the session has a written report.

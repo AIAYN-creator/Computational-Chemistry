@@ -15,6 +15,7 @@ Each exercise folder has its own README with the task and the reasoning behind e
 | [Ex. 3 — Ammonia frequencies](ex3-ammonia-frequencies/) | Can the symmetry and the character of each mode be read from the displacement vectors alone? | HF/6-31G* |
 | [Ex. 4 — HF vs B3LYP](ex4-hf-vs-b3lyp/) | How much does electron correlation (through B3LYP) improve optimised geometries? | HF, B3LYP / 6-31G*, 6-311G* |
 | [Ex. 5 — Dichloroethane conformers](ex5-dichloroethane-scan/) | How does the energy change as one CH₂Cl group rotates about the C–C bond? | HF/6-31G*, relaxed scan |
+| [Ex. 6 — Conformer thermochemistry](ex6-conformer-thermochemistry/) | What are ΔE, ΔH, ΔG and K between gauche and trans? | HF/6-31G*, opt + freq |
 
 More exercises will be added as the session goes on.
 
@@ -112,6 +113,23 @@ Z-matrix design, full table and conclusions: [Ex. 5 README](ex5-dichloroethane-s
 
 ---
 
+## Ex. 6 — Thermochemistry of the gauche and trans conformers
+
+Both conformers of Ex. 5 optimised freely and followed by a frequency calculation, which confirms them as minima and gives their thermochemistry at 298 K.
+
+![Gauche/trans thermochemistry](figures/dce_thermo.png)
+
+| Gauche − trans | ΔE | ΔH (298 K) | ΔG (298 K) | K = exp(−ΔG/RT) |
+|---|---|---|---|---|
+| HF/6-31G* | 1.91 kcal/mol | 1.79 kcal/mol | 1.85 kcal/mol | 0.044 |
+
+- **The scan was right:** the free optimisation lands on φ = 70.5° and ΔE = 1.912 kcal/mol, as the cosine-series fit of Ex. 5 predicted.
+- **Beyond the exercise:** ΔU = ΔH exactly (Δn = 0), ΔS is only −0.20 cal/(mol K), and since there are two mirror-image gauche conformers, the total gauche population at 298 K is 8.1 %, twice what K for a single gauche gives.
+
+Full tables, entropy decomposition and caveats: [Ex. 6 README](ex6-conformer-thermochemistry/).
+
+---
+
 ## Reproducing everything
 
 On a machine with Gaussian 09 (`g09` in the `PATH`):
@@ -122,6 +140,7 @@ cd ex2-vibrational-frequencies && ../run.sh && cd ..   # frequencies read by han
 cd ex3-ammonia-frequencies && ../run.sh && cd ..       # modes read by hand into frequencies.txt, normal_modes.txt
 cd ex4-hf-vs-b3lyp && ./generate.sh && ./extract.sh > results.txt && cd ..
 cd ex5-dichloroethane-scan && ../run.sh && cd ..        # scan points read from the output into scan.txt
+cd ex6-conformer-thermochemistry && ../run.sh && ./extract.sh && cd ..
 python plot_figures.py   # numpy + matplotlib
 ```
 
