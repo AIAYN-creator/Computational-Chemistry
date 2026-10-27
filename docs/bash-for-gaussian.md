@@ -22,6 +22,7 @@ This guide is built from the scripts in this repository. Each section explains o
 | [`ex5-dichloroethane-scan/extract.sh`](../sessions/03-geometry-optimization/ex5-dichloroethane-scan/extract.sh) | [3](#3-reading-a-table-of-any-length-with-awk) |
 | [`ex6-conformer-thermochemistry/extract.sh`](../sessions/03-geometry-optimization/ex6-conformer-thermochemistry/extract.sh) | [2](#2-pulling-one-number-out-of-a-log) |
 | [`ex7-fluoromethanol-rotation/extract.sh`](../sessions/03-geometry-optimization/ex7-fluoromethanol-rotation/extract.sh) | [3](#3-reading-a-table-of-any-length-with-awk) |
+| [`ex8-glycine-conformers/extract.sh`](../sessions/03-geometry-optimization/ex8-glycine-conformers/extract.sh) | [2](#2-pulling-one-number-out-of-a-log), [9](#9-splitting-file-names-and-default-values) |
 | [`ex1-optimized-geometries/extract.sh`](../sessions/03-geometry-optimization/ex1-optimized-geometries/extract.sh) | [1](#1-running-every-job-in-a-folder-safely), [2](#2-pulling-one-number-out-of-a-log), [9](#9-splitting-file-names-and-default-values) |
 
 **Patterns**
@@ -36,6 +37,7 @@ This guide is built from the scripts in this repository. Each section explains o
 8. [Mapping names with case](#8-mapping-names-with-case)
 9. [Splitting file names and default values](#9-splitting-file-names-and-default-values)
 10. [Bugs worth remembering](#10-bugs-worth-remembering)
+11. [When a batch fails](#11-when-a-batch-fails)
 
 ---
 
@@ -156,6 +158,7 @@ grep -c "SCF Done" "$f"
 - Atomic reference energies: [`ex4/extract.sh` L10](../sessions/02-hartree-fock/ex4-rhf-dissociation/extract.sh#L10), [`ex5/extract.sh` L10](../sessions/02-hartree-fock/ex5-uhf-initial-guess/extract.sh#L10), [`ex6/extract.sh` L10–L11](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L10-L11)
 - Every optimised variable at once, whatever its name (`grep "! *[a-z]"` keeps the variable rows and drops the headers): [`S03 ex4/extract.sh` L23](../sessions/03-geometry-optimization/ex4-hf-vs-b3lyp/extract.sh#L23)
 - Thermochemistry (enthalpy and free energy are the last field of their "Sum of electronic and thermal ..." lines, so `awk '{print $NF}'`): [`S03 ex6/extract.sh` L21–L26](../sessions/03-geometry-optimization/ex6-conformer-thermochemistry/extract.sh#L21-L26)
+- Energy, free energy, dipole (`grep -A 1` and the last field, `Tot=`) and four Z-matrix variables per output: [`S03 ex8/extract.sh` L22–L31](../sessions/03-geometry-optimization/ex8-glycine-conformers/extract.sh#L22-L31)
 - Optimised r and angle, dipole, energy and step count: [`S03 ex1/extract.sh` L36–L49](../sessions/03-geometry-optimization/ex1-optimized-geometries/extract.sh#L36-L49)
 - ⟨Ŝ²⟩: [`ex5/extract.sh` L34](../sessions/02-hartree-fock/ex5-uhf-initial-guess/extract.sh#L34), [`ex6/extract.sh` L29–L31](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L29-L31)
 
@@ -343,7 +346,7 @@ echo "$mol $basis $r ${a:--} $mu"     # hf 631gs 0.911 - 1.9719
 
 The general form is `${var:-default}`. Here the default happens to be `-`, hence the odd-looking `:--`.
 
-**In the code:** [`S03 ex1/extract.sh` L23–L25](../sessions/03-geometry-optimization/ex1-optimized-geometries/extract.sh#L23-L25) and [L53](../sessions/03-geometry-optimization/ex1-optimized-geometries/extract.sh#L53).
+**In the code:** [`S03 ex1/extract.sh` L23–L25](../sessions/03-geometry-optimization/ex1-optimized-geometries/extract.sh#L23-L25) and [L53](../sessions/03-geometry-optimization/ex1-optimized-geometries/extract.sh#L53). [`S03 ex8/extract.sh` L33](../sessions/03-geometry-optimization/ex8-glycine-conformers/extract.sh#L33) uses the same `${z4:--}` for `zhn2`, a variable that only the non-planar jobs have.
 
 ---
 
@@ -358,3 +361,31 @@ Real mistakes found while cleaning up the scripts. Each one *seemed* to work.
 | Skip if the `.log` exists | A crashed job leaves a `.log`, so it was never re-run. | Check for `Normal termination` ([§1](#1-running-every-job-in-a-folder-safely)) |
 | `grep -A 41 ... \| tail -39` | Correct only for a 39-point scan. Each new scan needed new numbers. | `awk` table reader ([§3](#3-reading-a-table-of-any-length-with-awk)) |
 | Windows line endings | Scripts edited on Windows can be saved with CRLF endings, and on Linux they fail with `$'\r': command not found`. | [`.gitattributes`](../.gitattributes) forces LF on `*.sh` and `*.com` |
+
+---
+
+## 11. When a batch fails
+
+Habits that came out of the chain of errors of [S03 Ex. 8](../sessions/03-geometry-optimization/ex8-glycine-conformers/#how-it-went), where eight jobs failed at once, three times in a row, for three different reasons.
+
+**Before launching**
+
+- **Run one job in the foreground first.** A batch in the background hides the error; one job in the foreground shows it, and it takes seconds to fail or to start running normally.
+- **Check the generated inputs, not only the template.** After a `sed` ([§5](#5-generating-inputs-from-a-template)), `grep -H "^zncco " gly_*.com` prints the value in every file, with the file name in front, ready to compare with the table it should match.
+- **Count the atoms.** With an atom missing, the number of electrons can become odd, and a singlet is then impossible. Gaussian may crash instantly instead of saying so.
+- **`bash -n script.sh`** checks the syntax (quotes, `do`/`done`) without running anything. It does not catch typos inside patterns: `grep "znnco"` is valid Bash that simply finds nothing.
+
+**When it fails**
+
+- **Read the shape of the error.** `: No such file or directory`, with nothing before the colon, means the file name was empty: the loop variable and the one used in the body are not the same. A prompt that turns into `>` means Bash is waiting for the end of a command, usually an unclosed quote: Ctrl+C gets out.
+- **Isolate one case and read its `.log`.** The last lines usually say exactly what is wrong, as in `Symbol "znncco" not found in Z-matrix`.
+- **Look at the resulting table.** An empty or shifted column points at a typo in the grep or awk that fills it.
+
+**Managing background jobs**
+
+| Command | What it does |
+|---|---|
+| `kill %1` | Stops background job number 1, the `[1]` printed when it was launched |
+| `ps aux \| grep -c "[l]1"` | Counts the running Gaussian processes (`l1`, `l101`, ...). The brackets stop `grep` from counting its own command line, which contains `[l]1`, not `l1` |
+| `[ -f "$log" ] && continue` | Short form of an `if`: skip a job whose output already exists (but see [§10](#10-bugs-worth-remembering): a crashed job also leaves a `.log`) |
+| `sed -i '/pattern/a text' *.com` | Appends a line below the matching one, in every file at once |

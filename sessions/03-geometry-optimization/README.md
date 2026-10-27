@@ -32,6 +32,7 @@ Each exercise folder has its own README with the task and the reasoning behind e
 | [Ex. 5 — Dichloroethane conformers](ex5-dichloroethane-scan/) | How does the energy change as one CH₂Cl group rotates about the C–C bond? | HF/6-31G*, relaxed scan |
 | [Ex. 6 — Conformer thermochemistry](ex6-conformer-thermochemistry/) | What are ΔE, ΔH, ΔG and K between gauche and trans? | HF/6-31G*, opt + freq |
 | [Ex. 7 — Fluoromethanol rotation](ex7-fluoromethanol-rotation/) | Why is the OH hydrogen most stable *gauche* to fluorine, and least stable *anti*? | B3LYP/6-31G*, relaxed scan |
+| [Ex. 8 — Glycine conformers](ex8-glycine-conformers/) | Which of four glycine conformers are true minima, and how are they populated at 298 K? | HF, B3LYP / 6-31G*, opt + freq |
 | [Case study and report](report/) | Ex. 5 and 6 as one study, with a B3LYP extension | HF, B3LYP / 6-31G* |
 
 More exercises will be added as the session goes on.
@@ -162,6 +163,21 @@ Interpretation, the two wrong explanations that came first, and conclusions: [Ex
 
 ---
 
+## Ex. 8 — Conformers of glycine
+
+Four conformers of neutral glycine, built from one Z-matrix that differs only in three dihedrals, optimised with HF and B3LYP and checked with frequencies.
+
+![Glycine conformers: free energies, populations and saddle points](figures/glycine_conformers.png)
+
+- **Imposed symmetry hid two saddle points.** Planar B and D each have one imaginary frequency. The mode of D is a rotation of the NH₂ group; releasing the symmetry and nudging the geometry out of the plane gives true C1 minima that are still B and D.
+- **Not all saddle points are equal:** planar B lies only 0.1–0.25 kcal/mol above its minimum, so B is effectively planar; planar D lies 3.4 kcal/mol above, so it is not a conformer at all.
+- **The hydrogen bond needs correlation.** B, the only conformer with an OH···N hydrogen bond, is 3.0 kcal/mol above A with HF and almost absent, but only 0.7 kcal/mol above with B3LYP, where it is the second most populated (13 %).
+- **A dominates** with both methods (77–83 %), and the factor 2 for the mirror-image C1 conformers nearly doubles the share of B.
+
+Saddle points, the imaginary mode, the chain of errors before the first good run, and conclusions: [Ex. 8 README](ex8-glycine-conformers/).
+
+---
+
 ## Reproducing everything
 
 On a machine with Gaussian 09 (`g09` in the `PATH`):
@@ -174,6 +190,7 @@ cd ex4-hf-vs-b3lyp && ./generate.sh && ./extract.sh > results.txt && cd ..
 cd ex5-dichloroethane-scan && ../run.sh && cd ..        # scan points read from the output into scan.txt
 cd ex6-conformer-thermochemistry && ../run.sh && ./extract.sh && cd ..
 cd ex7-fluoromethanol-rotation && ../run.sh && ./extract.sh && cd ..
+cd ex8-glycine-conformers && ../run.sh && ./extract.sh && cd ..
 python plot_figures.py   # numpy + matplotlib
 ```
 

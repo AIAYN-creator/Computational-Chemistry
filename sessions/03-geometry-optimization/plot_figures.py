@@ -618,6 +618,79 @@ def fig_fluoromethanol():
           f"dE(0) = {de[phi == 0][0]:.2f}, dE(180) = {de[phi == 180][0]:.2f} kcal/mol")
 
 
+# --- Figure 9: conformers of glycine (ex8) -----------------------------------
+def glycine_summary():
+    """Per method: dE and dG relative to A (kcal/mol), Boltzmann populations
+    at 298 K, and the energy of each planar saddle point above its C1 minimum.
+    B and D are C1, so each exists as two mirror images: degeneracy 2."""
+    rows = [l.split() for l in (HERE / "ex8-glycine-conformers/glycine.txt")
+            .read_text().splitlines()[1:]]
+    data = {r[0]: (float(r[1]), float(r[2])) for r in rows}
+    minima = {"A": "gly_A_{}", "B": "gly_B_{}_c1", "C": "gly_C_{}", "D": "gly_D_{}_c1"}
+    degeneracy = {"A": 1, "B": 2, "C": 1, "D": 2}
+    out = {}
+    for level in ("hf", "b3lyp"):
+        e_a, g_a = data[minima["A"].format(level)]
+        dE = {c: (data[n.format(level)][0] - e_a) * HARTREE_TO_KCAL for c, n in minima.items()}
+        dG = {c: (data[n.format(level)][1] - g_a) * HARTREE_TO_KCAL for c, n in minima.items()}
+        w = {c: degeneracy[c] * np.exp(-dG[c] / (R_KCAL * 298.15)) for c in minima}
+        pop = {c: 100 * w[c] / sum(w.values()) for c in minima}
+        saddle = {c: (data[f"gly_{c}_{level}"][0] - data[f"gly_{c}_{level}_c1"][0]) * HARTREE_TO_KCAL
+                  for c in "BD"}
+        out[level] = {"dE": dE, "dG": dG, "pop": pop, "saddle": saddle}
+    return out
+
+
+def fig_glycine():
+    res = glycine_summary()
+    confs = ["A", "B", "C", "D"]
+    x = np.arange(4)
+    w = 0.36
+    fig, axes = plt.subplots(1, 3, figsize=(12, 3.7),
+                             gridspec_kw={"width_ratios": [1, 1, 0.62], "wspace": 0.42})
+    for ax, key, title, ylabel, fmt in (
+            (axes[0], "dG", "(a) Free energy relative to A", "ΔG, 298 K (kcal/mol)", "{:.2f}"),
+            (axes[1], "pop", "(b) Population at 298 K", "population (%)", "{:.0f} %")):
+        for k, (level, name, colour) in enumerate((("hf", "HF", BLUE), ("b3lyp", "B3LYP", ORANGE))):
+            vals = [res[level][key][c] for c in confs]
+            ax.bar(x + (k - 0.5) * w, vals, width=w, color=colour, label=name, zorder=2)
+            for xi, v in zip(x, vals):
+                if v > 0.005:
+                    label = fmt.format(v) if key == "dG" or v >= 1 else f"{v:.1f} %"
+                    ax.text(xi + (k - 0.5) * w, v, label, ha="center", va="bottom",
+                            fontsize=7.2, color=INK)
+        ax.set_xticks(x, confs)
+        ax.xaxis.set_minor_locator(plt.NullLocator())
+        ax.set_ylabel(ylabel)
+        ax.set_title(title, loc="left")
+        ax.grid(axis="x", visible=False)
+    axes[0].set_ylim(0, 4.8)
+    axes[0].annotate("B: the only one with\nan OH···N hydrogen bond", xy=(1.2, 1.62), xytext=(1.5, 2.85),
+                     fontsize=7.8, color=INK_2, arrowprops={"arrowstyle": "-", "color": INK_2, "lw": 0.8})
+    axes[0].legend(loc="upper left", fontsize=8.5)
+    axes[1].set_ylim(0, 100)
+
+    # (c) planar saddle point above the real, non-planar minimum
+    ax = axes[2]
+    xs = np.arange(2)
+    for k, (level, colour) in enumerate((("hf", BLUE), ("b3lyp", ORANGE))):
+        vals = [res[level]["saddle"][c] for c in "BD"]
+        ax.bar(xs + (k - 0.5) * w, vals, width=w, color=colour, zorder=2)
+        for xi, v in zip(xs, vals):
+            ax.text(xi + (k - 0.5) * w, v, f"{v:.2f}", ha="center", va="bottom", fontsize=7.2, color=INK)
+    ax.set_xticks(xs, ["B", "D"])
+    ax.xaxis.set_minor_locator(plt.NullLocator())
+    ax.set_ylim(0, 4.2)
+    ax.set_ylabel("E(planar) − E(C$_1$) (kcal/mol)")
+    ax.set_title("(c) Planar saddle points", loc="left")
+    ax.grid(axis="x", visible=False)
+    fig.suptitle("Glycine, HF and B3LYP / 6-31G*: four conformers", x=0.01, ha="left",
+                 y=1.03, fontsize=11.5)
+    save(fig, "glycine_conformers.png")
+    for level, d in res.items():
+        print(level, {k: {c: round(v, 2) for c, v in d[k].items()} for k in d})
+
+
 if __name__ == "__main__":
     fig_errors()
     fig_ir_spectrum()
@@ -627,3 +700,4 @@ if __name__ == "__main__":
     fig_thermo()
     fig_report_gap()
     fig_fluoromethanol()
+    fig_glycine()
