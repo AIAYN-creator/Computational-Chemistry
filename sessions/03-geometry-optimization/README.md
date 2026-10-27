@@ -4,6 +4,21 @@ From fixed geometries to optimised ones: letting Hartree–Fock find the structu
 
 ![Error of HF optimised geometries and dipoles against experiment](figures/error_vs_basis.png)
 
+<table>
+<tr>
+<td width="190"><a href="report/"><img src="report/preview.png" width="170" alt="First page of the report"></a></td>
+<td>
+
+### Case study and report: *the trans–gauche equilibrium of 1,2-dichloroethane*
+
+Exercises 5 and 6, plus a B3LYP extension, told as one study: a relaxed scan finds the conformers, optimisations and frequencies give ΔH, ΔG and K, and the gap to experiment becomes a hypothesis, tested with B3LYP and checked against the literature. Correlation turns out to be necessary but not sufficient.
+
+**[Case study: how the work was done](report/)** · **[Report (PDF, 2 pages)](report/report.pdf)**
+
+</td>
+</tr>
+</table>
+
 ## Contents
 
 Each exercise folder has its own README with the task and the reasoning behind each step, and its scripts are commented line by line. The Bash patterns are explained in the **[Bash for Gaussian guide](../../docs/bash-for-gaussian.md)**.
@@ -16,6 +31,7 @@ Each exercise folder has its own README with the task and the reasoning behind e
 | [Ex. 4 — HF vs B3LYP](ex4-hf-vs-b3lyp/) | How much does electron correlation (through B3LYP) improve optimised geometries? | HF, B3LYP / 6-31G*, 6-311G* |
 | [Ex. 5 — Dichloroethane conformers](ex5-dichloroethane-scan/) | How does the energy change as one CH₂Cl group rotates about the C–C bond? | HF/6-31G*, relaxed scan |
 | [Ex. 6 — Conformer thermochemistry](ex6-conformer-thermochemistry/) | What are ΔE, ΔH, ΔG and K between gauche and trans? | HF/6-31G*, opt + freq |
+| [Case study and report](report/) | Ex. 5 and 6 as one study, with a B3LYP extension | HF, B3LYP / 6-31G* |
 
 More exercises will be added as the session goes on.
 
@@ -119,14 +135,15 @@ Both conformers of Ex. 5 optimised freely and followed by a frequency calculatio
 
 ![Gauche/trans thermochemistry](figures/dce_thermo.png)
 
-| Gauche − trans | ΔE | ΔH (298 K) | ΔG (298 K) | K = exp(−ΔG/RT) |
-|---|---|---|---|---|
-| HF/6-31G* | 1.91 kcal/mol | 1.79 kcal/mol | 1.85 kcal/mol | 0.044 |
+| Gauche − trans | ΔE | ΔH (298 K) | ΔG (298 K) | K = 2 exp(−ΔG/RT) | Gauche at 298 K |
+|---|---|---|---|---|---|
+| HF/6-31G* | 1.91 kcal/mol | 1.79 kcal/mol | 1.85 kcal/mol | 0.088 | 8 % |
 
 - **The scan was right:** the free optimisation lands on φ = 70.5° and ΔE = 1.912 kcal/mol, as the cosine-series fit of Ex. 5 predicted.
-- **Beyond the exercise:** ΔU = ΔH exactly (Δn = 0), ΔS is only −0.20 cal/(mol K), and since there are two mirror-image gauche conformers, the total gauche population at 298 K is 8.1 %, twice what K for a single gauche gives.
+- **Two gauche conformers:** g⁺ and g⁻ are mirror images with the same energy, hence the factor 2 in K.
+- **Against experiment** (ΔH = 1.1 ± 0.1 kcal/mol), HF is 0.7 kcal/mol too high; the [case study](report/) tests why with B3LYP.
 
-Full tables, entropy decomposition and caveats: [Ex. 6 README](ex6-conformer-thermochemistry/).
+Full tables, entropy decomposition, caveats and conclusions: [Ex. 6 README](ex6-conformer-thermochemistry/).
 
 ---
 

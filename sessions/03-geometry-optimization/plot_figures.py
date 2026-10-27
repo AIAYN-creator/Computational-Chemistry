@@ -299,11 +299,10 @@ CL_GREEN, H_GREY = "#2f9e44", "#8a8986"
 
 
 def load_scan():
-    rows = [l.split() for l in (HERE / "ex5-dichloroethane-scan/scan.txt").read_text()
-            .splitlines() if l and not l.startswith(("#", "phi"))]
-    phi = np.array([float(r[0]) for r in rows])
-    de = np.array([float(r[2]) for r in rows])
-    return phi, de
+    """Dihedral and energy relative to trans (kcal/mol) from ex5/scan.txt."""
+    data = np.loadtxt(HERE / "ex5-dichloroethane-scan/scan.txt")
+    phi, energy = data[:, 0], data[:, 1]
+    return phi, (energy - energy.min()) * 627.5095
 
 
 def cosine_fit(phi, de, order=6):
@@ -454,6 +453,75 @@ def fig_thermo():
     print("Gauche - trans: " + ", ".join(f"{k} = {v:.4g}" for k, v in s.items()))
 
 
+# --- Figure 7: the report, closing the gap to experiment ---------------------
+# Wiberg & Murcko, J. Phys. Chem. 1987, 91, 3616: best computed value
+# (MP3/6-31++G**, enthalpy at 298 K) and the gas-phase experiment
+LIT_MP3_DH = 1.39
+EXP_DH, EXP_DH_ERR = 1.1, 0.1
+
+
+def report_differences():
+    """Gauche - trans dE, dH, dG (kcal/mol), K (with the factor 2) and % gauche."""
+    rows = [l.split() for l in (HERE / "report/report_data.txt").read_text().splitlines()
+            if l and not l.startswith(("#", "level"))]
+    data = {(r[0], r[1]): dict(E=float(r[3]), H=float(r[4]), G=float(r[5])) for r in rows}
+    out = {}
+    for level in ("HF", "B3LYP"):
+        d = {k: (data[(level, "gauche")][k] - data[(level, "trans")][k]) * HARTREE_TO_KCAL
+             for k in ("E", "H", "G")}
+        K = 2 * np.exp(-d["G"] / (R_KCAL * 298.15))
+        out[level] = {**d, "K": K, "pop": 100 * K / (1 + K)}
+    return out
+
+
+def fig_report_gap():
+    res = report_differences()
+    K_exp = 2 * np.exp(-EXP_DH / (R_KCAL * 298.15))
+    pop_exp = 100 * K_exp / (1 + K_exp)
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 3.6),
+                                   gridspec_kw={"width_ratios": [1.3, 1], "wspace": 0.5})
+    # (a) dH, from HF to experiment
+    labels = ["HF/6-31G*", "B3LYP/6-31G*", "MP3/6-31++G**\n(Wiberg & Murcko)", "Experiment"]
+    values = [res["HF"]["H"], res["B3LYP"]["H"], LIT_MP3_DH, EXP_DH]
+    colours = [BLUE, ORANGE, AQUA, INK_2]
+    y = np.arange(len(labels))[::-1]
+    ax1.axvspan(EXP_DH - EXP_DH_ERR, EXP_DH + EXP_DH_ERR, color=GRID, zorder=0)
+    ax1.barh(y, values, height=0.55, color=colours, zorder=2)
+    ax1.errorbar(EXP_DH, y[-1], xerr=EXP_DH_ERR, color=INK, capsize=4, lw=1.2, zorder=3)
+    for k, (yi, v) in enumerate(zip(y, values)):
+        pad = EXP_DH_ERR + 0.05 if k == len(values) - 1 else 0.04
+        label = f"{v:.1f} ± {EXP_DH_ERR}" if k == len(values) - 1 else f"{v:.2f}"
+        ax1.text(v + pad, yi, label, va="center", fontsize=9, color=INK)
+    ax1.set_yticks(y, labels, fontsize=8.5)
+    ax1.set_xlim(0, 2.15)
+    ax1.set_xlabel("ΔH gauche − trans, 298 K (kcal/mol)")
+    ax1.set_title("(a) The gap to experiment", loc="left")
+    ax1.grid(axis="y", visible=False)
+    ax1.yaxis.set_minor_locator(plt.NullLocator())
+
+    # (b) gauche population at 298 K
+    pops = [res["HF"]["pop"], res["B3LYP"]["pop"], pop_exp]
+    names = ["HF", "B3LYP", "Exp.\n(estimate)"]
+    x = np.arange(3)
+    bars = ax2.bar(x, pops, width=0.55, color=[BLUE, ORANGE, SURFACE],
+                   edgecolor=[BLUE, ORANGE, INK_2], linewidth=1.5, zorder=2)
+    bars[2].set_hatch("///")
+    for xi, p in zip(x, pops):
+        ax2.text(xi, p + 0.6, f"{p:.0f} %", ha="center", fontsize=9, color=INK)
+    ax2.set_xticks(x, names, fontsize=8.5)
+    ax2.xaxis.set_minor_locator(plt.NullLocator())
+    ax2.set_ylim(0, 30)
+    ax2.set_ylabel("gauche population, 298 K (%)")
+    ax2.set_title("(b) Gauche population", loc="left")
+    ax2.grid(axis="x", visible=False)
+    fig.suptitle("1,2-Dichloroethane: HF, B3LYP and experiment", x=0.01, ha="left",
+                 y=1.03, fontsize=11.5)
+    save(fig, "report_gap.png")
+    for level, d in res.items():
+        print(level, ", ".join(f"{k} = {v:.3g}" for k, v in d.items()))
+
+
 if __name__ == "__main__":
     fig_errors()
     fig_ir_spectrum()
@@ -461,3 +529,4 @@ if __name__ == "__main__":
     fig_hf_vs_b3lyp()
     fig_dce_scan()
     fig_thermo()
+    fig_report_gap()
