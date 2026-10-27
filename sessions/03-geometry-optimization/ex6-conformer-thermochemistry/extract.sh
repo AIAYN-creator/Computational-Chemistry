@@ -1,6 +1,6 @@
 #!/bin/bash
 # Dihedral, electronic energy, enthalpy and Gibbs free energy of the two
-# conformers, written to thermo.txt.
+# conformers, at HF and B3LYP, written to thermo.txt.
 # Usage: ./extract.sh
 #
 # The thermochemistry block that "freq" adds at the end of the output
@@ -14,7 +14,8 @@
 
 echo "conf dihedral E H G" > thermo.txt
 
-for c in trans gauche; do
+# HF conformers (the exercise) and B3LYP ones (the extension in the report)
+for c in trans gauche trans_b3lyp gauche_b3lyp; do
 	f=dce_${c}.log
 	# Optimised Cl-C-C-Cl dihedral. The space after z3 makes sure the
 	# pattern does not also match a longer name such as z30.

@@ -112,8 +112,8 @@ The deliverable asked for a single exercise in at most two pages. Exercise 6 was
 | File | What it is |
 |---|---|
 | [`report.pdf`](report.pdf) | The report (2 pages) |
-| [`report_data.txt`](report_data.txt) | Tables 1 and 2 of the report: HF and B3LYP energies, dihedrals and dipoles |
+| [`report_data.txt`](report_data.txt) | Table 1 of the report: HF and B3LYP energies, dihedrals and dipoles |
 
-The HF calculations, inputs and extraction scripts are in [Ex. 5](../ex5-dichloroethane-scan/) and [Ex. 6](../ex6-conformer-thermochemistry/). The B3LYP values come from Table 1 of the report. The figure on this page is drawn by [`plot_figures.py`](../plot_figures.py).
+All calculations behind the report, HF and B3LYP, with their inputs and extraction scripts, are in [Ex. 5](../ex5-dichloroethane-scan/) and [Ex. 6](../ex6-conformer-thermochemistry/). The figure on this page is drawn by [`plot_figures.py`](../plot_figures.py).
 
 **Reference.** K. B. Wiberg and M. A. Murcko, *Rotational barriers. 1. 1,2-Dihaloethanes*, J. Phys. Chem. **1987**, 91, 3616–3620. [doi:10.1021/j100297a030](https://doi.org/10.1021/j100297a030)

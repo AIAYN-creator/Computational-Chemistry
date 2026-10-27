@@ -1,7 +1,7 @@
 # Data of the Session 03 report (Tables 1 and 2), trans and gauche
 # 1,2-dichloroethane at 298.15 K and 1 atm.
 # HF/6-31G* rows: same values as ../ex6-conformer-thermochemistry/thermo.txt.
-# B3LYP/6-31G* rows: from Table 1 of the report (outputs not in this repository).
+# B3LYP/6-31G* rows: same values as the *_b3lyp rows of ../ex6-conformer-thermochemistry/thermo.txt.
 # E, H, G in hartree; dihedral in degrees; mu in debye.
 level conf dihedral E H G mu
 HF trans 180.0 -997.030936 -996.962335 -996.996809 0.00

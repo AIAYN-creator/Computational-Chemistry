@@ -462,12 +462,10 @@ EXP_DH, EXP_DH_ERR = 1.1, 0.1
 
 def report_differences():
     """Gauche - trans dE, dH, dG (kcal/mol), K (with the factor 2) and % gauche."""
-    rows = [l.split() for l in (HERE / "report/report_data.txt").read_text().splitlines()
-            if l and not l.startswith(("#", "level"))]
-    data = {(r[0], r[1]): dict(E=float(r[3]), H=float(r[4]), G=float(r[5])) for r in rows}
+    thermo, _ = load_thermo()  # ex6/thermo.txt: trans, gauche, trans_b3lyp, gauche_b3lyp
     out = {}
-    for level in ("HF", "B3LYP"):
-        d = {k: (data[(level, "gauche")][k] - data[(level, "trans")][k]) * HARTREE_TO_KCAL
+    for level, suffix in (("HF", ""), ("B3LYP", "_b3lyp")):
+        d = {k: (thermo["gauche" + suffix][k] - thermo["trans" + suffix][k]) * HARTREE_TO_KCAL
              for k in ("E", "H", "G")}
         K = 2 * np.exp(-d["G"] / (R_KCAL * 298.15))
         out[level] = {**d, "K": K, "pop": 100 * K / (1 + K)}

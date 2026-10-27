@@ -16,6 +16,8 @@ Optimise the trans and gauche conformers of 1,2-dichloroethane at HF/6-31G* and 
 
 **Extraction.** [`extract.sh`](extract.sh) reads the optimised dihedral, E, H and G of both conformers into [`thermo.txt`](thermo.txt).
 
+**The B3LYP extension.** For the report, both conformers were repeated with B3LYP/6-31G*. The inputs are the HF ones with only the method changed in the route line, and the same `extract.sh` reads all four outputs. Both B3LYP structures are also true minima (lowest frequencies 117.8 and 114.1 cm⁻¹), with gauche at 69.6°. The analysis is in the [report](../report/).
+
 ## Results (what the exercise asks for)
 
 | | Trans | Gauche | Gauche − trans |
@@ -76,7 +78,8 @@ The conclusions of this exercise are those of the [report](../report/#conclusion
 | File | What it is |
 |---|---|
 | [`dce_trans.com`](dce_trans.com), [`dce_gauche.com`](dce_gauche.com) | `opt freq` of each conformer, HF/6-31G*, from the Z-matrix of Ex. 5 |
-| [`extract.sh`](extract.sh) | Writes dihedral, E, H and G of both conformers to `thermo.txt` |
+| [`dce_trans_b3lyp.com`](dce_trans_b3lyp.com), [`dce_gauche_b3lyp.com`](dce_gauche_b3lyp.com) | The same at B3LYP/6-31G* (extension for the report) |
+| [`extract.sh`](extract.sh) | Writes dihedral, E, H and G of the four calculations to `thermo.txt` |
 | [`thermo.txt`](thermo.txt) | Output of `extract.sh` |
 | [`thermo_extra.txt`](thermo_extra.txt) | ZPE, E + ZPE, entropy contributions and heat capacity, copied from the outputs |
 
