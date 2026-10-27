@@ -8,3 +8,6 @@
 *.zmat text eol=lf
 *.tex text eol=lf
 *.bib text eol=lf
+
+# Gaussian inputs are not DCL (VMS) scripts, which share the .com extension
+*.com linguist-detectable=false
