@@ -1,6 +1,8 @@
 # Ex. 6 — Thermochemistry of the gauche and trans conformers
 
-[← Session 03](../) · [Bash guide](../../../docs/bash-for-gaussian.md)
+[← Session 03](../) · [Bash guide](../../../docs/bash-for-gaussian.md) · **[Case study and report](../report/)**
+
+This is the exercise handed in as the [Session 03 report](../report/), together with the scan of [Ex. 5](../ex5-dichloroethane-scan/) and a B3LYP extension.
 
 ## Task
 
@@ -8,7 +10,7 @@ Optimise the trans and gauche conformers of 1,2-dichloroethane at HF/6-31G* and 
 
 ## Approach
 
-**Start from the scan.** Both inputs reuse the Z-matrix of [Ex. 5](../ex5-dichloroethane-scan/), where each H is referenced to the Cl of its own carbon. Only the starting dihedral changes: 180° for trans and 70° for gauche, where the scan placed the gauche minimum. This time `z3` is not scanned but optimised freely, together with everything else.
+**Start from the scan.** Both inputs reuse the Z-matrix of [Ex. 5](../ex5-dichloroethane-scan/), where each H is referenced to the Cl of its own carbon. Only the starting dihedral changes: 180° for trans and 70° for gauche, where the scan placed the gauche minimum. This time `z3` is not scanned but optimised freely, together with everything else. The two inputs were generated from the scan input with `sed "s/^z3 .*/z3 180./"` (and `70.` for gauche), a pattern that replaces the whole line whatever the old value looked like.
 
 **One job per conformer: `opt freq`.** The frequencies do two things. They confirm that each structure is a true minimum: all 18 frequencies are real, the lowest being the C–C torsion (127.5 cm⁻¹ for trans, 122.2 cm⁻¹ for gauche). And they feed the thermochemistry block that Gaussian prints at the end, at 298.15 K and 1 atm, with E, H and G already summed: "Sum of electronic and thermal Enthalpies" and "… Free Energies".
 
@@ -25,9 +27,11 @@ Optimise the trans and gauche conformers of 1,2-dichloroethane at HF/6-31G* and 
 
 From ΔG, for the equilibrium trans ⇌ gauche:
 
-  K = exp(−ΔG / RT) = exp(−1.849 / (1.987 × 10⁻³ × 298.15)) = **0.044**
+  K = 2 exp(−ΔG / RT) = 2 exp(−1.849 / (1.987 × 10⁻³ × 298.15)) = **0.088** → **8 % gauche** at 298 K
 
-Gauche lies 1.8–1.9 kcal/mol above trans whatever the energy considered, and only about 4 % of the molecules are in one gauche well at room temperature.
+**Why the factor 2.** Rotating by +70° or −70° gives two gauche conformers, g⁺ and g⁻: mirror images with exactly the same energy. The G printed by Gaussian describes only one of them, and exp(−ΔG/RT) = 0.044 is the constant for trans ⇌ one gauche. The equilibrium with *all* gauche molecules counts both.
+
+Gauche lies 1.8–1.9 kcal/mol above trans whatever the energy considered.
 
 **Cross-check with Ex. 5.** The trans energy is identical, to the last printed digit, to the 180° point of the scan. The free optimisation of gauche lands at φ = 70.51° and ΔE = 1.912 kcal/mol. The cosine-series fit of the scan had predicted 70.5° and 1.91 kcal/mol from points 20° apart.
 
@@ -50,17 +54,22 @@ Gauche lies 1.8–1.9 kcal/mol above trans whatever the energy considered, and o
 - **ΔU = ΔH exactly.** For an isomerisation in the ideal gas, the number of molecules does not change, so Δ(pV) = Δn RT = 0.
 - **ΔS = −0.20 cal/(mol K): gauche is slightly more ordered.** By contributions: translational 0 (same mass); rotational +0.41, because trans is almost a rod, with one very small moment of inertia (61 against 176 amu·bohr² for gauche), so the product of its three moments is smaller; vibrational −0.61, because the second and third softest modes of gauche are stiffer (280 and 443 cm⁻¹ against 236 and 324 cm⁻¹). TΔS is only −0.06 kcal/mol at 298 K, which is why ΔG and ΔH are so close.
 
-**There are two gauche conformers** (panel b). Rotating by +70° or −70° gives two mirror-image structures, g⁺ and g⁻, with exactly the same energy. The K above describes trans ⇌ one gauche. For trans ⇌ all gauche, it doubles:
-
-  K(total) = 2 × 0.044 = **0.088** → 8.1 % gauche at 298 K, instead of 4.2 %
-
-Equivalently, the gauche family gains an entropy R ln 2 = 1.38 cal/(mol K), which lowers its effective free energy by RT ln 2 = 0.41 kcal/mol. Panel b follows the population with temperature, keeping ΔH and ΔS at their 298 K values: gauche reaches about 29 % at 600 K and 42 % at 1000 K, always below the 2/3 limit of three equally likely conformers.
+**The factor 2 as an entropy** (panel b). Counting both gauche conformers is equivalent to giving the gauche family an extra entropy R ln 2 = 1.38 cal/(mol K), which lowers its effective free energy by RT ln 2 = 0.41 kcal/mol: 8.1 % gauche at 298 K instead of 4.2 %. Panel b follows the population with temperature, keeping ΔH and ΔS at their 298 K values: gauche reaches about 29 % at 600 K and 42 % at 1000 K, always below the 2/3 limit of three equally likely conformers.
 
 **Caveats.**
 
 - **Symmetry.** Gaussian finds point group C1 for both conformers, instead of C₂ₕ (trans) and C₂ (gauche), because the Z-matrix does not impose it, as already seen for NH₃ in [Ex. 3](../ex3-ammonia-frequencies/). Both should have rotational symmetry number 2 and both get 1, so each absolute entropy is too large by R ln 2, but the error cancels in ΔS and ΔG.
 - **The torsion as a harmonic oscillator.** The thermochemistry treats every mode as harmonic, including the C–C torsion at about 125 cm⁻¹, which is really a hindered rotation over the barriers of Ex. 5. A hindered-rotor treatment would change the vibrational entropy somewhat.
-- **The method.** Everything here is HF/6-31G*: the electronic ΔE dominates every quantity, and it carries the usual lack of electron correlation.
+- **The method.** Everything here is HF/6-31G*: the electronic ΔE dominates every quantity, and it carries the usual lack of electron correlation. The [report](../report/) takes this further: against the experimental ΔH of 1.1 ± 0.1 kcal/mol, HF is 0.7 kcal/mol too high, and repeating both conformers with B3LYP corrects only about a third of the gap.
+
+## Conclusions
+
+The conclusions of this exercise are those of the [report](../report/#conclusions):
+
+1. Trans and gauche are both true minima. At HF/6-31G*, trans is more stable by ΔG = 1.85 kcal/mol: K = 0.088 and 8 % gauche at 298 K.
+2. ΔE, ΔH and ΔG are practically equal: the equilibrium is governed by the electronic energy, not by entropic or thermal effects.
+3. HF overestimates the stability of trans by about 0.7 kcal/mol and underestimates the gauche population by a factor of about 3. B3LYP corrects only a third of the error: correlation is necessary but not sufficient, and dispersion is still missing.
+4. All results are for the gas phase. Gauche has a dipole of about 3 D and trans none, so a polar solvent would shift the equilibrium towards gauche.
 
 ## Files
 
