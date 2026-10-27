@@ -185,8 +185,63 @@ def card_agreement():
          "SESSIONS 02 + 03", draw, "card_agreement.png")
 
 
+# --- 5. The anomeric effect in fluoromethanol (Session 03, Ex. 7) ------------
+def card_anomeric():
+    data = np.loadtxt(S03 / "ex7-fluoromethanol-rotation/scan.txt")
+    phi, de = data[:, 0], (data[:, 1] - data[:, 1].min()) * HARTREE_TO_KCAL
+    # Mirror the half turn, E(phi) = E(-phi), and smooth it with a cosine series
+    both_phi, both_de = np.concatenate([phi, -phi]), np.concatenate([de, de])
+    basis = lambda p: np.column_stack([np.cos(n * np.radians(p)) for n in range(6)])
+    coef, *_ = np.linalg.lstsq(basis(both_phi), both_de, rcond=None)
+    grid = np.linspace(-180, 180, 361)
+
+    def draw(ax):
+        ax.plot(grid, basis(grid) @ coef, color=BLUE, lw=1.8)
+        ax.plot(both_phi, both_de, "o", color=BLUE, ms=3.5)
+        ax.annotate("gauche", xy=(60, 0), xytext=(60, 1.6), ha="center", fontsize=7.5,
+                    color=INK, arrowprops={"arrowstyle": "-", "color": INK_2, "lw": 0.8})
+        ax.annotate("anti", xy=(180, de[-1]), xytext=(118, de[-1] + 0.7), ha="center",
+                    fontsize=7.5, color=ORANGE,
+                    arrowprops={"arrowstyle": "-", "color": INK_2, "lw": 0.8})
+        ax.set_xlim(-190, 190)
+        ax.set_ylim(-0.4, 6.6)
+        ax.set_xticks([-180, 0, 180])
+        ax.set_xlabel("H–O–C–F dihedral (°)", fontsize=8)
+        ax.set_ylabel("ΔE (kcal/mol)", fontsize=8)
+
+    card(f"{de[-1]:.1f}", "kcal/mol", "Anti is the worst\nconformer of fluoromethanol",
+         "Sterics predict the opposite. At gauche,\nan O lone pair sits anti to C–F and\ndonates into σ*(C–F): the anomeric effect.",
+         "SESSION 03 · EX. 7", draw, "card_anomeric.png")
+
+
+# --- 6. The saddle point hidden by symmetry (Session 03, Ex. 8) --------------
+def card_saddle():
+    rows = [l.split() for l in (S03 / "ex8-glycine-conformers/glycine.txt")
+            .read_text().splitlines()[1:]]
+    e = {r[0]: float(r[1]) for r in rows}
+    gap = {(c, m): (e[f"gly_{c}_{m}"] - e[f"gly_{c}_{m}_c1"]) * HARTREE_TO_KCAL
+           for c in "BD" for m in ("hf", "b3lyp")}
+
+    def draw(ax):
+        x = np.arange(2)
+        for k, (m, name, colour) in enumerate((("hf", "HF", BLUE), ("b3lyp", "B3LYP", ORANGE))):
+            vals = [gap[(c, m)] for c in "BD"]
+            ax.bar(x + (k - 0.5) * 0.36, vals, width=0.36, color=colour, label=name, zorder=2)
+        ax.set_xticks(x, ["B: almost planar", "D: not planar"], fontsize=7.5)
+        ax.set_ylim(0, 4.6)
+        ax.set_ylabel("E(planar) − E(real min.)\n(kcal/mol)", fontsize=8)
+        ax.legend(fontsize=7.5, frameon=False, loc="upper left")
+        ax.grid(axis="x", visible=False)
+
+    card(f"{gap[('D', 'hf')]:.1f}", "kcal/mol", "Imposed symmetry hid\na saddle point",
+         "Planar glycine D had an imaginary mode,\nthe NH₂ group turning. Freed from the\nplane, it fell to the real, twisted minimum.",
+         "SESSION 03 · EX. 8", draw, "card_saddle.png")
+
+
 if __name__ == "__main__":
     card_rhf()
     card_acetylene()
     card_gauche()
     card_agreement()
+    card_anomeric()
+    card_saddle()

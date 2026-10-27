@@ -14,6 +14,12 @@ The aim is to show the whole workflow, not only the final numbers: how each calc
 </table>
 <table>
 <tr>
+<td width="50%"><a href="sessions/03-geometries-and-conformers/ex7-fluoromethanol-rotation/"><img src="docs/cards/card_anomeric.png" alt="5.2 kcal/mol: anti is the worst conformer of fluoromethanol"></a></td>
+<td width="50%"><a href="sessions/03-geometries-and-conformers/ex8-glycine-conformers/#planar-b-and-d-are-saddle-points"><img src="docs/cards/card_saddle.png" alt="3.4 kcal/mol: imposed symmetry hid a saddle point"></a></td>
+</tr>
+</table>
+<table>
+<tr>
 <td width="50%"><a href="sessions/03-geometries-and-conformers/ex4-hf-vs-b3lyp/#acetylene-came-out-bent"><img src="docs/cards/card_acetylene.png" alt="130 degrees: Stationary point found does not mean right"></a></td>
 <td width="50%"><a href="sessions/03-geometries-and-conformers/ex1-optimized-geometries/#cross-checks-with-session-02"><img src="docs/cards/card_agreement.png" alt="0.001 Angstrom: two methods, two sessions, one bond length"></a></td>
 </tr>
