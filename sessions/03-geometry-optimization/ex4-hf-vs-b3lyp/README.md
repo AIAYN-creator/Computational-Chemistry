@@ -73,7 +73,7 @@ This is exactly the Z-matrix already written in [Session 01](../../01-linux-and-
 
 3. **Acetylene.** The HCCH results are not compared here: the Z-matrix produced a bent molecule (see [above](#acetylene-came-out-bent)), so its bond lengths do not describe acetylene. This conclusion will be completed once the corrected calculation is run.
 
-4. **The HOOH dihedral angle is the most sensitive parameter.** Both methods overestimate it. The torsional potential energy surface of H₂O₂ is very flat, so small changes in the computed energy shift the position of the minimum considerably. In addition, the experimental value is a vibrationally averaged quantity for a large-amplitude motion, not the bottom of the potential well.
+4. **The HOOH dihedral angle is the most sensitive parameter.** Both methods overestimate it, HF by 2.3° and B3LYP by 4.8°: B3LYP, which improves every other parameter, is worse here. The torsional potential energy surface of H₂O₂ is very flat, so small errors in the computed energy shift the position of the minimum considerably.
 
 **Overall.** B3LYP reproduces bond lengths and angles much better than HF with the same basis set, especially for bonds where correlation effects are important (O–O, C≡N). Torsional angles on flat potential energy surfaces remain challenging for both methods at this level.
 
