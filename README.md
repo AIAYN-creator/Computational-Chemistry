@@ -11,6 +11,8 @@ The aim is to show the whole workflow, not only the final numbers: how each calc
 <td width="50%"><a href="sessions/02-hartree-fock/"><img src="docs/cards/card_rhf.png" alt="7.6 eV: restricted Hartree-Fock cannot break a bond"></a></td>
 <td width="50%"><a href="sessions/03-geometry-optimization/report/"><img src="docs/cards/card_gauche.png" alt="8 %: gauche 1,2-dichloroethane, a third of the real amount"></a></td>
 </tr>
+</table>
+<table>
 <tr>
 <td width="50%"><a href="sessions/03-geometry-optimization/ex4-hf-vs-b3lyp/#acetylene-came-out-bent"><img src="docs/cards/card_acetylene.png" alt="130 degrees: Stationary point found does not mean right"></a></td>
 <td width="50%"><a href="sessions/03-geometry-optimization/ex1-optimized-geometries/#cross-checks-with-session-02"><img src="docs/cards/card_agreement.png" alt="0.001 Angstrom: two methods, two sessions, one bond length"></a></td>
