@@ -1,0 +1,4 @@
+# Fully optimized minima, HF/6-31G* (exercise 6). dE relative to trans.
+conformer  dihedral   E_hartree        dE_kcal
+trans      179.9999   -997.030936217   0.00
+gauche     70.5136    -997.027889799   1.91

@@ -100,6 +100,52 @@ The deliverable asked for a single exercise in at most two pages. Exercise 6 was
 - **Tables** with `booktabs` (no grid) and `siunitx` columns aligned on the decimal point. Significant figures chosen deliberately: six decimals for absolute energies, two for differences, two significant figures for K.
 - **Two pages, by formatting alone.** Compact title and sections (`titling`, `titlesec`), tight lists (`enumitem`), a small bibliography with the Gaussian citation shortened to *et al.*, and the figure at 4.6 cm, the largest height at which everything fits.
 
+## Inside the LaTeX source
+
+The full source of the report is in [`source/`](source/): [`report.tex`](source/report.tex), [`bibliografia.bib`](source/bibliografia.bib) and the two data files of the figure. The comments in the `.tex` are in Spanish, as they were written.
+
+### Newman projections in polar coordinates
+
+The first attempt at the Newman projections was drawn point by point. The working version is a TikZ `pic` that takes a single argument, the angle of the back Cl, and builds everything else in **polar coordinates**, `(angle:radius)`:
+
+```latex
+\tikzset{
+  pics/newman/.style={code={
+    \fill[white] (0,0) circle (0.62);                                     % background: hides the grid
+    \draw[thick] (0,0) circle (0.25);                                     % back carbon
+    \foreach \a in {0,120,240} \draw[thick] (#1+\a:0.25) -- (#1+\a:0.48); % back bonds
+    \foreach \a in {90,210,330} \draw[thick] (0,0) -- (\a:0.48);          % front bonds
+    \node[font=\scriptsize, text=green!40!black, inner sep=0pt] at (#1:0.64) {Cl};
+    \node[font=\scriptsize, text=green!40!black, inner sep=0pt] at (90:0.64) {Cl};
+  }}
+}
+```
+
+- The **front** bonds always start at the centre and point to 90°, 210° and 330°. The front Cl is the one at 90°, straight up.
+- The **back** bonds start on the circle (radius 0.25) and point to `#1`, `#1 + 120` and `#1 + 240`: the back carbon is the same tripod, rotated.
+- With the front Cl at 90°, a Cl–C–C–Cl dihedral φ puts the back Cl at **90° + φ**. That is the whole recipe: gauche (φ = 70.5°) is `newman=160.5`, and trans (φ = 180°) is `newman=270`.
+
+A Newman projection *is* a polar diagram: everything is an angle around the C–C axis. Once the drawing is written in the coordinates the molecule already uses, the dihedral angle becomes the only input.
+
+### Drawing outside the axes without losing the position
+
+`pgfplots` rescales everything inside an `axis`, so a projection drawn there comes out squashed. The positions are marked with `\coordinate` inside the axis, in data units, and the projections are drawn *after* `\end{axis}`, in real centimetres:
+
+```latex
+  \coordinate (pg) at (axis cs:70.5,6.6);      % inside the axis: data coordinates
+  ...
+\end{axis}
+\pic at (pg) {newman=160.5};                    % outside: real centimetres, no distortion
+```
+
+The dashed connectors are drawn from the x axis (`\pgfkeysvalueof{/pgfplots/ymin}`) up to each projection, passing through the optimised minimum. The curve and the diamonds read [`scan_hf.dat`](source/scan_hf.dat) and [`minima_hf.dat`](source/minima_hf.dat) directly, so the numbers live in one place.
+
+### Building it
+
+```bash
+pdflatex report && bibtex report && pdflatex report && pdflatex report
+```
+
 ## Conclusions
 
 1. 1,2-Dichloroethane has two stable conformers, trans and gauche, both confirmed as true minima by frequency calculations. At the HF/6-31G* level, trans is more stable, with ΔG = 1.85 kcal/mol, which gives K = 0.088 and a gauche population of 8 % at 298 K.
@@ -113,6 +159,9 @@ The deliverable asked for a single exercise in at most two pages. Exercise 6 was
 |---|---|
 | [`report.pdf`](report.pdf) | The report (2 pages) |
 | [`report_data.txt`](report_data.txt) | Table 1 of the report: HF and B3LYP energies, dihedrals and dipoles |
+| [`source/report.tex`](source/report.tex) | LaTeX source of the report |
+| [`source/bibliografia.bib`](source/bibliografia.bib) | Bibliography |
+| [`source/scan_hf.dat`](source/scan_hf.dat), [`source/minima_hf.dat`](source/minima_hf.dat) | Data of Figure 1: the scan points and the optimised minima |
 
 All calculations behind the report, HF and B3LYP, with their inputs and extraction scripts, are in [Ex. 5](../ex5-dichloroethane-scan/) and [Ex. 6](../ex6-conformer-thermochemistry/). The figure on this page is drawn by [`plot_figures.py`](../plot_figures.py).
 

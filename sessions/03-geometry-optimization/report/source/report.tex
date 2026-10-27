@@ -1,0 +1,306 @@
+\documentclass[10pt,a4paper]{article}
+
+% ---------- Codificación e idioma ----------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}            % acentos y guiones bien en el PDF
+\usepackage[english]{babel}
+\DeclareUnicodeCharacter{2212}{-}   % el signo menos Unicode no rompe la compilación
+
+% ---------- Página ----------
+\usepackage[a4paper,margin=2cm]{geometry}   % 2 cm: límite de 2 páginas
+\usepackage{microtype}              % mejor reparto de espacios, ahorra líneas
+
+% ---------- Matemáticas ----------
+\usepackage{amsmath,amssymb,amsthm}
+
+% ---------- Unidades y química ----------
+\usepackage{siunitx}
+\sisetup{per-mode=symbol}           % kcal/mol en vez de kcal mol^-1
+\DeclareSIUnit\calorie{cal}         % ¡usar \kilo\calorie, no \kilo\cal!
+\DeclareSIUnit\atm{atm}
+\DeclareSIUnit\hartree{\ensuremath{E_\mathrm{h}}}
+\usepackage[version=4]{mhchem}
+
+% ---------- Figuras y tablas ----------
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+% ---------- Otros ----------
+\usepackage[normalem]{ulem}         % normalem: \emph sigue siendo cursiva
+
+% ---------- Compactación (para el límite de 2 páginas) ----------
+\usepackage{titling}                % título más compacto
+\setlength{\droptitle}{-1.6cm}
+\pretitle{\begin{center}\large\bfseries}\posttitle{\par\end{center}\vspace{-0.6em}}
+\preauthor{\begin{center}\normalsize}\postauthor{\par\end{center}\vspace{-0.9em}}
+\predate{\begin{center}\small}\postdate{\par\end{center}\vspace{-1.2em}}
+\usepackage{titlesec}               % secciones con menos espacio alrededor
+\titleformat{\section}{\large\bfseries}{\thesection}{0.6em}{}
+\titlespacing*{\section}{0pt}{1.1ex plus 0.3ex}{0.5ex}
+\usepackage[shortlabels]{enumitem}  % listas sin espacios extra
+\setlist{nosep, leftmargin=*}
+\setlength{\intextsep}{6pt plus 2pt minus 2pt}       % espacio alrededor de figuras/tablas [H]
+\captionsetup{skip=4pt}
+\setlength{\parskip}{0pt}
+\usepackage{etoolbox}               % bibliografía más pequeña y sin huecos
+\apptocmd{\thebibliography}{\footnotesize\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
+
+% ---------- Referencias (siempre al final y en este orden) ----------
+\usepackage[hidelinks]{hyperref}
+\usepackage[capitalise,noabbrev]{cleveref}
+
+
+
+\title{Conformational Analysis of 1,2-Dichloroethane:\\
+       the Trans--Gauche Equilibrium at the HF and B3LYP Levels}
+\author{Martín Llorens Giménez\thanks{\textbf{Declaration of AI use:} An AI assistant (Claude Opus 5.5, Anthropic) was used for guidance to help structure the text, which the author then wrote independently. AI was mainly used to revise English expressions and grammar, and to write the LaTeX code for figures and tables. All calculations, data extraction, and final decisions on the content are the author's own.}}
+\date{October 2026}
+
+
+\begin{document}
+
+\maketitle
+
+%Attention:
+% - 2 pages maximum
+% - Numbering of figures and tables, inclusion of figure/table captions
+% - Units!
+% - Use correct number of significant figures (we will discuss this)
+
+
+\section{Introduction} %What have i done?
+
+Rotation about a C--C single bond is often described as nearly free. However,
+substituents turn the torsional potential into a landscape of minima and barriers
+that determines which conformers are populated at a given temperature.
+1,2-Dichloroethane (\ce{ClCH2CH2Cl}, DCE) is the textbook example: it exists as a
+trans conformer (Cl--C--C--Cl dihedral angle of \ang{180}) and a gauche conformer
+(dihedral angle close to \ang{70}). Its relative stability results from a balance
+between the repulsion of the two C--Cl bonds, which favours the trans form, and
+stabilising hyperconjugative interactions (the \emph{gauche effect}), which favour
+the gauche form~\cite{wiberg1987}. A correct description of this balance requires
+electron correlation, which makes DCE a demanding test for the Hartree--Fock (HF)
+method, which neglects it.
+
+In this work, which corresponds to Exercise~6 of the practical session, the trans
+and gauche minima were optimized at the HF/6-31G* level, starting from the
+approximate geometries provided by a relaxed scan of the Cl--C--C--Cl dihedral angle
+(Exercise~5). Harmonic frequency calculations confirmed both structures as true
+minima and provided the thermochemical data needed to obtain $\Delta E$, $\Delta H$,
+$\Delta G$ and the trans~$\rightleftharpoons$~gauche equilibrium constant at
+\SI{298}{\kelvin}. Going beyond the scope of the exercise, the optimizations and
+frequency calculations were repeated with the B3LYP functional, to test whether the
+deviation from experiment arises from the lack of electron correlation in HF.
+
+\section{Methods} %How did i do it?
+
+All calculations were performed with Gaussian~09~\cite{gaussian09}, using the
+Hartree--Fock (HF) method and the B3LYP functional with the 6-31G* basis set.
+
+First, the potential energy curve for the internal rotation around the C--C bond
+was obtained through a relaxed scan of the Cl--C--C--Cl dihedral angle at the
+HF/6-31G* level. The dihedral angle was varied from \ang{180} to \ang{0} in steps
+of \ang{20}, and all other internal coordinates were optimized at each point.
+
+Then, the geometries of the trans and gauche conformers were optimized in internal
+coordinates (Z-matrix), starting from dihedral angles of \ang{180} and \ang{70},
+respectively, close to the minima found in the scan. Harmonic vibrational
+frequencies were computed for each optimized geometry with two aims: to confirm
+that the structures are true minima (no imaginary frequencies) and to obtain the
+thermodynamic quantities ($E$, $H$ and $G$) at \SI{298.15}{\kelvin} and 1~atm,
+within the ideal gas, rigid rotor and harmonic oscillator approximations. All
+optimizations and frequency calculations were repeated with the B3LYP functional.
+
+Finally, the trans~$\rightleftharpoons$~gauche equilibrium constant was calculated
+as $K = 2\exp(-\Delta G/RT)$, where the factor of 2 accounts for the two
+enantiomeric gauche conformers, which are energetically equivalent.
+
+\section{Results and discussion} %What are the results?
+
+The potential energy curve (\cref{fig:scan}) presents two minima: the trans conformer
+(\ang{180}), which is the global minimum, and the gauche conformer, which the full
+optimization places at \ang{70.5} (\cref{tab:abs}), 1.91~kcal/mol above. The maxima correspond to
+eclipsed conformations: at \ang{120} (5.05~kcal/mol) each Cl eclipses an H, and at
+\ang{0} (9.98~kcal/mol) the two Cl atoms are eclipsed. The optimized gauche minimum
+lies below the two adjacent scan points, because a \ang{20} step is too coarse to
+resolve the bottom of the well. At both levels of theory, all frequencies are real
+(the lowest, between 114 and \SI[per-mode=power]{128}{\per\centi\metre}, corresponds to the torsion
+about the C--C bond), which confirms that both structures are true minima.
+
+\begin{figure}[H]
+  \centering
+  % Proyección de Newman como "pic": #1 = ángulo del Cl de detrás (el de delante está a 90°)
+  \tikzset{
+    pics/newman/.style={code={
+      \fill[white] (0,0) circle (0.62);                                     % fondo: tapa la rejilla
+      \draw[thick] (0,0) circle (0.25);                                     % carbono de detrás
+      \foreach \a in {0,120,240} \draw[thick] (#1+\a:0.25) -- (#1+\a:0.48); % enlaces de detrás
+      \foreach \a in {90,210,330} \draw[thick] (0,0) -- (\a:0.48);          % enlaces de delante
+      \node[font=\scriptsize, text=green!40!black, inner sep=0pt] at (#1:0.64) {Cl};
+      \node[font=\scriptsize, text=green!40!black, inner sep=0pt] at (90:0.64) {Cl};
+    }}
+  }
+  \begin{tikzpicture}
+    \begin{axis}[
+        width=\textwidth, height=4.6cm,
+        xlabel={Cl--C--C--Cl dihedral angle (\si{\degree})},
+        ylabel={$\Delta E$ (kcal/mol)},
+        xmin=-5, xmax=193, ymin=-0.8, ymax=11,
+        xtick={0,20,...,180}, ytick={0,2,...,10},
+        grid=major, grid style={gray!25},
+        tick label style={font=\footnotesize}, label style={font=\small},
+        legend style={font=\footnotesize, at={(0.015,0.03)}, anchor=south west,
+                      draw=none, fill=white, fill opacity=0.85, text opacity=1},
+        clip=false,
+        % Marca extra en el eje X para el diedro gauche optimizado (sin línea de rejilla)
+        extra x ticks={70.5},
+        extra x tick labels={\color{red!60!black}70.5},
+        extra x tick style={grid=none, tick label style={font=\scriptsize}},
+      ]
+      \addplot[thick, blue!70!black, mark=*, mark size=1.6pt]
+        table[x=dihedral, y=dE_kcal] {scan_hf.dat};
+      \addlegendentry{Relaxed scan}
+      \addplot[only marks, mark=diamond*, mark size=3.2pt, red!75!black]
+        table[x=dihedral, y=dE_kcal] {minima_hf.dat};
+      \addlegendentry{Optimized minima}
+      % Puntos donde irán las proyecciones (en coordenadas de la gráfica)
+      \coordinate (pg) at (axis cs:70.5,6.6);
+      \coordinate (pt) at (axis cs:179.9999,5.0);
+      % Conectores: desde el eje X, pasando por el mínimo, hasta su proyección (no más arriba)
+      \draw[densely dashed, red!60!black, thin] (axis cs:70.5,\pgfkeysvalueof{/pgfplots/ymin}) -- (pg);
+      \draw[densely dashed, red!60!black, thin] (axis cs:179.9999,\pgfkeysvalueof{/pgfplots/ymin}) -- (pt);
+    \end{axis}
+    % Proyecciones y etiquetas, fuera del axis: así se dibujan en cm reales, sin deformarse
+    \pic at (pg) {newman=160.5};
+    \pic at (pt) {newman=270};
+    \node[font=\footnotesize, anchor=west] at ([xshift=0.85cm]pg) {gauche (\ang{70.5})};
+    \node[font=\footnotesize, anchor=east] at ([xshift=-0.85cm]pt) {trans (\ang{180})};
+  \end{tikzpicture}
+  \caption{Potential energy curve for the internal rotation of 1,2-dichloroethane at the
+    HF/6-31G* level (relaxed scan, energies relative to the trans conformer). Diamonds mark
+    the fully optimized minima, shown above as Newman projections along the C--C bond.}
+  \label{fig:scan}
+\end{figure}
+
+\Cref{tab:abs} lists the geometries and energies of the two conformers. Both methods give
+essentially the same geometry: the gauche dihedral angle barely changes between HF
+(\ang{70.5}) and B3LYP (\ang{69.6}), and both values agree with the electron diffraction
+value of $72.4 \pm 3.1^{\circ}$~\cite{wiberg1987}. The absolute HF and B3LYP energies differ by
+about 2~$E_\mathrm{h}$, but this difference has no physical meaning, because each method has
+its own energy reference; only differences computed with the same method are comparable,
+which are those in \cref{tab:delta}. The HF/6-31G* energies coincide with those reported by
+Wiberg and Murcko~\cite{wiberg1987}, which validates the procedure. Finally, the trans conformer has no dipole moment, as
+required by its centre of inversion, whereas the gauche conformer has a sizeable dipole
+moment ($\approx$3~D), slightly smaller with B3LYP, consistent with the well-known tendency
+of HF to overestimate dipole moments.
+
+\begin{table}[H]
+  \centering
+  \caption{Optimized dihedral angles, electronic energies ($E$), enthalpies ($H$) and Gibbs
+    free energies ($G$) at \SI{298.15}{\kelvin}, and dipole moments ($\mu$) of the trans and
+    gauche conformers.}
+  \label{tab:abs}
+  \footnotesize\setlength{\tabcolsep}{4.5pt}
+  \begin{tabular}{ll
+                  S[table-format=3.1]
+                  S[table-format=-3.6]
+                  S[table-format=-3.6]
+                  S[table-format=-3.6]
+                  S[table-format=1.2]}
+    \toprule
+    Level & Conformer & {Dihedral (\si{\degree})} & {$E$ ($E_\mathrm{h}$)}
+          & {$H$ ($E_\mathrm{h}$)} & {$G$ ($E_\mathrm{h}$)} & {$\mu$ (D)} \\
+    \midrule
+    HF/6-31G*    & trans  & 180.0 & -997.030936 & -996.962335 & -996.996809 & 0.00 \\
+                 & gauche &  70.5 & -997.027890 & -996.959483 & -996.993863 & 3.14 \\
+    \addlinespace
+    B3LYP/6-31G* & trans  & 180.0 & -999.018999 & -998.954516 & -998.989373 & 0.00 \\
+                 & gauche &  69.6 & -999.016295 & -998.952027 & -998.986742 & 2.93 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+As shown in \cref{tab:delta}, $\Delta E$, $\Delta H$ and $\Delta G$ are very similar: the
+thermal corrections change the difference by less than 0.15~kcal/mol and the entropy
+difference is almost zero ($\Delta S \approx -0.2$~cal\,mol$^{-1}$\,K$^{-1}$), so the
+equilibrium is governed by the electronic energy. At the HF level, $K = 0.088$, which
+corresponds to 8\% of the gauche conformer at \SI{298}{\kelvin}. However, HF overestimates the
+enthalpy difference by about 0.7~kcal/mol relative to the experimental value
+($1.1 \pm 0.1$~kcal/mol, mostly from the temperature dependence of gas-phase
+measurements)~\cite{wiberg1987} and predicts a gauche population of about one
+third of the experimental estimate ($\approx$24\%). This discrepancy illustrates the
+exponential dependence of $K$ on $\Delta G$: an error of 0.75~kcal/mol in $\Delta G$ reduces
+$K$ by a factor of about 3.5. This is why computational chemistry aims at so-called
+\emph{chemical accuracy} (about 1~kcal/mol).
+
+\begin{table}[H]
+  \centering
+  \caption{Gauche $-$ trans energy differences, equilibrium constant and
+    gauche population at \SI{298.15}{\kelvin}.}
+  \label{tab:delta}
+  \small
+  \begin{tabular}{l
+                  S[table-format=1.2]
+                  S[table-format=1.2]
+                  S[table-format=1.2]
+                  S[table-format=1.3]
+                  S[table-format=2.0]}
+    \toprule
+    Level & {$\Delta E$ (kcal/mol)} & {$\Delta H$ (kcal/mol)} & {$\Delta G$ (kcal/mol)}
+          & {$K$} & {Gauche (\%)} \\
+    \midrule
+    HF/6-31G*    & 1.91 & 1.79 & 1.85 & 0.088 & 8  \\
+    B3LYP/6-31G* & 1.70 & 1.56 & 1.65 & 0.12  & 11 \\
+    Experiment   & {--} & {$1.1 \pm 0.1$\textsuperscript{a}} & {--}
+                 & {$\approx 0.31$\textsuperscript{b}} & {$\approx 24$\textsuperscript{b}} \\
+    \bottomrule
+  \end{tabular}
+
+  \smallskip
+  {\footnotesize \textsuperscript{a}Gas-phase value, mostly from temperature-dependence
+   measurements~\cite{wiberg1987}. \textsuperscript{b}Estimated from the experimental value,
+   assuming $\Delta G \approx \Delta H$.}
+\end{table}
+
+To test whether this deviation is due to the lack of electron correlation, the
+calculations were repeated with the B3LYP functional. Including correlation reduces
+$\Delta H$ to 1.56~kcal/mol and raises the gauche population to 11\%: the result
+improves in the expected direction, but corrects only about a third of the error.
+Electron correlation is therefore necessary, but not sufficient at this level of
+theory. The main limitation is not the basis set: Wiberg and Murcko~\cite{wiberg1987}
+showed that adding diffuse functions barely changes the result (from 1.60 to
+1.54~kcal/mol at the MP3 level). The problem lies in the treatment of correlation:
+B3LYP is approximate and does not describe dispersion, which would favour the more
+compact gauche conformer, and even with explicit correlation (MP3, MP4) the difference
+remains around 1.5~kcal/mol.
+
+\section{Conclusion} %What can i conclude?
+
+\begin{enumerate}
+  \item 1,2-Dichloroethane has two stable conformers, trans and gauche, both confirmed
+    as true minima by frequency calculations. At the HF/6-31G* level, the trans conformer
+    is more stable, with $\Delta G = 1.85$~kcal/mol, which gives $K = 0.088$ and a gauche
+    population of 8\% at \SI{298}{\kelvin}.
+  \item The three energy differences ($\Delta E$, $\Delta H$ and $\Delta G$) are
+    practically equal, so the conformational equilibrium is governed by the electronic
+    energy rather than by entropic or thermal effects.
+  \item HF overestimates the stability of the trans conformer by about 0.7~kcal/mol and,
+    given the exponential dependence of $K$ on $\Delta G$, underestimates the gauche
+    population by a factor of about 3. Including electron correlation with B3LYP improves
+    the result but corrects only about a third of the error: correlation is necessary but
+    not sufficient, and a quantitative description requires a more complete treatment of
+    electron correlation, including dispersion.
+  \item Finally, all results refer to the gas phase. Since the trans conformer has no
+    dipole moment ($\mu = 0$ by symmetry) whereas the gauche conformer does
+    ($\mu \approx 3$~D), a polar solvent is expected to stabilize the gauche conformer
+    and shift the equilibrium. This could be studied with an implicit solvent model.
+\end{enumerate}
+\bibliographystyle{unsrt}
+\bibliography{bibliografia}
+
+\end{document}

@@ -1,0 +1,14 @@
+# Relaxed scan of the Cl-C-C-Cl dihedral, 1,2-dichloroethane, HF/6-31G*
+# Source: dce_scan.log (exercise 5). dE relative to the trans point (180 deg).
+# 1 Hartree = 627.5095 kcal/mol
+dihedral  E_hartree        dE_kcal
+180       -997.030936218   0.00
+160       -997.028970192   1.23
+140       -997.024972118   3.74
+120       -997.022886520   5.05
+100       -997.024556150   4.00
+80        -997.027405422   2.22
+60        -997.027236337   2.32
+40        -997.022877536   5.06
+20        -997.017447745   8.46
+0         -997.015030766   9.98

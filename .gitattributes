@@ -6,3 +6,5 @@
 *.pdf binary
 *.png binary
 *.zmat text eol=lf
+*.tex text eol=lf
+*.bib text eol=lf
