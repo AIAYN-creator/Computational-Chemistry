@@ -36,12 +36,12 @@ Optimise the geometry of CH₄, H₂O, HF and NH₃ at the Hartree–Fock level 
 | | 3-21G | 1.0829 | 109.47 | 0 | −39.97688 | 4 |
 | | 6-31G* | 1.0837 | 109.47 | 0 | −40.19517 | 4 |
 | | 6-31G** | 1.0835 | 109.47 | 0 | −40.20170 | 4 |
-| | *Exp.* | *1.086* | *109.47* | *0* | | |
+| | *Exp.* | *1.087* | *109.47* | *0* | | |
 | **H₂O** | STO-3G | 0.9894 | 100.03 | 1.71 | −74.96590 | 5 |
 | | 3-21G | 0.9667 | 107.65 | 2.39 | −75.58596 | 4 |
 | | 6-31G* | 0.9473 | 105.50 | 2.20 | −76.01075 | 4 |
 | | 6-31G** | 0.9431 | 105.96 | 2.15 | −76.02362 | 4 |
-| | *Exp.* | *0.958* | *104.5* | *1.85* | | |
+| | *Exp.* | *0.958* | *104.5* | *1.86* | | |
 | **HF** | STO-3G | 0.9555 | – | 1.25 | −98.57285 | 3 |
 | | 3-21G | 0.9372 | – | 2.17 | −99.46022 | 2 |
 | | 6-31G* | 0.9110 | – | 1.97 | −100.00291 | 3 |
@@ -76,7 +76,7 @@ Experimental equilibrium values: NIST CCCBDB. "Steps" is the number of geometrie
 ### 3. Dipole moments: HF overestimates them even with polarised basis sets
 
 - **STO-3G gives erratic results:** it underestimates the dipoles of HF and H₂O and overestimates that of NH₃.
-- **3-21G overestimates them strongly**, by up to +0.54 D.
+- **3-21G overestimates them strongly**, by up to +0.53 D.
 - **6-31G\* and 6-31G\*\* still overestimate them.** Doing better would need a larger basis set with diffuse functions, and even then an error would remain, because Hartree–Fock overweights the ionic contribution to the bonds.
 - **NH₃ shows that the dipole depends on the geometry:** at 3-21G the molecule is flatter, and its dipole is lower.
 

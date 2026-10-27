@@ -19,15 +19,15 @@ Optimise hydrogen peroxide (HOOH), acetylene (HCCH) and hydrogen cyanide (HCN) w
 | Parameter | HF | B3LYP | Exp. | HF error | B3LYP error |
 |---|---|---|---|---|---|
 | **H₂O₂** (6-31G*) | | | | | |
-| r(O–O) (Å) | 1.3964 | 1.4556 | 1.452 | −0.056 | +0.004 |
-| r(O–H) (Å) | 0.9492 | 0.9737 | 0.965 | −0.016 | +0.009 |
+| r(O–O) (Å) | 1.3964 | 1.4556 | 1.452 | −0.055 | +0.004 |
+| r(O–H) (Å) | 0.9492 | 0.9737 | 0.962 | −0.013 | +0.012 |
 | ∠H–O–O (°) | 102.07 | 99.71 | 100.0 | +2.1 | −0.3 |
-| H–O–O–H dihedral (°) | 116.04 | 118.50 | 111.5 | +4.5 | +7.0 |
+| H–O–O–H dihedral (°) | 116.04 | 118.50 | 113.7 | +2.3 | +4.8 |
 | **HCN** (6-311G*) | | | | | |
-| r(C≡N) (Å) | 1.1268 | 1.1489 | 1.153 | −0.026 | −0.004 |
-| r(C–H) (Å) | 1.0581 | 1.0681 | 1.065 | −0.007 | +0.003 |
+| r(C≡N) (Å) | 1.1268 | 1.1489 | 1.156 | −0.029 | −0.007 |
+| r(C–H) (Å) | 1.0581 | 1.0681 | 1.064 | −0.006 | +0.004 |
 
-Experimental values: NIST CCCBDB. All six optimisations converged ("Stationary point found").
+Experimental values: H₂O₂, semi-experimental equilibrium structure from Herberth, Giesen and Yamada, *J. Mol. Spectrosc.* **2019**, 362, 37 ([arXiv:2105.09186](https://arxiv.org/abs/2105.09186)); NIST CCCBDB lists only an older 1962 fit (1.475 Å, 0.950 Å, 94.8°, 119.8°). HCN: NIST CCCBDB. All six optimisations converged ("Stationary point found").
 
 ![HF vs B3LYP: error against experiment](../figures/hf_vs_b3lyp.png)
 
@@ -67,9 +67,9 @@ This is exactly the Z-matrix already written in [Session 01](../../01-linux-and-
 
 ## Conclusions
 
-1. **HF systematically shortens bonds between heavy atoms.** The largest errors appear in bonds involving lone pairs or multiple bonds: the O–O bond of HOOH is 0.056 Å too short, and the C≡N bond of HCN 0.026 Å too short. As in [Ex. 1](../ex1-optimized-geometries/), this reflects the lack of electron correlation in the Hartree–Fock method.
+1. **HF systematically shortens bonds between heavy atoms.** The largest errors appear in bonds involving lone pairs or multiple bonds: the O–O bond of HOOH is 0.055 Å too short, and the C≡N bond of HCN 0.029 Å too short. As in [Ex. 1](../ex1-optimized-geometries/), this reflects the lack of electron correlation in the Hartree–Fock method.
 
-2. **B3LYP largely corrects these errors.** With B3LYP, the O–O and C≡N distances fall within 0.005 Å of experiment, and the H–O–O angle improves from +2.1° (HF) to −0.3°. Including electron correlation, even approximately through the exchange–correlation functional, is essential to describe these bonds accurately.
+2. **B3LYP largely corrects these errors.** With B3LYP, the O–O and C≡N distances fall within 0.007 Å of experiment, and the H–O–O angle improves from +2.1° (HF) to −0.3°. Including electron correlation, even approximately through the exchange–correlation functional, is essential to describe these bonds accurately.
 
 3. **Acetylene.** The HCCH results are not compared here: the Z-matrix produced a bent molecule (see [above](#acetylene-came-out-bent)), so its bond lengths do not describe acetylene. This conclusion will be completed once the corrected calculation is run.
 

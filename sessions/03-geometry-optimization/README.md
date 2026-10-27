@@ -43,8 +43,8 @@ CH₄, H₂O, HF and NH₃ are optimised with four basis sets, 16 optimisations 
 
 | 6-31G** | r (Å) | Exp. | Angle (°) | Exp. | μ (D) | Exp. |
 |---|---|---|---|---|---|---|
-| CH₄ | 1.0835 | 1.086 | 109.47 | 109.47 | 0 | 0 |
-| H₂O | 0.9431 | 0.958 | 105.96 | 104.5 | 2.15 | 1.85 |
+| CH₄ | 1.0835 | 1.087 | 109.47 | 109.47 | 0 | 0 |
+| H₂O | 0.9431 | 0.958 | 105.96 | 104.5 | 2.15 | 1.86 |
 | HF  | 0.9006 | 0.917 | – | – | 1.94 | 1.83 |
 | NH₃ | 1.0008 | 1.012 | 107.61 | 106.7 | 1.84 | 1.47 |
 
@@ -105,9 +105,9 @@ H₂O₂ (6-31G*), HCN (6-311G*) and HCCH (6-31G*) are optimised with Hartree–
 
 ![HF vs B3LYP: error against experiment](figures/hf_vs_b3lyp.png)
 
-- **HF shortens bonds between heavy atoms**, most where there are lone pairs or multiple bonds: O–O by 0.056 Å, C≡N by 0.026 Å.
-- **B3LYP brings both within 0.005 Å of experiment**, and the H–O–O angle from +2.1° to −0.3°.
-- **The H–O–O–H dihedral defeats both methods** (+4.5° and +7.0°): the torsional surface is very flat, and the experimental value is a vibrational average.
+- **HF shortens bonds between heavy atoms**, most where there are lone pairs or multiple bonds: O–O by 0.055 Å, C≡N by 0.029 Å.
+- **B3LYP brings both within 0.007 Å of experiment**, and the H–O–O angle from +2.1° to −0.3°.
+- **The H–O–O–H dihedral defeats both methods** (+2.3° and +4.8°): the torsional surface is very flat, so a small error in the energy moves the minimum a long way.
 - **Acetylene came out bent.** The Z-matrix defines the second H relative to a dummy atom that sits on the first carbon, so the C–C–H angle stayed at about 130°. The diagnosis, the corrected Z-matrix and the lesson are in the exercise README; the corrected run is pending.
 
 Full table and conclusions: [Ex. 4 README](ex4-hf-vs-b3lyp/).

@@ -36,6 +36,8 @@ More sessions will be added as the course goes on.
 ```
 .
 ├── README.md                      # This page
+├── LICENSE                        # MIT, for the code
+├── LICENSE-CC-BY-4.0              # CC BY 4.0, for text, figures and data
 ├── docs/
 │   ├── bash-for-gaussian.md       # Bash patterns used in every session, linked to the exact script lines
 │   ├── make_cards.py              # Builds the featured-findings cards from the session data
@@ -86,6 +88,9 @@ Every session follows the same layout. A `report/` folder appears only when the 
 
 Martín Llorens Giménez
 
----
+## License
 
-© 2026 Martín Llorens Giménez. All rights reserved.
+© 2026 Martín Llorens Giménez.
+
+- **Code** (`*.sh`, `*.py`, and the Gaussian inputs `*.com` and `*.zmat`): [MIT](LICENSE).
+- **Everything else** (READMEs, figures, reports and their LaTeX sources, and the data files `*.txt` and `*.dat`): [CC BY 4.0](LICENSE-CC-BY-4.0). You may reuse and adapt it, including commercially, as long as you credit the author and link to this repository.

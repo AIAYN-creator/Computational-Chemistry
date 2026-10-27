@@ -53,8 +53,8 @@ MOLS = {
 
 # Experimental equilibrium values (NIST CCCBDB): r (Å), angle (deg), dipole (D)
 EXP = {
-    "ch4": {"r": 1.086, "angle": 109.47, "mu": 0.0},
-    "h2o": {"r": 0.958, "angle": 104.5, "mu": 1.85},
+    "ch4": {"r": 1.087, "angle": 109.47, "mu": 0.0},
+    "h2o": {"r": 0.958, "angle": 104.5, "mu": 1.86},
     "hf": {"r": 0.917, "angle": None, "mu": 1.83},
     "nh3": {"r": 1.012, "angle": 106.7, "mu": 1.47},
 }
@@ -234,10 +234,13 @@ def fig_nh3_modes():
 
 
 # --- Figure 4: HF vs B3LYP against experiment (ex4) ------------------------
-# Experimental geometries (NIST CCCBDB): (log stem, variable) -> value
+# Experimental geometries: (log stem, variable) -> value
+# H2O2: semi-experimental equilibrium structure, Herberth, Giesen & Yamada,
+# J. Mol. Spectrosc. 2019, 362, 37 (CCCBDB only lists a 1962 fit).
+# HCN: NIST CCCBDB.
 EXP_EX4 = {
-    ("hooh", "roo"): 1.452, ("hooh", "roh"): 0.965, ("hooh", "a"): 100.0, ("hooh", "z"): 111.5,
-    ("hcn", "rcn"): 1.153, ("hcn", "rch"): 1.065,
+    ("hooh", "roo"): 1.4518, ("hooh", "roh"): 0.962, ("hooh", "a"): 100.0, ("hooh", "z"): 113.7,
+    ("hcn", "rcn"): 1.156, ("hcn", "rch"): 1.064,
 }
 LABELS_EX4 = {
     ("hooh", "roo"): r"O–O (H$_2$O$_2$)", ("hooh", "roh"): r"O–H (H$_2$O$_2$)",
