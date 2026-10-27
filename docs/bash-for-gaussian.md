@@ -21,6 +21,7 @@ This guide is built from the scripts in this repository. Each section explains o
 | [`ex4-hf-vs-b3lyp/extract.sh`](../sessions/03-geometry-optimization/ex4-hf-vs-b3lyp/extract.sh) | [2](#2-pulling-one-number-out-of-a-log) |
 | [`ex5-dichloroethane-scan/extract.sh`](../sessions/03-geometry-optimization/ex5-dichloroethane-scan/extract.sh) | [3](#3-reading-a-table-of-any-length-with-awk) |
 | [`ex6-conformer-thermochemistry/extract.sh`](../sessions/03-geometry-optimization/ex6-conformer-thermochemistry/extract.sh) | [2](#2-pulling-one-number-out-of-a-log) |
+| [`ex7-fluoromethanol-rotation/extract.sh`](../sessions/03-geometry-optimization/ex7-fluoromethanol-rotation/extract.sh) | [3](#3-reading-a-table-of-any-length-with-awk) |
 | [`ex1-optimized-geometries/extract.sh`](../sessions/03-geometry-optimization/ex1-optimized-geometries/extract.sh) | [1](#1-running-every-job-in-a-folder-safely), [2](#2-pulling-one-number-out-of-a-log), [9](#9-splitting-file-names-and-default-values) |
 
 **Patterns**
@@ -201,7 +202,7 @@ The header lines (`N r1 SCF` and the dashes) do not match the row pattern, so th
 awk '/SCF Done/ {e=$5} /Stationary point found/ {n++; print 200-20*n, e}' dce_scan.log
 ```
 
-The first rule keeps overwriting `e`, so it always holds the latest energy. The second fires once per converged point and prints whatever `e` holds at that moment, together with the dihedral, rebuilt from the counter `n` (the scan starts at 180° and steps by −20°). In [`S03 ex5/extract.sh`](../sessions/03-geometry-optimization/ex5-dichloroethane-scan/extract.sh#L19) it replaces the scan summary table, which prints only five decimals.
+The first rule keeps overwriting `e`, so it always holds the latest energy. The second fires once per converged point and prints whatever `e` holds at that moment, together with the dihedral, rebuilt from the counter `n` (the scan starts at 180° and steps by −20°). In [`S03 ex5/extract.sh`](../sessions/03-geometry-optimization/ex5-dichloroethane-scan/extract.sh#L19) it replaces the scan summary table, which prints only five decimals. [`S03 ex7/extract.sh`](../sessions/03-geometry-optimization/ex7-fluoromethanol-rotation/extract.sh#L16) reuses it for a scan that climbs from 0° in steps of +20°: `{print 20*n, e; n++}`. Printing *before* incrementing makes the first point come out as 0°.
 
 **In the code:** [`ex3/extract.sh` L31–L35](../sessions/02-hartree-fock/ex3-bond-scans/extract.sh#L31-L35) (the plain version), then reused with a reference energy in [`ex4/extract.sh` L21–L25](../sessions/02-hartree-fock/ex4-rhf-dissociation/extract.sh#L21-L25), [`ex5/extract.sh` L29–L33](../sessions/02-hartree-fock/ex5-uhf-initial-guess/extract.sh#L29-L33) and [`ex6/extract.sh` L18–L24](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L18-L24).
 

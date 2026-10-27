@@ -31,6 +31,7 @@ Each exercise folder has its own README with the task and the reasoning behind e
 | [Ex. 4 — HF vs B3LYP](ex4-hf-vs-b3lyp/) | How much does electron correlation (through B3LYP) improve optimised geometries? | HF, B3LYP / 6-31G*, 6-311G* |
 | [Ex. 5 — Dichloroethane conformers](ex5-dichloroethane-scan/) | How does the energy change as one CH₂Cl group rotates about the C–C bond? | HF/6-31G*, relaxed scan |
 | [Ex. 6 — Conformer thermochemistry](ex6-conformer-thermochemistry/) | What are ΔE, ΔH, ΔG and K between gauche and trans? | HF/6-31G*, opt + freq |
+| [Ex. 7 — Fluoromethanol rotation](ex7-fluoromethanol-rotation/) | Why is the OH hydrogen most stable *gauche* to fluorine, and least stable *anti*? | B3LYP/6-31G*, relaxed scan |
 | [Case study and report](report/) | Ex. 5 and 6 as one study, with a B3LYP extension | HF, B3LYP / 6-31G* |
 
 More exercises will be added as the session goes on.
@@ -147,6 +148,20 @@ Full tables, entropy decomposition, caveats and conclusions: [Ex. 6 README](ex6-
 
 ---
 
+## Ex. 7 — Internal rotation of fluoromethanol
+
+A relaxed scan of the H–O–C–F dihedral at B3LYP/6-31G*: the hydroxyl hydrogen turns about the C–O bond. Steric intuition, which explains 1,2-dichloroethane, gets this one backwards.
+
+![Rotation of fluoromethanol with Newman projections](figures/fluoromethanol_rotation.png)
+
+- **The minimum is *gauche*, the maximum *anti*:** about 60° (66° from a fit), with barriers of 3.0 kcal/mol at 0° and 5.2 kcal/mol at 180°.
+- **The anomeric effect:** at *gauche*, one oxygen lone pair is antiperiplanar to the C–F bond and donates into σ\*(C–F). At *anti*, no lone pair is in that position, and both sit on the fluorine side.
+- **Lone pairs act like substituents.** Drawing the Newman projection with them is what makes the curve readable.
+
+Interpretation, the two wrong explanations that came first, and conclusions: [Ex. 7 README](ex7-fluoromethanol-rotation/).
+
+---
+
 ## Reproducing everything
 
 On a machine with Gaussian 09 (`g09` in the `PATH`):
@@ -158,6 +173,7 @@ cd ex3-ammonia-frequencies && ../run.sh && cd ..       # modes read by hand into
 cd ex4-hf-vs-b3lyp && ./generate.sh && ./extract.sh > results.txt && cd ..
 cd ex5-dichloroethane-scan && ../run.sh && cd ..        # scan points read from the output into scan.txt
 cd ex6-conformer-thermochemistry && ../run.sh && ./extract.sh && cd ..
+cd ex7-fluoromethanol-rotation && ../run.sh && ./extract.sh && cd ..
 python plot_figures.py   # numpy + matplotlib
 ```
 

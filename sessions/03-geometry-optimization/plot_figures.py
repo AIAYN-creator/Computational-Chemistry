@@ -5,6 +5,7 @@ Requires numpy and matplotlib. Figures are written to figures/.
 """
 from pathlib import Path
 
+import matplotlib.patches
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -523,6 +524,100 @@ def fig_report_gap():
         print(level, ", ".join(f"{k} = {v:.3g}" for k, v in d.items()))
 
 
+# --- Figure 8: internal rotation of fluoromethanol (ex7) ---------------------
+F_GREEN, LP_FILL = "#2f9e44", "#f2d48a"
+
+
+def lobe(ax, angle, length, width, **style):
+    """A lone-pair or orbital lobe: an ellipse starting at the centre and
+    pointing along angle (degrees, counterclockwise from +x)."""
+    d = np.array([np.cos(np.radians(angle)), np.sin(np.radians(angle))])
+    centre = d * length / 2
+    ax.add_patch(matplotlib.patches.Ellipse(centre, length, width, angle=angle, **style))
+
+
+def newman_lone_pairs(ax, phi, label):
+    """Newman projection of FCH2-OH along O -> C. Front (centre): O, its H
+    and its two lone pairs. Back (circle): C with F up and two H.
+    phi is the H-O-C-F dihedral, so the front H sits at 90 + phi degrees
+    and the lone pairs 120 degrees on either side. A lone pair within 30
+    degrees of 270, opposite F, is antiperiplanar to C-F (Klyne-Prelog) and
+    is drawn highlighted, next to the back lobe of sigma*(C-F)."""
+    r_circle, r_bond = 0.42, 1.0
+    eclipsed = abs((phi + 180) % 360 - 180) < 1   # front H on top of F
+    nudge = 14 if eclipsed else 0
+    ax.add_patch(plt.Circle((0, 0), r_circle, fill=True, fc=SURFACE, ec=INK, lw=1.4, zorder=1))
+    # Back carbon: F up, two H
+    for start, atom in [(90, "F"), (210, "H"), (330, "H")]:
+        ang = np.radians(start - nudge)
+        d = np.array([np.cos(ang), np.sin(ang)])
+        colour = F_GREEN if atom == "F" else INK_2
+        ax.plot(*zip(d * r_circle, d * r_bond), color=colour, lw=2.2 if atom == "F" else 1.4,
+                zorder=2)
+        ax.text(*(d * (r_bond + 0.2)), atom, ha="center", va="center", color=colour,
+                fontsize=8.5 if atom == "F" else 7.5, fontweight="bold" if atom == "F" else "normal")
+    # sigma*(C-F): its large lobe sits on C, on the side away from F
+    lobe(ax, 270, 0.95, 0.42, fill=False, ec=F_GREEN, lw=1.2, ls=(0, (3, 2)), zorder=2)
+    ax.text(0.33, -0.98, "σ*(C–F)", color=F_GREEN, fontsize=7.5, ha="left", va="center")
+    # Front oxygen: H and two lone pairs
+    h_ang = 90 + phi
+    for lp in (h_ang + 120, h_ang - 120):
+        anti = abs((lp - 270 + 180) % 360 - 180) < 30
+        lobe(ax, lp, 0.62, 0.3, fc=ORANGE if anti else LP_FILL, ec=INK_2, lw=0.8,
+             alpha=0.9 if anti else 0.85, zorder=3)
+    d = np.array([np.cos(np.radians(h_ang)), np.sin(np.radians(h_ang))])
+    ax.plot(*zip((0, 0), d * r_bond), color=INK, lw=1.6, zorder=4)
+    ax.text(*(d * (r_bond + 0.2)), "H", ha="center", va="center", fontsize=7.5, color=INK)
+    ax.add_patch(plt.Circle((0, 0), 0.07, color=INK, zorder=5))
+    ax.set_xlim(-1.6, 1.6)
+    ax.set_ylim(-1.45, 1.45)
+    ax.set_aspect("equal")
+    ax.axis("off")
+    ax.set_title(label, fontsize=9, pad=2)
+
+
+def fig_fluoromethanol():
+    data = np.loadtxt(HERE / "ex7-fluoromethanol-rotation/scan.txt")
+    phi, de = data[:, 0], (data[:, 1] - data[:, 1].min()) * HARTREE_TO_KCAL
+    fit = cosine_fit(np.concatenate([phi, -phi]), np.concatenate([de, de]), order=5)
+    grid = np.linspace(-180, 180, 721)
+    curve = fit(grid)
+    window = (grid > 20) & (grid < 120)
+    phi_min = grid[window][np.argmin(curve[window])]
+
+    fig = plt.figure(figsize=(10, 6.9))
+    ax = fig.add_axes([0.08, 0.08, 0.88, 0.5])
+    ax.plot(grid, curve, color=BLUE, lw=1.6, zorder=1, label="cosine-series fit")
+    ax.plot(phi, de, "o", color=BLUE, ms=7, zorder=3, label="computed (relaxed scan)")
+    mirror = (phi > 0) & (phi < 180)
+    ax.plot(np.append(-phi[mirror], -180), np.append(de[mirror], de[phi == 180]), "o",
+            mfc=SURFACE, mec=BLUE, mew=1.5, ms=7, zorder=3, label="mirrored, E(φ) = E(−φ)")
+    ax.set_xlim(-190, 190)
+    ax.set_ylim(-0.9, 6.4)
+    ax.set_xticks(range(-180, 181, 60))
+    ax.set_xlabel("H–O–C–F dihedral φ (°)")
+    ax.set_ylabel(r"$E - E_{\mathrm{min}}$ (kcal/mol)")
+    ax.legend(loc="upper center", fontsize=8.5)
+
+    key = [(0, "syn, 0°", "no lone pair anti to C–F;\nweak O–H···F attraction"),
+           (phi_min, f"gauche, ≈ {phi_min:.0f}°", "one lone pair anti to C–F:\nn(O) → σ*(C–F)"),
+           (180, "anti, 180°", "no lone pair anti to C–F;\nboth point towards F")]
+    for k, (x, label, note) in enumerate(key):
+        letter = "abc"[k]
+        ax.annotate(f"({letter})", xy=(x, fit(x)[0]), xytext=(0, 9 if k != 1 else -16),
+                    textcoords="offset points", ha="center", fontsize=9.5,
+                    fontweight="bold", color=INK)
+        sub = fig.add_axes([0.1 + k * 0.3, 0.68, 0.24, 0.27])
+        newman_lone_pairs(sub, x, f"({letter}) {label}")
+        sub.text(0.5, -0.06, note, transform=sub.transAxes, ha="center", va="top",
+                 fontsize=7.8, color=INK_2, linespacing=1.3)
+    fig.suptitle("Fluoromethanol, B3LYP/6-31G*: rotation of the OH group, seen along O → C",
+                 x=0.01, ha="left", y=1.045, fontsize=11.5)
+    save(fig, "fluoromethanol_rotation.png")
+    print(f"Fluoromethanol minimum from the fit: phi = {phi_min:.1f} deg, "
+          f"dE(0) = {de[phi == 0][0]:.2f}, dE(180) = {de[phi == 180][0]:.2f} kcal/mol")
+
+
 if __name__ == "__main__":
     fig_errors()
     fig_ir_spectrum()
@@ -531,3 +626,4 @@ if __name__ == "__main__":
     fig_dce_scan()
     fig_thermo()
     fig_report_gap()
+    fig_fluoromethanol()
