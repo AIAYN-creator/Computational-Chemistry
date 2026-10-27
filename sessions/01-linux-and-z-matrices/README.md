@@ -21,9 +21,9 @@ A Z-matrix places each atom relative to atoms already placed: a distance to one,
 | [`hcch.zmat`](z-matrices/hcch.zmat) | HCCH | A linear molecule needs dummy atoms (`X`), one per carbon |
 | [`metoh.com`](single-points/metoh.com) | CH₃OH | A staggered methyl group, with dihedrals 180°, 60° and −60° |
 
-**Dummy atoms.** An atom cannot be defined at 180° from the previous two: the dihedral that should place the next atom becomes undefined. In acetylene each carbon gets a dummy atom `X`, 1 Å away at 90° from the C–C axis. Each H is then placed at 90° from *its own carbon's* dummy with a dihedral of 180°, which puts it on the axis. Converting the Z-matrix to Cartesian coordinates gives exactly 180° for both C–C–H angles ([`plot_figures.py`](plot_figures.py) checks it). This detail came back later: in [Session 03, Ex. 4](../03-geometry-optimization/ex4-hf-vs-b3lyp/#acetylene-came-out-bent), an acetylene input with a single dummy atom optimised to a bent molecule.
+**Dummy atoms.** An atom cannot be defined at 180° from the previous two: the dihedral that should place the next atom becomes undefined. In acetylene each carbon gets a dummy atom `X`, 1 Å away at 90° from the C–C axis. Each H is then placed at 90° from *its own carbon's* dummy with a dihedral of 180°, which puts it on the axis. Converting the Z-matrix to Cartesian coordinates gives exactly 180° for both C–C–H angles ([`plot_figures.py`](plot_figures.py) checks it). This detail came back later: in [Session 03, Ex. 4](../03-geometries-and-conformers/ex4-hf-vs-b3lyp/#acetylene-came-out-bent), an acetylene input with a single dummy atom optimised to a bent molecule.
 
-**Neither cis nor trans.** The two H₂O₂ Z-matrices are the planar extremes. The real molecule is skewed, with a dihedral of about 111°, and finding it takes an optimisation: [Session 03, Ex. 4](../03-geometry-optimization/ex4-hf-vs-b3lyp/) gets 116° with HF and 118° with B3LYP.
+**Neither cis nor trans.** The two H₂O₂ Z-matrices are the planar extremes. The real molecule is skewed, with a dihedral of about 114°, and finding it takes an optimisation: [Session 03, Ex. 4](../03-geometries-and-conformers/ex4-hf-vs-b3lyp/) gets 116° with HF and 118° with B3LYP.
 
 ## First calculations
 
@@ -42,7 +42,7 @@ Values read from the outputs into [`results.txt`](single-points/results.txt).
 |---|---|---|---|
 | Session 01: experimental geometry | 0.958 | 104.5° | −75.58542 |
 | [Session 02, Ex. 2](../02-hartree-fock/ex2-basis-sets/): rounded geometry | 0.96 | 104.5° | −75.58550 |
-| [Session 03, Ex. 1](../03-geometry-optimization/ex1-optimized-geometries/): optimised | 0.9667 | 107.65° | −75.58596 |
+| [Session 03, Ex. 1](../03-geometries-and-conformers/ex1-optimized-geometries/): optimised | 0.9667 | 107.65° | −75.58596 |
 
 The closer the geometry is to the 3-21G minimum, the lower the energy, and the optimised one is lowest of all. Both dipoles are also well above experiment (1.85 D for water, 1.70 D for methanol), the same Hartree–Fock overestimation that Session 03 measures in detail.
 

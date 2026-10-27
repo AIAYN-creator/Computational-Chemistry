@@ -12,7 +12,7 @@ import numpy as np
 ROOT = Path(__file__).resolve().parent.parent
 S01 = ROOT / "sessions/01-linux-and-z-matrices"
 S02 = ROOT / "sessions/02-hartree-fock"
-S03 = ROOT / "sessions/03-geometry-optimization"
+S03 = ROOT / "sessions/03-geometries-and-conformers"
 OUT = ROOT / "docs/cards"
 OUT.mkdir(exist_ok=True)
 

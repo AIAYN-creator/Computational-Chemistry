@@ -1,6 +1,6 @@
-# Session 03 — Geometry Optimisation and Frequencies
+# Session 03 — Geometries, Frequencies and Conformers
 
-From fixed geometries to optimised ones: letting Hartree–Fock find the structure of a molecule, seeing how far that structure is from experiment with each basis set, and then probing the curvature of the minimum through its vibrational frequencies.
+From fixed geometries to optimised ones, and from one structure to several. The first half lets the optimiser find the structure of a molecule, measures how far it lands from experiment with each basis set and with B3LYP, and probes the curvature of the minimum through its vibrational frequencies. The second half turns to conformers: rotations about single bonds, the thermochemistry that decides how each conformer is populated, and the interactions that override steric intuition (the gauche effect, the anomeric effect, an intramolecular hydrogen bond).
 
 ![Error of HF optimised geometries and dipoles against experiment](figures/error_vs_basis.png)
 
@@ -34,8 +34,6 @@ Each exercise folder has its own README with the task and the reasoning behind e
 | [Ex. 7 — Fluoromethanol rotation](ex7-fluoromethanol-rotation/) | Why is the OH hydrogen most stable *gauche* to fluorine, and least stable *anti*? | B3LYP/6-31G*, relaxed scan |
 | [Ex. 8 — Glycine conformers](ex8-glycine-conformers/) | Which of four glycine conformers are true minima, and how are they populated at 298 K? | HF, B3LYP / 6-31G*, opt + freq |
 | [Case study and report](report/) | Ex. 5 and 6 as one study, with a B3LYP extension | HF, B3LYP / 6-31G* |
-
-More exercises will be added as the session goes on.
 
 ---
 

@@ -11,7 +11,7 @@ import numpy as np
 ROOT = Path(__file__).resolve().parent.parent
 S01 = ROOT / "sessions/01-linux-and-z-matrices"
 S02 = ROOT / "sessions/02-hartree-fock"
-S03 = ROOT / "sessions/03-geometry-optimization"
+S03 = ROOT / "sessions/03-geometries-and-conformers"
 
 BLUE, ORANGE, AQUA = "#2a78d6", "#eb6834", "#1baf7a"
 INK, INK_2, GRID = "#0b0b0b", "#52514e", "#e4e3df"

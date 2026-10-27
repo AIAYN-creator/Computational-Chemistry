@@ -16,14 +16,14 @@ This guide is built from the scripts in this repository. Each section explains o
 | [`ex5-uhf-initial-guess/extract.sh`](../sessions/02-hartree-fock/ex5-uhf-initial-guess/extract.sh) | [2](#2-pulling-one-number-out-of-a-log), [3](#3-reading-a-table-of-any-length-with-awk), [4](#4-doing-arithmetic-with-shell-values), [6](#6-gluing-columns-together) |
 | [`ex6-rhf-vs-uhf/extract.sh`](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh) | [2](#2-pulling-one-number-out-of-a-log), [3](#3-reading-a-table-of-any-length-with-awk), [4](#4-doing-arithmetic-with-shell-values), [6](#6-gluing-columns-together), [7](#7-functions-write-it-once) |
 | **Session 03** | |
-| [`ex1-optimized-geometries/generate.sh`](../sessions/03-geometry-optimization/ex1-optimized-geometries/generate.sh) | [5](#5-generating-inputs-from-a-template), [8](#8-mapping-names-with-case), [9](#9-splitting-file-names-and-default-values) |
-| [`ex4-hf-vs-b3lyp/generate.sh`](../sessions/03-geometry-optimization/ex4-hf-vs-b3lyp/generate.sh) | [5](#5-generating-inputs-from-a-template) |
-| [`ex4-hf-vs-b3lyp/extract.sh`](../sessions/03-geometry-optimization/ex4-hf-vs-b3lyp/extract.sh) | [2](#2-pulling-one-number-out-of-a-log) |
-| [`ex5-dichloroethane-scan/extract.sh`](../sessions/03-geometry-optimization/ex5-dichloroethane-scan/extract.sh) | [3](#3-reading-a-table-of-any-length-with-awk) |
-| [`ex6-conformer-thermochemistry/extract.sh`](../sessions/03-geometry-optimization/ex6-conformer-thermochemistry/extract.sh) | [2](#2-pulling-one-number-out-of-a-log) |
-| [`ex7-fluoromethanol-rotation/extract.sh`](../sessions/03-geometry-optimization/ex7-fluoromethanol-rotation/extract.sh) | [3](#3-reading-a-table-of-any-length-with-awk) |
-| [`ex8-glycine-conformers/extract.sh`](../sessions/03-geometry-optimization/ex8-glycine-conformers/extract.sh) | [2](#2-pulling-one-number-out-of-a-log), [9](#9-splitting-file-names-and-default-values) |
-| [`ex1-optimized-geometries/extract.sh`](../sessions/03-geometry-optimization/ex1-optimized-geometries/extract.sh) | [1](#1-running-every-job-in-a-folder-safely), [2](#2-pulling-one-number-out-of-a-log), [9](#9-splitting-file-names-and-default-values) |
+| [`ex1-optimized-geometries/generate.sh`](../sessions/03-geometries-and-conformers/ex1-optimized-geometries/generate.sh) | [5](#5-generating-inputs-from-a-template), [8](#8-mapping-names-with-case), [9](#9-splitting-file-names-and-default-values) |
+| [`ex4-hf-vs-b3lyp/generate.sh`](../sessions/03-geometries-and-conformers/ex4-hf-vs-b3lyp/generate.sh) | [5](#5-generating-inputs-from-a-template) |
+| [`ex4-hf-vs-b3lyp/extract.sh`](../sessions/03-geometries-and-conformers/ex4-hf-vs-b3lyp/extract.sh) | [2](#2-pulling-one-number-out-of-a-log) |
+| [`ex5-dichloroethane-scan/extract.sh`](../sessions/03-geometries-and-conformers/ex5-dichloroethane-scan/extract.sh) | [3](#3-reading-a-table-of-any-length-with-awk) |
+| [`ex6-conformer-thermochemistry/extract.sh`](../sessions/03-geometries-and-conformers/ex6-conformer-thermochemistry/extract.sh) | [2](#2-pulling-one-number-out-of-a-log) |
+| [`ex7-fluoromethanol-rotation/extract.sh`](../sessions/03-geometries-and-conformers/ex7-fluoromethanol-rotation/extract.sh) | [3](#3-reading-a-table-of-any-length-with-awk) |
+| [`ex8-glycine-conformers/extract.sh`](../sessions/03-geometries-and-conformers/ex8-glycine-conformers/extract.sh) | [2](#2-pulling-one-number-out-of-a-log), [9](#9-splitting-file-names-and-default-values) |
+| [`ex1-optimized-geometries/extract.sh`](../sessions/03-geometries-and-conformers/ex1-optimized-geometries/extract.sh) | [1](#1-running-every-job-in-a-folder-safely), [2](#2-pulling-one-number-out-of-a-log), [9](#9-splitting-file-names-and-default-values) |
 
 **Patterns**
 
@@ -72,7 +72,7 @@ done
 
 With this check, the script can be launched again after any interruption and it picks up where it stopped.
 
-**In the code:** [`run.sh` L10–L28](../sessions/02-hartree-fock/run.sh#L10-L28), called by [`ex2/generate.sh` L28](../sessions/02-hartree-fock/ex2-basis-sets/generate.sh#L28) and [`ex3/generate.sh` L18](../sessions/02-hartree-fock/ex3-bond-scans/generate.sh#L18), and directly as `../run.sh` in Ex. 4–6. Session 03 has an identical copy, called from [`S03 ex1/generate.sh` L30](../sessions/03-geometry-optimization/ex1-optimized-geometries/generate.sh#L30). The same idea, applied to results instead of jobs, appears in [`S03 ex1/extract.sh` L29–L32](../sessions/03-geometry-optimization/ex1-optimized-geometries/extract.sh#L29-L32): an optimisation that never printed `Stationary point found` is reported as `NOT-CONVERGED` instead of being read as if it had finished.
+**In the code:** [`run.sh` L10–L28](../sessions/02-hartree-fock/run.sh#L10-L28), called by [`ex2/generate.sh` L28](../sessions/02-hartree-fock/ex2-basis-sets/generate.sh#L28) and [`ex3/generate.sh` L18](../sessions/02-hartree-fock/ex3-bond-scans/generate.sh#L18), and directly as `../run.sh` in Ex. 4–6. Session 03 has an identical copy, called from [`S03 ex1/generate.sh` L30](../sessions/03-geometries-and-conformers/ex1-optimized-geometries/generate.sh#L30). The same idea, applied to results instead of jobs, appears in [`S03 ex1/extract.sh` L29–L32](../sessions/03-geometries-and-conformers/ex1-optimized-geometries/extract.sh#L29-L32): an optimisation that never printed `Stationary point found` is reported as `NOT-CONVERGED` instead of being read as if it had finished.
 
 ---
 
@@ -156,10 +156,10 @@ grep -c "SCF Done" "$f"
 **In the code:**
 - Energy, HOMO, dipole and Mulliken charges: [`ex2/extract.sh` L16–L37](../sessions/02-hartree-fock/ex2-basis-sets/extract.sh#L16-L37)
 - Atomic reference energies: [`ex4/extract.sh` L10](../sessions/02-hartree-fock/ex4-rhf-dissociation/extract.sh#L10), [`ex5/extract.sh` L10](../sessions/02-hartree-fock/ex5-uhf-initial-guess/extract.sh#L10), [`ex6/extract.sh` L10–L11](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L10-L11)
-- Every optimised variable at once, whatever its name (`grep "! *[a-z]"` keeps the variable rows and drops the headers): [`S03 ex4/extract.sh` L23](../sessions/03-geometry-optimization/ex4-hf-vs-b3lyp/extract.sh#L23)
-- Thermochemistry (enthalpy and free energy are the last field of their "Sum of electronic and thermal ..." lines, so `awk '{print $NF}'`): [`S03 ex6/extract.sh` L21–L26](../sessions/03-geometry-optimization/ex6-conformer-thermochemistry/extract.sh#L21-L26)
-- Energy, free energy, dipole (`grep -A 1` and the last field, `Tot=`) and four Z-matrix variables per output: [`S03 ex8/extract.sh` L22–L31](../sessions/03-geometry-optimization/ex8-glycine-conformers/extract.sh#L22-L31)
-- Optimised r and angle, dipole, energy and step count: [`S03 ex1/extract.sh` L36–L49](../sessions/03-geometry-optimization/ex1-optimized-geometries/extract.sh#L36-L49)
+- Every optimised variable at once, whatever its name (`grep "! *[a-z]"` keeps the variable rows and drops the headers): [`S03 ex4/extract.sh` L23](../sessions/03-geometries-and-conformers/ex4-hf-vs-b3lyp/extract.sh#L23)
+- Thermochemistry (enthalpy and free energy are the last field of their "Sum of electronic and thermal ..." lines, so `awk '{print $NF}'`): [`S03 ex6/extract.sh` L21–L26](../sessions/03-geometries-and-conformers/ex6-conformer-thermochemistry/extract.sh#L21-L26)
+- Energy, free energy, dipole (`grep -A 1` and the last field, `Tot=`) and four Z-matrix variables per output: [`S03 ex8/extract.sh` L22–L31](../sessions/03-geometries-and-conformers/ex8-glycine-conformers/extract.sh#L22-L31)
+- Optimised r and angle, dipole, energy and step count: [`S03 ex1/extract.sh` L36–L49](../sessions/03-geometries-and-conformers/ex1-optimized-geometries/extract.sh#L36-L49)
 - ⟨Ŝ²⟩: [`ex5/extract.sh` L34](../sessions/02-hartree-fock/ex5-uhf-initial-guess/extract.sh#L34), [`ex6/extract.sh` L29–L31](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L29-L31)
 
 ---
@@ -205,7 +205,7 @@ The header lines (`N r1 SCF` and the dashes) do not match the row pattern, so th
 awk '/SCF Done/ {e=$5} /Stationary point found/ {n++; print 200-20*n, e}' dce_scan.log
 ```
 
-The first rule keeps overwriting `e`, so it always holds the latest energy. The second fires once per converged point and prints whatever `e` holds at that moment, together with the dihedral, rebuilt from the counter `n` (the scan starts at 180° and steps by −20°). In [`S03 ex5/extract.sh`](../sessions/03-geometry-optimization/ex5-dichloroethane-scan/extract.sh#L19) it replaces the scan summary table, which prints only five decimals. [`S03 ex7/extract.sh`](../sessions/03-geometry-optimization/ex7-fluoromethanol-rotation/extract.sh#L16) reuses it for a scan that climbs from 0° in steps of +20°: `{print 20*n, e; n++}`. Printing *before* incrementing makes the first point come out as 0°.
+The first rule keeps overwriting `e`, so it always holds the latest energy. The second fires once per converged point and prints whatever `e` holds at that moment, together with the dihedral, rebuilt from the counter `n` (the scan starts at 180° and steps by −20°). In [`S03 ex5/extract.sh`](../sessions/03-geometries-and-conformers/ex5-dichloroethane-scan/extract.sh#L19) it replaces the scan summary table, which prints only five decimals. [`S03 ex7/extract.sh`](../sessions/03-geometries-and-conformers/ex7-fluoromethanol-rotation/extract.sh#L16) reuses it for a scan that climbs from 0° in steps of +20°: `{print 20*n, e; n++}`. Printing *before* incrementing makes the first point come out as 0°.
 
 **In the code:** [`ex3/extract.sh` L31–L35](../sessions/02-hartree-fock/ex3-bond-scans/extract.sh#L31-L35) (the plain version), then reused with a reference energy in [`ex4/extract.sh` L21–L25](../sessions/02-hartree-fock/ex4-rhf-dissociation/extract.sh#L21-L25), [`ex5/extract.sh` L29–L33](../sessions/02-hartree-fock/ex5-uhf-initial-guess/extract.sh#L29-L33) and [`ex6/extract.sh` L18–L24](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L18-L24).
 
@@ -251,7 +251,7 @@ done
 
 Besides saving typing, it guarantees that the geometry is *identical* across the series, so any difference in the results comes from the basis alone.
 
-**In the code:** [`ex2/generate.sh` L10–L25](../sessions/02-hartree-fock/ex2-basis-sets/generate.sh#L10-L25) (6 molecules × 4 basis sets) and [`ex3/generate.sh` L6–L15](../sessions/02-hartree-fock/ex3-bond-scans/generate.sh#L6-L15), which also takes the molecule name from the template's file name with `${f%_sto3g.com}`. Session 03 adds a twist: [`S03 ex1/generate.sh` L8–L27](../sessions/03-geometry-optimization/ex1-optimized-geometries/generate.sh#L8-L27) loops over file-name tags and translates them with `case` ([§8](#8-mapping-names-with-case)). [`S03 ex4/generate.sh` L13](../sessions/03-geometry-optimization/ex4-hf-vs-b3lyp/generate.sh#L13) changes the *method* instead of the basis, with two substitutions in one call: `sed "s/#hf/#b3lyp/; s/ HF$/ B3LYP/"`. The `;` separates them, and the `$` anchors the second one to the end of the line, so only the last word of the title changes.
+**In the code:** [`ex2/generate.sh` L10–L25](../sessions/02-hartree-fock/ex2-basis-sets/generate.sh#L10-L25) (6 molecules × 4 basis sets) and [`ex3/generate.sh` L6–L15](../sessions/02-hartree-fock/ex3-bond-scans/generate.sh#L6-L15), which also takes the molecule name from the template's file name with `${f%_sto3g.com}`. Session 03 adds a twist: [`S03 ex1/generate.sh` L8–L27](../sessions/03-geometries-and-conformers/ex1-optimized-geometries/generate.sh#L8-L27) loops over file-name tags and translates them with `case` ([§8](#8-mapping-names-with-case)). [`S03 ex4/generate.sh` L13](../sessions/03-geometries-and-conformers/ex4-hf-vs-b3lyp/generate.sh#L13) changes the *method* instead of the basis, with two substitutions in one call: `sed "s/#hf/#b3lyp/; s/ HF$/ B3LYP/"`. The `;` separates them, and the `$` anchors the second one to the end of the line, so only the last word of the title changes.
 
 ---
 
@@ -316,7 +316,7 @@ done
 
 `tr` derives the tag from the name; `case` derives the name from the tag. The `case` version is longer, but every mapping is written out, and it works for names that no character substitution could produce.
 
-**In the code:** [`S03 ex1/generate.sh` L12–L26](../sessions/03-geometry-optimization/ex1-optimized-geometries/generate.sh#L12-L26).
+**In the code:** [`S03 ex1/generate.sh` L12–L26](../sessions/03-geometries-and-conformers/ex1-optimized-geometries/generate.sh#L12-L26).
 
 ---
 
@@ -346,7 +346,7 @@ echo "$mol $basis $r ${a:--} $mu"     # hf 631gs 0.911 - 1.9719
 
 The general form is `${var:-default}`. Here the default happens to be `-`, hence the odd-looking `:--`.
 
-**In the code:** [`S03 ex1/extract.sh` L23–L25](../sessions/03-geometry-optimization/ex1-optimized-geometries/extract.sh#L23-L25) and [L53](../sessions/03-geometry-optimization/ex1-optimized-geometries/extract.sh#L53). [`S03 ex8/extract.sh` L33](../sessions/03-geometry-optimization/ex8-glycine-conformers/extract.sh#L33) uses the same `${z4:--}` for `zhn2`, a variable that only the non-planar jobs have.
+**In the code:** [`S03 ex1/extract.sh` L23–L25](../sessions/03-geometries-and-conformers/ex1-optimized-geometries/extract.sh#L23-L25) and [L53](../sessions/03-geometries-and-conformers/ex1-optimized-geometries/extract.sh#L53). [`S03 ex8/extract.sh` L33](../sessions/03-geometries-and-conformers/ex8-glycine-conformers/extract.sh#L33) uses the same `${z4:--}` for `zhn2`, a variable that only the non-planar jobs have.
 
 ---
 
@@ -366,7 +366,7 @@ Real mistakes found while cleaning up the scripts. Each one *seemed* to work.
 
 ## 11. When a batch fails
 
-Habits that came out of the chain of errors of [S03 Ex. 8](../sessions/03-geometry-optimization/ex8-glycine-conformers/#how-it-went), where eight jobs failed at once, three times in a row, for three different reasons.
+Habits that came out of the chain of errors of [S03 Ex. 8](../sessions/03-geometries-and-conformers/ex8-glycine-conformers/#how-it-went), where eight jobs failed at once, three times in a row, for three different reasons.
 
 **Before launching**
 
