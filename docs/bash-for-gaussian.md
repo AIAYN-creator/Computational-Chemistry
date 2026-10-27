@@ -19,6 +19,7 @@ This guide is built from the scripts in this repository. Each section explains o
 | [`ex1-optimized-geometries/generate.sh`](../sessions/03-geometry-optimization/ex1-optimized-geometries/generate.sh) | [5](#5-generating-inputs-from-a-template), [8](#8-mapping-names-with-case), [9](#9-splitting-file-names-and-default-values) |
 | [`ex4-hf-vs-b3lyp/generate.sh`](../sessions/03-geometry-optimization/ex4-hf-vs-b3lyp/generate.sh) | [5](#5-generating-inputs-from-a-template) |
 | [`ex4-hf-vs-b3lyp/extract.sh`](../sessions/03-geometry-optimization/ex4-hf-vs-b3lyp/extract.sh) | [2](#2-pulling-one-number-out-of-a-log) |
+| [`ex5-dichloroethane-scan/extract.sh`](../sessions/03-geometry-optimization/ex5-dichloroethane-scan/extract.sh) | [3](#3-reading-a-table-of-any-length-with-awk) |
 | [`ex6-conformer-thermochemistry/extract.sh`](../sessions/03-geometry-optimization/ex6-conformer-thermochemistry/extract.sh) | [2](#2-pulling-one-number-out-of-a-log) |
 | [`ex1-optimized-geometries/extract.sh`](../sessions/03-geometry-optimization/ex1-optimized-geometries/extract.sh) | [1](#1-running-every-job-in-a-folder-safely), [2](#2-pulling-one-number-out-of-a-log), [9](#9-splitting-file-names-and-default-values) |
 
@@ -193,6 +194,14 @@ An `awk` program is a list of `condition { action }` rules, applied to every lin
 3. If the flag is up, at least one row has been read, and this line is *not* a row, the table is over: stop reading the file.
 
 The header lines (`N r1 SCF` and the dashes) do not match the row pattern, so they are skipped automatically. The same few lines work for 11, 22 or 39 points.
+
+**A variant: remember the last value until a trigger.** Sometimes the numbers are not in a table at all. In a relaxed scan every point is a full optimisation, with one `SCF Done` line per geometry step, and the energy that matters is the last one before `Stationary point found`. Two rules are enough:
+
+```bash
+awk '/SCF Done/ {e=$5} /Stationary point found/ {n++; print 200-20*n, e}' dce_scan.log
+```
+
+The first rule keeps overwriting `e`, so it always holds the latest energy. The second fires once per converged point and prints whatever `e` holds at that moment, together with the dihedral, rebuilt from the counter `n` (the scan starts at 180° and steps by −20°). In [`S03 ex5/extract.sh`](../sessions/03-geometry-optimization/ex5-dichloroethane-scan/extract.sh#L19) it replaces the scan summary table, which prints only five decimals.
 
 **In the code:** [`ex3/extract.sh` L31–L35](../sessions/02-hartree-fock/ex3-bond-scans/extract.sh#L31-L35) (the plain version), then reused with a reference energy in [`ex4/extract.sh` L21–L25](../sessions/02-hartree-fock/ex4-rhf-dissociation/extract.sh#L21-L25), [`ex5/extract.sh` L29–L33](../sessions/02-hartree-fock/ex5-uhf-initial-guess/extract.sh#L29-L33) and [`ex6/extract.sh` L18–L24](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L18-L24).
 
