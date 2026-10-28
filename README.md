@@ -27,6 +27,17 @@ The aim is to show the whole workflow, not only the final numbers: how each calc
 
 Each card links to the full story. They are drawn from the session data by [`docs/make_cards.py`](docs/make_cards.py).
 
+## Bash for Gaussian: a field guide
+
+Most of the work in this course happens around Gaussian, not inside it: writing dozens of nearly identical inputs, launching them, checking that they finished, and digging a few numbers out of outputs thousands of lines long. **[The guide](docs/bash-for-gaussian.md)** collects the Bash that does it, built from the scripts in this repository and from the mistakes made while writing them.
+
+- **Run**: [Launch every job in a folder safely](docs/bash-for-gaussian.md#1-running-every-job-in-a-folder-safely), skipping the ones that already finished
+- **Generate**: [Build dozens of inputs from one template](docs/bash-for-gaussian.md#5-generating-inputs-from-a-template) with `sed`, and [map file names to settings](docs/bash-for-gaussian.md#8-mapping-names-with-case) with `case`
+- **Extract**: [Pull one number out of a log](docs/bash-for-gaussian.md#2-pulling-one-number-out-of-a-log), [read a table of any length with awk](docs/bash-for-gaussian.md#3-reading-a-table-of-any-length-with-awk), and [do the arithmetic](docs/bash-for-gaussian.md#4-doing-arithmetic-with-shell-values) on the way
+- **Debug**: [Bugs that seemed to work](docs/bash-for-gaussian.md#10-bugs-worth-remembering), [what to do when a whole batch fails](docs/bash-for-gaussian.md#11-when-a-batch-fails), and how to get a stuck terminal back
+
+Every pattern is shown on the real Gaussian output it reads, and ends with links to the exact lines of every script that uses it.
+
 ## Sessions
 
 | # | Topic | Methods | Highlights |
