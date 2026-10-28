@@ -391,7 +391,7 @@ Habits that came out of the chain of errors of [S03 Ex. 8](../sessions/03-geomet
 
 **When it fails**
 
-- **Read the shape of the error.** `: No such file or directory`, with nothing before the colon, means the file name was empty: the loop variable and the one used in the body are not the same. A prompt that turns into `>` means Bash is waiting for the end of a command, usually an unclosed quote: Ctrl+C gets out.
+- **Read the shape of the error.** `: No such file or directory`, with nothing before the colon, means the file name was empty: the loop variable and the one used in the body are not the same. A prompt that turns into `>` means Bash is waiting for the end of a command, usually an unclosed quote: Ctrl+C gets out (see *Getting the terminal back* below).
 - **Isolate one case and read its `.log`.** The last lines usually say exactly what is wrong, as in `Symbol "znncco" not found in Z-matrix`.
 - **Look at the resulting table.** An empty or shifted column points at a typo in the grep or awk that fills it.
 
@@ -403,3 +403,17 @@ Habits that came out of the chain of errors of [S03 Ex. 8](../sessions/03-geomet
 | `ps aux \| grep -c "[l]1"` | Counts the running Gaussian processes (`l1`, `l101`, ...). The brackets stop `grep` from counting its own command line, which contains `[l]1`, not `l1` |
 | `[ -f "$log" ] && continue` | Short form of an `if`: skip a job whose output already exists (but see [§10](#10-bugs-worth-remembering): a crashed job also leaves a `.log`) |
 | `sed -i '/pattern/a text' *.com` | Appends a line below the matching one, in every file at once |
+
+**Getting the terminal back**
+
+Sometimes the terminal stops responding: no prompt, or a prompt that is not the usual one, and nothing typed seems to do anything. It is almost never frozen; something is waiting. Ctrl+C is the first thing to try: it interrupts whatever is running in the foreground and returns the prompt.
+
+| What you see | What is happening | Way out |
+|---|---|---|
+| The prompt turns into `>` | Bash is waiting for the rest of a command: an unclosed quote, bracket or `do` without `done` | Ctrl+C, then fix the line |
+| A blinking cursor and no prompt, after a `grep` or `awk` | The command was given no file, so it is reading from the keyboard. In [S04 Ex. 1](../sessions/04-sn2-reaction/ex1-reactants-and-products/#how-it-went), a draft `grep "! *rccl "` had lost its `"$m"` | Ctrl+C (or Ctrl+D, which ends the input) |
+| No prompt while `g09 < job.com > job.log` runs | A job launched in the foreground keeps the terminal until it ends | Ctrl+C kills the job. To keep it running instead: Ctrl+Z pauses it, then `bg` resumes it in the background |
+| `:` at the bottom of the screen, or `(END)` | Inside `less` | `q` |
+| `~` down the left margin | Inside Vim | Esc, then `:q!` to leave without saving, or `:wq` to save |
+
+**Ctrl+C does not copy.** In a Linux terminal, Ctrl+C is *interrupt*, not *copy*: copy is Ctrl+Shift+C and paste is Ctrl+Shift+V (or Shift+Insert, or the middle mouse button for the last selection). Pressing Ctrl+C to copy a command kills whatever is running instead.
