@@ -34,6 +34,7 @@ Each card links to the full story. They are drawn from the session data by [`doc
 | 01 | [**Linux and Z-matrices**](sessions/01-linux-and-z-matrices/) | HF/3-21G · Gaussian 09 | Describing a molecule the way Gaussian reads it: shared variables that build in symmetry, cis and trans from a single dihedral, and the dummy atoms a linear molecule cannot do without. First single points of water and methanol |
 | 02 | [**Hartree–Fock in practice**](sessions/02-hartree-fock/) | HF, RHF/UHF · STO-3G → 6-31G(d,p) · Gaussian 09 | How far the basis set moves energies and bond lengths. Why restricted HF cannot break H₂, ending 7.6 eV above two H atoms, and how UHF fixes it at the price of spin contamination. [Full report](sessions/02-hartree-fock/report/report.pdf) |
 | 03 | [**Geometries, frequencies and conformers**](sessions/03-geometries-and-conformers/) | HF, B3LYP · STO-3G → 6-311G* · Gaussian 09 | Optimised geometries against experiment, matching the Session 02 scans to 0.001 Å. Normal modes read from the displacement vectors. What B3LYP fixes over HF. Then three conformational problems: the gauche population of 1,2-dichloroethane ([case study and report](sessions/03-geometries-and-conformers/report/)), the anomeric effect in fluoromethanol, and glycine, where imposed symmetry hid two saddle points |
+| 04 | [**An SN2 reaction**](sessions/04-sn2-reaction/) | HF/6-31+G* · Gaussian 09 | F⁻ + CH₃Cl → CH₃F + Cl⁻: reactants and products first, with diffuse functions for the anions and frequencies even for single atoms; the energy profile of the reaction comes next *(in progress)* |
 
 More sessions will be added as the course goes on.
 
@@ -63,20 +64,21 @@ More sessions will be added as the course goes on.
     │   ├── ex4-rhf-dissociation/  #   *.com        Gaussian inputs
     │   ├── ex5-uhf-initial-guess/ #   *.sh         Bash scripts, commented line by line
     │   └── ex6-rhf-vs-uhf/        #   *.txt, *.dat extracted data
-    └── 03-geometries-and-conformers/ # Same layout
-        ├── README.md
-        ├── report/                # Report (Ex. 5 + 6) and the case study behind it
-        ├── figures/
-        ├── plot_figures.py
-        ├── run.sh
-        ├── ex1-optimized-geometries/
-        ├── ex2-vibrational-frequencies/
-        ├── ex3-ammonia-frequencies/
-        ├── ex4-hf-vs-b3lyp/
-        ├── ex5-dichloroethane-scan/
-        ├── ex6-conformer-thermochemistry/
-        ├── ex7-fluoromethanol-rotation/
-        └── ex8-glycine-conformers/
+    ├── 03-geometries-and-conformers/ # Same layout
+    │   ├── README.md
+    │   ├── report/                # Report (Ex. 5 + 6) and the case study behind it
+    │   ├── figures/
+    │   ├── plot_figures.py
+    │   ├── run.sh
+    │   ├── ex1-optimized-geometries/
+    │   ├── ex2-vibrational-frequencies/
+    │   ├── ex3-ammonia-frequencies/
+    │   ├── ex4-hf-vs-b3lyp/
+    │   ├── ex5-dichloroethane-scan/
+    │   ├── ex6-conformer-thermochemistry/
+    │   ├── ex7-fluoromethanol-rotation/
+    │   └── ex8-glycine-conformers/
+    └── 04-sn2-reaction/           # Same layout (in progress)
 ```
 
 Every session follows the same layout. A `report/` folder appears only when the session has a written report.

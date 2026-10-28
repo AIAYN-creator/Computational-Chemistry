@@ -24,6 +24,9 @@ This guide is built from the scripts in this repository. Each section explains o
 | [`ex7-fluoromethanol-rotation/extract.sh`](../sessions/03-geometries-and-conformers/ex7-fluoromethanol-rotation/extract.sh) | [3](#3-reading-a-table-of-any-length-with-awk) |
 | [`ex8-glycine-conformers/extract.sh`](../sessions/03-geometries-and-conformers/ex8-glycine-conformers/extract.sh) | [2](#2-pulling-one-number-out-of-a-log), [9](#9-splitting-file-names-and-default-values) |
 | [`ex1-optimized-geometries/extract.sh`](../sessions/03-geometries-and-conformers/ex1-optimized-geometries/extract.sh) | [1](#1-running-every-job-in-a-folder-safely), [2](#2-pulling-one-number-out-of-a-log), [9](#9-splitting-file-names-and-default-values) |
+| **Session 04** | |
+| [`run.sh`](../sessions/04-sn2-reaction/run.sh) (same file as in Sessions 02 and 03) | [1](#1-running-every-job-in-a-folder-safely) |
+| [`ex1-reactants-and-products/extract.sh`](../sessions/04-sn2-reaction/ex1-reactants-and-products/extract.sh) | [2](#2-pulling-one-number-out-of-a-log), [9](#9-splitting-file-names-and-default-values) |
 
 **Patterns**
 
@@ -147,6 +150,14 @@ grep "! *r1" "$f" | tail -1 | awk '{print $3}'
 
 ` *` in the pattern means "any number of spaces", so `"! *r1"` matches however much padding Gaussian puts between `!` and the name.
 
+**Numbering the fields instead of counting them**: before writing `awk '{print $5}'`, let awk show which field is which:
+
+```bash
+grep "Free Energies" file.log | awk '{for(i=1;i<=NF;i++) print i, $i}'
+```
+
+To find a value in the first place, `grep -n` gives the line number and `sed -n '440,470p' file.log` prints the lines around it.
+
 **Counting instead of reading**: `grep -c` prints how many lines match. Every geometry step of an optimisation runs one SCF, so counting `SCF Done` lines gives the number of steps.
 
 ```bash
@@ -159,6 +170,7 @@ grep -c "SCF Done" "$f"
 - Every optimised variable at once, whatever its name (`grep "! *[a-z]"` keeps the variable rows and drops the headers): [`S03 ex4/extract.sh` L23](../sessions/03-geometries-and-conformers/ex4-hf-vs-b3lyp/extract.sh#L23)
 - Thermochemistry (enthalpy and free energy are the last field of their "Sum of electronic and thermal ..." lines, so `awk '{print $NF}'`): [`S03 ex6/extract.sh` L21–L26](../sessions/03-geometries-and-conformers/ex6-conformer-thermochemistry/extract.sh#L21-L26)
 - Energy, free energy, dipole (`grep -A 1` and the last field, `Tot=`) and four Z-matrix variables per output: [`S03 ex8/extract.sh` L22–L31](../sessions/03-geometries-and-conformers/ex8-glycine-conformers/extract.sh#L22-L31)
+- E, E + ZPE, H, G and a bond length that exists in only one of the four outputs: [`S04 ex1/extract.sh` L20–L27](../sessions/04-sn2-reaction/ex1-reactants-and-products/extract.sh#L20-L27)
 - Optimised r and angle, dipole, energy and step count: [`S03 ex1/extract.sh` L36–L49](../sessions/03-geometries-and-conformers/ex1-optimized-geometries/extract.sh#L36-L49)
 - ⟨Ŝ²⟩: [`ex5/extract.sh` L34](../sessions/02-hartree-fock/ex5-uhf-initial-guess/extract.sh#L34), [`ex6/extract.sh` L29–L31](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L29-L31)
 
@@ -346,7 +358,7 @@ echo "$mol $basis $r ${a:--} $mu"     # hf 631gs 0.911 - 1.9719
 
 The general form is `${var:-default}`. Here the default happens to be `-`, hence the odd-looking `:--`.
 
-**In the code:** [`S03 ex1/extract.sh` L23–L25](../sessions/03-geometries-and-conformers/ex1-optimized-geometries/extract.sh#L23-L25) and [L53](../sessions/03-geometries-and-conformers/ex1-optimized-geometries/extract.sh#L53). [`S03 ex8/extract.sh` L33](../sessions/03-geometries-and-conformers/ex8-glycine-conformers/extract.sh#L33) uses the same `${z4:--}` for `zhn2`, a variable that only the non-planar jobs have.
+**In the code:** [`S03 ex1/extract.sh` L23–L25](../sessions/03-geometries-and-conformers/ex1-optimized-geometries/extract.sh#L23-L25) and [L53](../sessions/03-geometries-and-conformers/ex1-optimized-geometries/extract.sh#L53). [`S03 ex8/extract.sh` L33](../sessions/03-geometries-and-conformers/ex8-glycine-conformers/extract.sh#L33) uses the same `${z4:--}` for `zhn2`, a variable that only the non-planar jobs have. [`S04 ex1/extract.sh` L29](../sessions/04-sn2-reaction/ex1-reactants-and-products/extract.sh#L29) does it twice, for the C–Cl and C–F bonds, each present in one molecule only.
 
 ---
 
@@ -360,6 +372,8 @@ Real mistakes found while cleaning up the scripts. Each one *seemed* to work.
 | `2</dev/null` | Opens `/dev/null` for *reading* on the error channel instead of sending errors there. The messages vanished anyway, since they could not be written, but only by accident. | `2>/dev/null` |
 | Skip if the `.log` exists | A crashed job leaves a `.log`, so it was never re-run. | Check for `Normal termination` ([§1](#1-running-every-job-in-a-folder-safely)) |
 | `grep -A 41 ... \| tail -39` | Correct only for a 39-point scan. Each new scan needed new numbers. | `awk` table reader ([§3](#3-reading-a-table-of-any-length-with-awk)) |
+| `${%m.com}` | The variable name must come first: `${m%.com}`. Bash stops with `bad substitution`. | `${var%pattern}`: name, then `%`, then what to cut ([§9](#9-splitting-file-names-and-default-values)) |
+| `grep ... *.log` inside a `for m in *.log` loop | Every turn reads all the files: each value is printed once per file, and with several files `grep` puts the file name in front of each match, which shifts the `awk` fields. | Inside the loop, read `"$m"` only |
 | Windows line endings | Scripts edited on Windows can be saved with CRLF endings, and on Linux they fail with `$'\r': command not found`. | [`.gitattributes`](../.gitattributes) forces LF on `*.sh` and `*.com` |
 
 ---
