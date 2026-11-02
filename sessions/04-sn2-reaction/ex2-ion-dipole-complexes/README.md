@@ -82,6 +82,12 @@ The repeated values are **degenerate modes**: in C₃ᵥ, a motion perpendicular
 
 **The chemistry behind them.** Partly filling an antibonding orbital lowers the bond order, (bonding − antibonding electrons)/2, so the bond weakens without breaking. Filling it completely would break it, and that is the reaction itself: the complex is its first step. The large lobe of σ\*(C–X) sits behind the carbon, exactly where the ion arrives. As for why C–F is the stronger bond, size matters more than electronegativity: F is in the same period as C, so the overlap is better.
 
+![The n(F-) to sigma*(C-Cl) donation: energy levels and orbital shape](../figures/orbital_scheme.png)
+
+The scheme puts both ideas in one picture. On the left, the lone pair of the ion donates into the empty antibonding level, and σ\*(C–Cl) lies lower than σ\*(C–F), which is why C–Cl is the better acceptor. On the right, the large lobe of σ\* faces the incoming ion, so the attack comes from behind and ends in Walden inversion, while the node between C and Cl is why electrons in this orbital weaken the bond.
+
+This is the same n → σ\* donation as the anomeric effect in [fluoromethanol](../../03-geometries-and-conformers/ex7-fluoromethanol-rotation/), where it only tilts a conformational preference. Here it goes all the way: the ion ends up forming a new bond and the old one breaks.
+
 ## Beyond the exercise
 
 **The other measurements agree.** The conclusions rest on bond lengths and one frequency, but the outputs hold more evidence, collected in [`comparison.txt`](comparison.txt):
@@ -127,4 +133,4 @@ The product side lies far below the reactant side, and each side has its own wel
 | [`results.txt`](results.txt) | Output of `extract.sh` |
 | [`comparison.txt`](comparison.txt) | C–X stretch, H–C–X angle and ion charge, free and in the complex, copied from the outputs |
 
-The energy profile figure is built by [`plot_figures.py`](../plot_figures.py) from the results of Ex. 1 and Ex. 2.
+The energy profile, from the results of Ex. 1 and Ex. 2, and the orbital scheme, a drawing with no data behind it, are built by [`plot_figures.py`](../plot_figures.py).
