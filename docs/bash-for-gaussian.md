@@ -28,6 +28,7 @@ This guide is built from the scripts in this repository. Each section explains o
 | [`run.sh`](../sessions/04-sn2-reaction/run.sh) (same file as in Sessions 02 and 03) | [1](#1-running-every-job-in-a-folder-safely) |
 | [`ex1-reactants-and-products/extract.sh`](../sessions/04-sn2-reaction/ex1-reactants-and-products/extract.sh) | [2](#2-pulling-one-number-out-of-a-log), [9](#9-splitting-file-names-and-default-values) |
 | [`ex2-ion-dipole-complexes/extract.sh`](../sessions/04-sn2-reaction/ex2-ion-dipole-complexes/extract.sh) | [2](#2-pulling-one-number-out-of-a-log) |
+| [`ex8-hcn-isomerization/extract.sh`](../sessions/04-sn2-reaction/ex8-hcn-isomerization/extract.sh) | [2](#2-pulling-one-number-out-of-a-log), [6](#6-gluing-columns-together), [9](#9-splitting-file-names-and-default-values) |
 
 **Patterns**
 
@@ -151,6 +152,12 @@ grep "! *r1" "$f" | tail -1 | awk '{print $3}'
 
 ` *` in the pattern means "any number of spaces", so `"! *r1"` matches however much padding Gaussian puts between `!` and the name.
 
+**Several names at once**: with `grep -E` (extended regular expressions), `(a|b)` means "a or b". The same bond can have a different name in each input, and one column can read them all. The space after the name keeps `rch` from matching a longer one, such as `rch2`.
+
+```bash
+grep -E "! *(rcn|rnc) " "$f" | tail -1 | awk '{print $3}'
+```
+
 **A pattern must catch what you want, neither more nor less.** Look at how Gaussian writes the line before writing the pattern (`grep -n`, `less`). The first draft of [`S04 ex2/extract.sh`](../sessions/04-sn2-reaction/ex2-ion-dipole-complexes/extract.sh) is a catalogue of what happens otherwise:
 
 | Pattern or field | What went wrong | Better |
@@ -186,6 +193,7 @@ grep -c "SCF Done" "$f"
 - Energy, free energy, dipole (`grep -A 1` and the last field, `Tot=`) and four Z-matrix variables per output: [`S03 ex8/extract.sh` L22–L31](../sessions/03-geometries-and-conformers/ex8-glycine-conformers/extract.sh#L22-L31)
 - E, E + ZPE, H, G and a bond length that exists in only one of the four outputs: [`S04 ex1/extract.sh` L20–L27](../sessions/04-sn2-reaction/ex1-reactants-and-products/extract.sh#L20-L27)
 - The same table for the complexes, with the reason for every field in the header: [`S04 ex2/extract.sh` L20–L28](../sessions/04-sn2-reaction/ex2-ion-dipole-complexes/extract.sh#L20-L28)
+- One column from two variable names, and every frequency of an output on one line with an `awk` loop: [`S04 ex8/extract.sh` L21–L29](../sessions/04-sn2-reaction/ex8-hcn-isomerization/extract.sh#L21-L29)
 - Optimised r and angle, dipole, energy and step count: [`S03 ex1/extract.sh` L36–L49](../sessions/03-geometries-and-conformers/ex1-optimized-geometries/extract.sh#L36-L49)
 - ⟨Ŝ²⟩: [`ex5/extract.sh` L34](../sessions/02-hartree-fock/ex5-uhf-initial-guess/extract.sh#L34), [`ex6/extract.sh` L29–L31](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L29-L31)
 
@@ -293,7 +301,7 @@ paste -d ' ' <(command producing "r ΔE") <(command producing "S2") > out.dat
 - `paste` joins line 1 of each input, then line 2, and so on. `-d ' '` uses a space as separator instead of a tab.
 - `<( ... )` is **process substitution**: Bash runs the command and gives `paste` something that behaves like a file containing its output. It avoids writing temporary files.
 
-**In the code:** [`ex5/extract.sh` L28–L35](../sessions/02-hartree-fock/ex5-uhf-initial-guess/extract.sh#L28-L35) (written out in full) and [`ex6/extract.sh` L47–L48](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L47-L48), where it shrinks to one line thanks to the functions of the next section.
+**In the code:** [`ex5/extract.sh` L28–L35](../sessions/02-hartree-fock/ex5-uhf-initial-guess/extract.sh#L28-L35) (written out in full) and [`ex6/extract.sh` L47–L48](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L47-L48), where it shrinks to one line thanks to the functions of the next section. [`S04 ex8/extract.sh` L37–L40](../sessions/04-sn2-reaction/ex8-hcn-isomerization/extract.sh#L37-L40) glues two tables that sit far apart in one log: the coordinates of the transition state and the displacements of its imaginary mode.
 
 ---
 
@@ -373,7 +381,7 @@ echo "$mol $basis $r ${a:--} $mu"     # hf 631gs 0.911 - 1.9719
 
 The general form is `${var:-default}`. Here the default happens to be `-`, hence the odd-looking `:--`.
 
-**In the code:** [`S03 ex1/extract.sh` L23–L25](../sessions/03-geometries-and-conformers/ex1-optimized-geometries/extract.sh#L23-L25) and [L53](../sessions/03-geometries-and-conformers/ex1-optimized-geometries/extract.sh#L53). [`S03 ex8/extract.sh` L33](../sessions/03-geometries-and-conformers/ex8-glycine-conformers/extract.sh#L33) uses the same `${z4:--}` for `zhn2`, a variable that only the non-planar jobs have. [`S04 ex1/extract.sh` L29](../sessions/04-sn2-reaction/ex1-reactants-and-products/extract.sh#L29) does it twice, for the C–Cl and C–F bonds, each present in one molecule only.
+**In the code:** [`S03 ex1/extract.sh` L23–L25](../sessions/03-geometries-and-conformers/ex1-optimized-geometries/extract.sh#L23-L25) and [L53](../sessions/03-geometries-and-conformers/ex1-optimized-geometries/extract.sh#L53). [`S03 ex8/extract.sh` L33](../sessions/03-geometries-and-conformers/ex8-glycine-conformers/extract.sh#L33) uses the same `${z4:--}` for `zhn2`, a variable that only the non-planar jobs have. [`S04 ex1/extract.sh` L29](../sessions/04-sn2-reaction/ex1-reactants-and-products/extract.sh#L29) does it twice, for the C–Cl and C–F bonds, each present in one molecule only. [`S04 ex8/extract.sh` L26](../sessions/04-sn2-reaction/ex8-hcn-isomerization/extract.sh#L26) does it three times, for variables that only some of the outputs have.
 
 ---
 
@@ -390,6 +398,9 @@ Real mistakes found while cleaning up the scripts. Each one *seemed* to work.
 | `${%m.com}` | The variable name must come first: `${m%.com}`. Bash stops with `bad substitution`. | `${var%pattern}`: name, then `%`, then what to cut ([§9](#9-splitting-file-names-and-default-values)) |
 | `grep ... *.log` inside a `for m in *.log` loop | Every turn reads all the files: each value is printed once per file, and with several files `grep` puts the file name in front of each match, which shifts the `awk` fields. | Inside the loop, read `"$m"` only |
 | `echo "header" < table.txt` | `<` feeds a file *into* a command; `>` writes the output *to* a file. | `>`, with exactly the same file name as the rows |
+| `for m in *.log: do` | With `:`, the `do` is just one more word of the list, and Bash stops at the next line with `syntax error near unexpected token`. | `;` before `do` |
+| `tail -1` on the wrong line | It belongs where a file has *several* matches, such as one `SCF Done` per step. On the free energy, which appears once, it does nothing, and without it on `SCF Done` every step lands in the row. | Ask how many times each line appears: `grep -c` |
+| `$5` in the terminal, `$6` in a test | `grep "SCF Done" *.log` puts the file name in front of each match, so every field moves by one. With a single file, as in a loop, the energy is `$5` again. | Number the fields ([§2](#2-pulling-one-number-out-of-a-log)) on the same command the script will run |
 | Windows line endings | Scripts edited on Windows can be saved with CRLF endings, and on Linux they fail with `$'\r': command not found`. | [`.gitattributes`](../.gitattributes) forces LF on `*.sh` and `*.com` |
 
 ---
@@ -409,6 +420,7 @@ Habits that came out of the chain of errors of [S03 Ex. 8](../sessions/03-geomet
 **When it fails**
 
 - **Read the shape of the error.** `: No such file or directory`, with nothing before the colon, means the file name was empty: the loop variable and the one used in the body are not the same. A prompt that turns into `>` means Bash is waiting for the end of a command, usually an unclosed quote: Ctrl+C gets out (see *Getting the terminal back* below).
+- **Find which link failed, and where.** Gaussian names the program that stopped, and that says a lot: `l1` reads the route line, and a `'` below the copied text marks where it stops understanding (`noeingestest`). `l101` reads the molecule specification, and a `?` marks the place. A job that dies there in a fraction of a second has a writing problem, not a chemical one ([S04 Ex. 8](../sessions/04-sn2-reaction/ex8-hcn-isomerization/#how-it-went)).
 - **Look at the input before touching the options.** An SCF that fails at the first step, with an energy far from the sum of the fragments, points at the geometry. `cat` the input first, and fix it without opening an editor if you like: `sed -i 's/^rch 108\./rch 1.08/' job.com`, where `^` restricts it to lines that start with `rch` and `\.` is a literal dot.
 - **Isolate one case and read its `.log`.** The last lines usually say exactly what is wrong, as in `Symbol "znncco" not found in Z-matrix`.
 - **Look at the resulting table.** An empty or shifted column points at a typo in the grep or awk that fills it.

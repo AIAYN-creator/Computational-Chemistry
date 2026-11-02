@@ -4,7 +4,7 @@ From structures to reactions: the gas-phase substitution
 
 F⁻ + CH₃Cl → CH₃F + Cl⁻
 
-followed at the HF/6-31+G\* level. The first exercises characterise the stationary points on each side, and the next ones build the energy profile between them.
+followed at the HF/6-31+G\* level. The first exercises characterise the stationary points on each side, and the next ones build the energy profile between them. A smaller reaction, HCN → CNH, teaches the search for a transition state on three atoms.
 
 ![The energy profile of the reaction so far](figures/energy_profile.png)
 
@@ -16,8 +16,9 @@ Each exercise folder has its own README with the task and the reasoning behind e
 |---|---|---|
 | [Ex. 1 — Reactants and products](ex1-reactants-and-products/) | What are E, H and G of the four species, and the energy of the overall reaction? | HF/6-31+G\*, opt + freq |
 | [Ex. 2 — Ion-dipole complexes](ex2-ion-dipole-complexes/) | How strongly is each ion bound, and how much does it already weaken the C–X bond? | HF/6-31+G\*, opt + freq |
+| [Ex. 8 — HCN to CNH](ex8-hcn-isomerization/) | How is a transition state located and confirmed, on a three-atom reaction? | HF/6-31G\*, opt + freq, `opt=ts` |
 
-More exercises will be added as the session goes on.
+Ex. 3 to 7 will be added as their calculations finish. Ex. 8 came first because it stands alone.
 
 ---
 
@@ -60,6 +61,27 @@ Dummy atoms, the `rch 108.` that broke the first run, reading the frequencies, a
 
 ---
 
+## Ex. 8 — HCN to CNH
+
+A separate reaction, the H atom jumping from C to N, and the first transition state of the session: a first-order saddle point, with exactly one imaginary frequency.
+
+![Energy levels of HCN, the transition state and CNH, with their geometries to scale](figures/hcn_isomerization.png)
+
+| kcal/mol | ΔE | ΔG, 298 K |
+|---|---|---|
+| Reaction, CNH − HCN | +12.47 | +11.81 |
+| Barrier from HCN | 52.24 | 47.19 |
+| Barrier from CNH | 39.77 | 35.38 |
+
+- **One imaginary frequency, 1227i cm⁻¹,** whose mode is the H moving from C to N, nearly alone: its reduced mass is 1.17 amu.
+- **Two separate answers.** The barrier says the reaction is slow, and ΔG says it is unfavourable.
+- **ZPE lowers the barrier by 4 kcal/mol,** because the two bends of HCN are gone at the transition state.
+- **The search climbs.** The energy ends higher than it started, the opposite of a search for a minimum.
+
+The route line, what each option does, the transition vector, and the comparison with experiment and high-level theory: [Ex. 8 README](ex8-hcn-isomerization/).
+
+---
+
 ## Reproducing everything
 
 On a machine with Gaussian 09 (`g09` in the `PATH`):
@@ -67,6 +89,7 @@ On a machine with Gaussian 09 (`g09` in the `PATH`):
 ```bash
 cd ex1-reactants-and-products && ../run.sh && ./extract.sh && cd ..
 cd ex2-ion-dipole-complexes && ../run.sh && ./extract.sh && cd ..
+cd ex8-hcn-isomerization && ../run.sh && ./extract.sh && cd ..
 python plot_figures.py   # matplotlib
 ```
 

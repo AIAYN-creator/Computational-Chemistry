@@ -184,6 +184,89 @@ def fig_orbitals():
     print("Written", OUT / "orbital_scheme.png")
 
 
+# --- Figure 3: HCN to CNH, levels and geometries to scale (ex8) ------------------
+def molecule(ax, atoms, bonds, title):
+    """Atoms {name: (x, y)} and bonds [(a, b, label, dx, dy, dashed)], in angstrom."""
+    for a, b, label, dx, dy, dashed in bonds:
+        (x1, y1), (x2, y2) = atoms[a], atoms[b]
+        ax.plot([x1, x2], [y1, y2], color=INK_2, lw=1.4, zorder=1, ls=(0, (3, 2)) if dashed else "-")
+        ax.text((x1 + x2) / 2 + dx, (y1 + y2) / 2 + dy, label, ha="center", va="center",
+                fontsize=8.5, color=INK_2)
+    for name, (x, y) in atoms.items():
+        ax.add_patch(plt.Circle((x, y), 0.17, fc=SURFACE, ec=INK, lw=1.2, zorder=2))
+        ax.text(x, y, name, ha="center", va="center", fontsize=8.5, color=INK, zorder=3)
+    ax.text(0.5, 0.02, title, transform=ax.transAxes, ha="center", va="bottom", fontsize=9.5, color=INK)
+    xs = [x for x, _ in atoms.values()]
+    centre = (min(xs) + max(xs)) / 2   # each molecule right below its level
+    ax.set_xlim(centre - 2.15, centre + 2.15)
+    ax.set_ylim(-0.95, 1.5)
+    ax.set_aspect("equal")
+    ax.axis("off")
+
+
+def fig_isomerization():
+    table = read_results("ex8-hcn-isomerization/results.txt")
+    keys = ("hcn", "ts_hcn", "cnh")
+    fig = plt.figure(figsize=(8.6, 6.0))
+    grid = fig.add_gridspec(2, 3, height_ratios=[1.5, 1], hspace=0.02, wspace=0)
+    ax = fig.add_subplot(grid[0, :])
+    # E lies above G at the TS and at CNH: its label goes above, the one of G below
+    for column, colour, label, shift in (("E", BLUE, "ΔE", 3.4), ("G", ORANGE, "ΔG (298 K)", -3.4)):
+        y = [(float(table[k][column]) - float(table["hcn"][column])) * HARTREE_TO_KCAL for k in keys]
+        for k, yi in enumerate(y):
+            ax.plot([k - 0.26, k + 0.26], [yi, yi], color=colour, lw=3, solid_capstyle="butt",
+                    label=label if k == 0 else None, zorder=3)
+            if k == 0:   # both are 0 at HCN: one label
+                if column == "E":
+                    ax.text(k, yi + shift, "0", ha="center", va="center", fontsize=9, color=INK_2)
+                continue
+            ax.text(k, yi + shift, f"{yi:.1f}", ha="center", va="center", fontsize=9, color=colour)
+        ax.plot([0.26, 0.74], y[:2], color=colour, lw=0.9, ls=":", zorder=2)
+        ax.plot([1.26, 1.74], y[1:], color=colour, lw=0.9, ls=":", zorder=2)
+    ax.set_xlim(-0.5, 2.5)
+    ax.set_ylim(-6, 62)
+    ax.set_xticks([])
+    ax.set_ylabel("energy relative to HCN (kcal/mol)")
+    ax.grid(axis="x", visible=False)
+    ax.legend(loc="upper right", fontsize=9)
+    ax.set_title(r"H–C≡N $\to$ C≡N–H, HF/6-31G*: energy levels, and geometries to scale", loc="left", fontsize=11.5)
+
+    # C at the origin and N along +x, the same frame for all three
+    rcn = {k: float(table[k]["r_CN"]) for k in keys}
+    rch, rnh = float(table["hcn"]["r_CH"]), float(table["cnh"]["r_NH"])
+    molecule(fig.add_subplot(grid[1, 0]), {"H": (-rch, 0), "C": (0, 0), "N": (rcn["hcn"], 0)},
+             [("H", "C", f"{rch:.3f}", 0, 0.32, False), ("C", "N", f"{rcn['hcn']:.3f}", 0, 0.32, False)],
+             "HCN: minimum")
+
+    # The TS is printed with C-N along y: rotate it into the same frame
+    rows = [l.split() for l in (HERE / "ex8-hcn-isomerization/transition_vector.txt").read_text().splitlines()[1:]]
+    c, h, n = (np.array(r[1:3], float) for r in rows)
+    move = np.array(rows[1][3:5], float)
+    u = (n - c) / np.linalg.norm(n - c)
+    v = (h - c) - (h - c) @ u * u
+    v /= np.linalg.norm(v)
+    frame = lambda p: (p @ u, p @ v)
+    hx, hy = frame(h - c)
+    ts = fig.add_subplot(grid[1, 1])
+    molecule(ts, {"C": (0, 0), "N": (rcn["ts_hcn"], 0), "H": (hx, hy)},
+             [("C", "N", f"{rcn['ts_hcn']:.3f}", 0, -0.27, False),
+              ("C", "H", f"{float(table['ts_hcn']['r_CH']):.3f}", -0.42, 0, False),
+              ("H", "N", f"{np.linalg.norm(h - n):.3f}", 0.5, 0.08, True)],
+             "transition state: 1227i cm$^{-1}$")
+    dx, dy = frame(move)
+    ts.annotate("", xy=(hx + 0.75 * dx, hy + 0.75 * dy), xytext=(hx + 0.17, hy),
+                arrowprops={"arrowstyle": "-|>", "color": AQUA, "lw": 2, "mutation_scale": 13,
+                            "shrinkA": 0, "shrinkB": 0})
+
+    molecule(fig.add_subplot(grid[1, 2]), {"C": (0, 0), "N": (rcn["cnh"], 0), "H": (rcn["cnh"] + rnh, 0)},
+             [("C", "N", f"{rcn['cnh']:.3f}", 0, 0.32, False), ("N", "H", f"{rnh:.3f}", 0, 0.32, False)],
+             "CNH: minimum")
+    fig.savefig(OUT / "hcn_isomerization.png", bbox_inches="tight")
+    plt.close(fig)
+    print("Written", OUT / "hcn_isomerization.png")
+
+
 if __name__ == "__main__":
     fig_profile()
     fig_orbitals()
+    fig_isomerization()
