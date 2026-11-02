@@ -1,0 +1,8 @@
+# Each molecule alone (Ex. 1) and in its complex, HF/6-31+G*, copied from
+# the outputs. nu_CX: C-X stretch (cm-1). a: H-C-X angle (deg).
+# q_ion: Mulliken charge on the ion, hydrogens summed into heavy atoms.
+system r_CX r_CH a nu_CX q_ion
+CH3Cl 1.7858 1.0779 108.43 779.5 -
+F-...CH3Cl 1.8635 1.0701 107.05 559.7 -0.952
+CH3F 1.3713 1.0807 108.49 1154.6 -
+FCH3...Cl- 1.3987 1.0765 108.35 1056.9 -0.985

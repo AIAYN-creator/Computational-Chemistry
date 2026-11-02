@@ -27,6 +27,7 @@ This guide is built from the scripts in this repository. Each section explains o
 | **Session 04** | |
 | [`run.sh`](../sessions/04-sn2-reaction/run.sh) (same file as in Sessions 02 and 03) | [1](#1-running-every-job-in-a-folder-safely) |
 | [`ex1-reactants-and-products/extract.sh`](../sessions/04-sn2-reaction/ex1-reactants-and-products/extract.sh) | [2](#2-pulling-one-number-out-of-a-log), [9](#9-splitting-file-names-and-default-values) |
+| [`ex2-ion-dipole-complexes/extract.sh`](../sessions/04-sn2-reaction/ex2-ion-dipole-complexes/extract.sh) | [2](#2-pulling-one-number-out-of-a-log) |
 
 **Patterns**
 
@@ -150,6 +151,19 @@ grep "! *r1" "$f" | tail -1 | awk '{print $3}'
 
 ` *` in the pattern means "any number of spaces", so `"! *r1"` matches however much padding Gaussian puts between `!` and the name.
 
+**A pattern must catch what you want, neither more nor less.** Look at how Gaussian writes the line before writing the pattern (`grep -n`, `less`). The first draft of [`S04 ex2/extract.sh`](../sessions/04-sn2-reaction/ex2-ion-dipole-complexes/extract.sh) is a catalogue of what happens otherwise:
+
+| Pattern or field | What went wrong | Better |
+|---|---|---|
+| `grep "Energy"`, `grep "distance"` | Guessed words, far too generic | Copy the label from the log |
+| `grep "Sum of electronic"` | Four lines match | The whole label: `"Sum of electronic and thermal Enthalpies="` |
+| `head -3` to get the third line | It gives the *first three* lines, and choosing by position is fragile anyway | A pattern that only that line matches |
+| `grep "rccl" \| tail -1` | Lands in the **archive**, the summary at the end of every log, where everything is run together with `\` separators | `grep "! *rccl"`: the good line starts with `!` |
+| `$6` for the distance | That field is the gradient, about 0 at a minimum | Number the fields (below): the distance is `$3` |
+| `$4`, `$7`, `$8` for the thermochemistry | The right field depends on how many words the label has | `$NF`, the last field, always |
+
+**`*` means two different things.** In `grep "! *rccl"`, `*` belongs to a regular expression: the previous character, repeated zero or more times, so `" *"` is any number of spaces, which is needed because Gaussian aligns its tables. In `*.log`, the shell expands it: any text. Two languages, one symbol.
+
 **Numbering the fields instead of counting them**: before writing `awk '{print $5}'`, let awk show which field is which:
 
 ```bash
@@ -171,6 +185,7 @@ grep -c "SCF Done" "$f"
 - Thermochemistry (enthalpy and free energy are the last field of their "Sum of electronic and thermal ..." lines, so `awk '{print $NF}'`): [`S03 ex6/extract.sh` L21–L26](../sessions/03-geometries-and-conformers/ex6-conformer-thermochemistry/extract.sh#L21-L26)
 - Energy, free energy, dipole (`grep -A 1` and the last field, `Tot=`) and four Z-matrix variables per output: [`S03 ex8/extract.sh` L22–L31](../sessions/03-geometries-and-conformers/ex8-glycine-conformers/extract.sh#L22-L31)
 - E, E + ZPE, H, G and a bond length that exists in only one of the four outputs: [`S04 ex1/extract.sh` L20–L27](../sessions/04-sn2-reaction/ex1-reactants-and-products/extract.sh#L20-L27)
+- The same table for the complexes, with the reason for every field in the header: [`S04 ex2/extract.sh` L20–L28](../sessions/04-sn2-reaction/ex2-ion-dipole-complexes/extract.sh#L20-L28)
 - Optimised r and angle, dipole, energy and step count: [`S03 ex1/extract.sh` L36–L49](../sessions/03-geometries-and-conformers/ex1-optimized-geometries/extract.sh#L36-L49)
 - ⟨Ŝ²⟩: [`ex5/extract.sh` L34](../sessions/02-hartree-fock/ex5-uhf-initial-guess/extract.sh#L34), [`ex6/extract.sh` L29–L31](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L29-L31)
 
@@ -374,6 +389,7 @@ Real mistakes found while cleaning up the scripts. Each one *seemed* to work.
 | `grep -A 41 ... \| tail -39` | Correct only for a 39-point scan. Each new scan needed new numbers. | `awk` table reader ([§3](#3-reading-a-table-of-any-length-with-awk)) |
 | `${%m.com}` | The variable name must come first: `${m%.com}`. Bash stops with `bad substitution`. | `${var%pattern}`: name, then `%`, then what to cut ([§9](#9-splitting-file-names-and-default-values)) |
 | `grep ... *.log` inside a `for m in *.log` loop | Every turn reads all the files: each value is printed once per file, and with several files `grep` puts the file name in front of each match, which shifts the `awk` fields. | Inside the loop, read `"$m"` only |
+| `echo "header" < table.txt` | `<` feeds a file *into* a command; `>` writes the output *to* a file. | `>`, with exactly the same file name as the rows |
 | Windows line endings | Scripts edited on Windows can be saved with CRLF endings, and on Linux they fail with `$'\r': command not found`. | [`.gitattributes`](../.gitattributes) forces LF on `*.sh` and `*.com` |
 
 ---
@@ -387,11 +403,13 @@ Habits that came out of the chain of errors of [S03 Ex. 8](../sessions/03-geomet
 - **Run one job in the foreground first.** A batch in the background hides the error; one job in the foreground shows it, and it takes seconds to fail or to start running normally.
 - **Check the generated inputs, not only the template.** After a `sed` ([§5](#5-generating-inputs-from-a-template)), `grep -H "^zncco " gly_*.com` prints the value in every file, with the file name in front, ready to compare with the table it should match.
 - **Count the atoms.** With an atom missing, the number of electrons can become odd, and a singlet is then impossible. Gaussian may crash instantly instead of saying so.
+- **Ask what each number means.** `rch 108.` puts the hydrogens 108 Å from the carbon, and `a 180.` puts three of them in the same point ([S04 Ex. 2](../sessions/04-sn2-reaction/ex2-ion-dipole-complexes/#how-it-went)). Go through the variables once before launching.
 - **`bash -n script.sh`** checks the syntax (quotes, `do`/`done`) without running anything. It does not catch typos inside patterns: `grep "znnco"` is valid Bash that simply finds nothing.
 
 **When it fails**
 
 - **Read the shape of the error.** `: No such file or directory`, with nothing before the colon, means the file name was empty: the loop variable and the one used in the body are not the same. A prompt that turns into `>` means Bash is waiting for the end of a command, usually an unclosed quote: Ctrl+C gets out (see *Getting the terminal back* below).
+- **Look at the input before touching the options.** An SCF that fails at the first step, with an energy far from the sum of the fragments, points at the geometry. `cat` the input first, and fix it without opening an editor if you like: `sed -i 's/^rch 108\./rch 1.08/' job.com`, where `^` restricts it to lines that start with `rch` and `\.` is a literal dot.
 - **Isolate one case and read its `.log`.** The last lines usually say exactly what is wrong, as in `Symbol "znncco" not found in Z-matrix`.
 - **Look at the resulting table.** An empty or shifted column points at a typo in the grep or awk that fills it.
 
@@ -399,6 +417,10 @@ Habits that came out of the chain of errors of [S03 Ex. 8](../sessions/03-geomet
 
 | Command | What it does |
 |---|---|
+| `g09 < job.com > job.log &` | `&` sends the job to the background and frees the terminal |
+| `jobs` | Lists the background jobs of this terminal |
+| `tail -f job.log` | Follows the log as it grows. Ctrl+C leaves the `tail`, not the job |
+| `grep -c "Normal termination" *.log` | Counts per file, with the name in front (`job.log:2`): 2 for `opt freq`. A saddle point also ends normally, so only the frequencies say it is a minimum |
 | `kill %1` | Stops background job number 1, the `[1]` printed when it was launched |
 | `ps aux \| grep -c "[l]1"` | Counts the running Gaussian processes (`l1`, `l101`, ...). The brackets stop `grep` from counting its own command line, which contains `[l]1`, not `l1` |
 | `[ -f "$log" ] && continue` | Short form of an `if`: skip a job whose output already exists (but see [§10](#10-bugs-worth-remembering): a crashed job also leaves a `.log`) |
