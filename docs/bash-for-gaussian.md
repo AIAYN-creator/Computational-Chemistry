@@ -28,6 +28,8 @@ This guide is built from the scripts in this repository. Each section explains o
 | [`run.sh`](../sessions/04-sn2-reaction/run.sh) (same file as in Sessions 02 and 03) | [1](#1-running-every-job-in-a-folder-safely) |
 | [`ex1-reactants-and-products/extract.sh`](../sessions/04-sn2-reaction/ex1-reactants-and-products/extract.sh) | [2](#2-pulling-one-number-out-of-a-log), [9](#9-splitting-file-names-and-default-values) |
 | [`ex2-ion-dipole-complexes/extract.sh`](../sessions/04-sn2-reaction/ex2-ion-dipole-complexes/extract.sh) | [2](#2-pulling-one-number-out-of-a-log) |
+| [`ex3-potential-energy-surface/extract.sh`](../sessions/04-sn2-reaction/ex3-potential-energy-surface/extract.sh) | [3](#3-reading-a-table-of-any-length-with-awk), [4](#4-doing-arithmetic-with-shell-values) |
+| [`ex4-transition-state/extract.sh`](../sessions/04-sn2-reaction/ex4-transition-state/extract.sh) | [2](#2-pulling-one-number-out-of-a-log), [6](#6-gluing-columns-together) |
 | [`ex8-hcn-isomerization/extract.sh`](../sessions/04-sn2-reaction/ex8-hcn-isomerization/extract.sh) | [2](#2-pulling-one-number-out-of-a-log), [6](#6-gluing-columns-together), [9](#9-splitting-file-names-and-default-values) |
 
 **Patterns**
@@ -242,6 +244,19 @@ awk '/SCF Done/ {e=$5} /Stationary point found/ {n++; print 200-20*n, e}' dce_sc
 
 The first rule keeps overwriting `e`, so it always holds the latest energy. The second fires once per converged point and prints whatever `e` holds at that moment, together with the dihedral, rebuilt from the counter `n` (the scan starts at 180° and steps by −20°). In [`S03 ex5/extract.sh`](../sessions/03-geometries-and-conformers/ex5-dichloroethane-scan/extract.sh#L19) it replaces the scan summary table, which prints only five decimals. [`S03 ex7/extract.sh`](../sessions/03-geometries-and-conformers/ex7-fluoromethanol-rotation/extract.sh#L16) reuses it for a scan that climbs from 0° in steps of +20°: `{print 20*n, e; n++}`. Printing *before* incrementing makes the first point come out as 0°.
 
+**Two coordinates: note several values, print on the last one.** In a 2D scan, each point needs its energy and *both* scanned distances. The notebook gets one more rule, and the output moves to whatever Gaussian prints last for each point, so that by then everything else is already noted:
+
+```bash
+awk '/SCF Done/ {e=$5} /! *r1 .* -DE\/DX/ {r1=$3} /! *r5 .* -DE\/DX/ {print $3, r1, e}' sep.log
+```
+
+- `.*` means "anything": between `r1` and `-DE/DX` there is a number, so `" *"` (spaces only) would not match.
+- Requiring `-DE/DX` keeps out the table of *initial* parameters (`! r1 1.3 Scan !`), which has the same shape: without it, `grep -c` counts 100 lines for 99 points.
+- An `awk` pattern is written between slashes, so the `/` of `DE/DX` would end it early: `DE\/DX`.
+- Each `awk` starts with a blank notebook. A second `awk` reading the output file sees only its columns, `$1`, `$2`, `$3`, not the variables of the first.
+
+The points of a 2D scan come in zigzag, so the grid for gnuplot needs `sort -k1,1n -k2,2n` (by column 1, then by column 2, as numbers) and a blank line each time column 1 changes: `awk '{ if (NR > 1 && $1 != prev) print ""; print; prev = $1 }'`. `prev` is noted *last*: noted first, each line would be compared with itself. In [`S04 ex3/extract.sh` L19](../sessions/04-sn2-reaction/ex3-potential-energy-surface/extract.sh#L19) and [L29–L31](../sessions/04-sn2-reaction/ex3-potential-energy-surface/extract.sh#L29-L31).
+
 **In the code:** [`ex3/extract.sh` L31–L35](../sessions/02-hartree-fock/ex3-bond-scans/extract.sh#L31-L35) (the plain version), then reused with a reference energy in [`ex4/extract.sh` L21–L25](../sessions/02-hartree-fock/ex4-rhf-dissociation/extract.sh#L21-L25), [`ex5/extract.sh` L29–L33](../sessions/02-hartree-fock/ex5-uhf-initial-guess/extract.sh#L29-L33) and [`ex6/extract.sh` L18–L24](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L18-L24).
 
 ---
@@ -263,6 +278,8 @@ For a single calculation with no file to read, use a `BEGIN` block:
 ```bash
 REF_LIH=$(awk -v eh="$EH" -v eli="$ELI" 'BEGIN { printf "%.10f", eh + eli }')
 ```
+
+**A value from a sort.** `sort -n -k3 file | head -1` sorts as numbers by column 3, so the lowest energy comes first, and `-v` hands it to the next `awk`: [`S04 ex3/extract.sh` L22–L29](../sessions/04-sn2-reaction/ex3-potential-energy-surface/extract.sh#L22-L29). Mind the sign: the reference is negative, so E − E_min is a sum, and writing `$3-598.59` gives −750 000 kcal/mol.
 
 **In the code:** ΔE at every point in [`ex4/extract.sh` L21–L25](../sessions/02-hartree-fock/ex4-rhf-dissociation/extract.sh#L21-L25) and [`ex5/extract.sh` L29–L33](../sessions/02-hartree-fock/ex5-uhf-initial-guess/extract.sh#L29-L33). The `BEGIN` block, building the references of H₂ and LiH: [`ex6/extract.sh` L35–L36](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L35-L36).
 
@@ -301,7 +318,7 @@ paste -d ' ' <(command producing "r ΔE") <(command producing "S2") > out.dat
 - `paste` joins line 1 of each input, then line 2, and so on. `-d ' '` uses a space as separator instead of a tab.
 - `<( ... )` is **process substitution**: Bash runs the command and gives `paste` something that behaves like a file containing its output. It avoids writing temporary files.
 
-**In the code:** [`ex5/extract.sh` L28–L35](../sessions/02-hartree-fock/ex5-uhf-initial-guess/extract.sh#L28-L35) (written out in full) and [`ex6/extract.sh` L47–L48](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L47-L48), where it shrinks to one line thanks to the functions of the next section. [`S04 ex8/extract.sh` L37–L40](../sessions/04-sn2-reaction/ex8-hcn-isomerization/extract.sh#L37-L40) glues two tables that sit far apart in one log: the coordinates of the transition state and the displacements of its imaginary mode.
+**In the code:** [`ex5/extract.sh` L28–L35](../sessions/02-hartree-fock/ex5-uhf-initial-guess/extract.sh#L28-L35) (written out in full) and [`ex6/extract.sh` L47–L48](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L47-L48), where it shrinks to one line thanks to the functions of the next section. [`S04 ex8/extract.sh` L37–L40](../sessions/04-sn2-reaction/ex8-hcn-isomerization/extract.sh#L37-L40) glues two tables that sit far apart in one log: the coordinates of the transition state and the displacements of its imaginary mode. [`S04 ex4/extract.sh` L35–L38](../sessions/04-sn2-reaction/ex4-transition-state/extract.sh#L35-L38) does the same for six atoms.
 
 ---
 
@@ -400,6 +417,9 @@ Real mistakes found while cleaning up the scripts. Each one *seemed* to work.
 | `echo "header" < table.txt` | `<` feeds a file *into* a command; `>` writes the output *to* a file. | `>`, with exactly the same file name as the rows |
 | `for m in *.log: do` | With `:`, the `do` is just one more word of the list, and Bash stops at the next line with `syntax error near unexpected token`. | `;` before `do` |
 | `tail -1` on the wrong line | It belongs where a file has *several* matches, such as one `SCF Done` per step. On the free energy, which appears once, it does nothing, and without it on `SCF Done` every step lands in the row. | Ask how many times each line appears: `grep -c` |
+| `sed -n '49567.49610p'` | `unknown command: '.'`: a range takes a comma. | `sed -n '49567,49610p'`, or `less +49567 file.log` to open the file at that line |
+| `grep -E "SCF Done \|Stationary"` | Inside a pattern spaces count, and the line says `SCF Done:`, with no space before the colon. | No spaces around `\|` |
+| `e=$('{print $5}')` inside `awk` | `$( )` belongs to Bash. In `awk`, `$5` is field 5 and variables have no `$`: noting a value is `e=$5`. | Keep track of which language each `$` belongs to |
 | `$5` in the terminal, `$6` in a test | `grep "SCF Done" *.log` puts the file name in front of each match, so every field moves by one. With a single file, as in a loop, the energy is `$5` again. | Number the fields ([§2](#2-pulling-one-number-out-of-a-log)) on the same command the script will run |
 | Windows line endings | Scripts edited on Windows can be saved with CRLF endings, and on Linux they fail with `$'\r': command not found`. | [`.gitattributes`](../.gitattributes) forces LF on `*.sh` and `*.com` |
 
