@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parent.parent
 S01 = ROOT / "sessions/01-linux-and-z-matrices"
 S02 = ROOT / "sessions/02-hartree-fock"
 S03 = ROOT / "sessions/03-geometries-and-conformers"
+S04 = ROOT / "sessions/04-sn2-reaction"
 OUT = ROOT / "docs/cards"
 OUT.mkdir(exist_ok=True)
 
@@ -238,6 +239,39 @@ def card_saddle():
          "SESSION 03 · EX. 8", draw, "card_saddle.png")
 
 
+# --- 7. A transition state below the reactants (Session 04, Ex. 4) -----------
+def card_double_well():
+    def read(path):
+        lines = (S04 / path).read_text().splitlines()
+        return {l.split()[0]: float(l.split()[1]) for l in lines[1:]}   # column E
+    ions = read("ex1-reactants-and-products/results.txt")
+    complexes = read("ex2-ion-dipole-complexes/results.txt")
+    ts = read("ex4-transition-state/results.txt")
+    zero = ions["f_anion"] + ions["ch3cl"]
+    y = [(v - zero) * HARTREE_TO_KCAL for v in (
+        zero, complexes["f_ch3cl"], ts["ts_sn2"], complexes["ch3f_cl"], ions["cl_anion"] + ions["ch3f"])]
+
+    def draw(ax):
+        ax.axhline(0, color=INK_2, lw=0.8, ls=(0, (4, 3)))
+        for k, yk in enumerate(y):
+            ax.plot([k - 0.3, k + 0.3], [yk, yk], color=ORANGE if k == 2 else BLUE, lw=2.6,
+                    solid_capstyle="butt", zorder=3)
+            if k < 4:
+                ax.plot([k + 0.3, k + 0.7], [yk, y[k + 1]], color=BLUE, lw=0.8, ls=":")
+        ax.text(2, y[2] - 4, f"{y[2]:.1f}".replace("-", "−"), ha="center", va="top", fontsize=7.5,
+                color=ORANGE)
+        ax.text(4.3, 1.5, "reactants", ha="right", va="bottom", fontsize=7.5, color=INK_2)
+        ax.set_xticks(range(5), ["R", "", "TS", "", "P"], fontsize=7.5)
+        ax.set_xlim(-0.5, 4.5)
+        ax.set_ylim(-60, 8)
+        ax.set_ylabel("ΔE (kcal/mol)", fontsize=8)
+        ax.grid(axis="x", visible=False)
+
+    card(f"{y[2]:.1f}".replace("-", "−"), "kcal/mol", "A transition state\nbelow the reactants",
+         "F⁻ + CH₃Cl in the gas phase: a double well.\nThe barrier from the ion-dipole complex is\n3 kcal/mol, and there is no net barrier at all.",
+         "SESSION 04 · EX. 4", draw, "card_double_well.png")
+
+
 if __name__ == "__main__":
     card_rhf()
     card_acetylene()
@@ -245,3 +279,4 @@ if __name__ == "__main__":
     card_agreement()
     card_anomeric()
     card_saddle()
+    card_double_well()
