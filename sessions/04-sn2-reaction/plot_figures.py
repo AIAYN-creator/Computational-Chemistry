@@ -1,19 +1,21 @@
 """Builds every figure of Session 04 from the processed data files.
 
 Usage (from this folder):  python plot_figures.py
-Requires numpy and matplotlib. Figures are written to figures/.
+Requires numpy, scipy and matplotlib. Figures are written to figures/.
 """
 from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.patches import Ellipse
+from scipy.interpolate import RectBivariateSpline
+from scipy.optimize import root
 
 HERE = Path(__file__).parent
 OUT = HERE / "figures"
 OUT.mkdir(exist_ok=True)
 
-BLUE, ORANGE, AQUA = "#2a78d6", "#eb6834", "#1baf7a"
+BLUE, ORANGE, AQUA, YELLOW = "#2a78d6", "#eb6834", "#1baf7a", "#eda100"
 INK, INK_2, GRID = "#0b0b0b", "#52514e", "#e4e3df"
 SURFACE = "#fcfcfb"
 HARTREE_TO_KCAL = 627.5095
@@ -45,48 +47,68 @@ def read_results(path):
     return {l.split()[0]: dict(zip(names, l.split()[1:])) for l in lines[1:]}
 
 
+def reactants(column="E"):
+    """E or G of F- + CH3Cl, the zero of every energy in this session (hartree)."""
+    ions = read_results("ex1-reactants-and-products/results.txt")
+    return float(ions["f_anion"][column]) + float(ions["ch3cl"][column])
+
+
 def profile():
     """Energy of each stationary point relative to the reactants (kcal/mol)."""
     ions = read_results("ex1-reactants-and-products/results.txt")
     complexes = read_results("ex2-ion-dipole-complexes/results.txt")
+    ts = read_results("ex4-transition-state/results.txt")
     out = {}
     for column in ("E", "G"):
         v = lambda table, key: float(table[key][column])
-        reactants = v(ions, "f_anion") + v(ions, "ch3cl")
         products = v(ions, "cl_anion") + v(ions, "ch3f")
-        out[column] = [(x - reactants) * HARTREE_TO_KCAL for x in (
-            reactants, v(complexes, "f_ch3cl"), v(complexes, "ch3f_cl"), products)]
+        out[column] = [(x - reactants(column)) * HARTREE_TO_KCAL for x in (
+            reactants(column), v(complexes, "f_ch3cl"), v(ts, "ts_sn2"), v(complexes, "ch3f_cl"),
+            products)]
     return out
 
 
-# --- Figure 1: the energy profile so far (ex1 + ex2) -------------------------
+# --- Figure 1: the double-well profile (ex1 + ex2 + ex4) -----------------------
 def fig_profile():
     levels = profile()
-    x = [0, 1, 3, 4]
-    names = [r"F$^-$ + CH$_3$Cl", r"F$^-\cdots$CH$_3$Cl", r"FCH$_3\cdots$Cl$^-$", r"CH$_3$F + Cl$^-$"]
-    fig, ax = plt.subplots(figsize=(8.6, 4.4))
-    # G lies above E at the complexes: its label goes above, the one of E below
-    for column, colour, label, shift in (("E", BLUE, "ΔE", -2.6), ("G", ORANGE, "ΔG (298 K)", 2.6)):
+    x = [0, 1, 2, 3, 4]
+    names = [r"F$^-$ + CH$_3$Cl", r"F$^-\cdots$CH$_3$Cl", "transition\nstate",
+             r"FCH$_3\cdots$Cl$^-$", r"CH$_3$F + Cl$^-$"]
+    fig, ax = plt.subplots(figsize=(8.6, 4.8))
+    ax.axhline(0, color=INK_2, lw=0.8, ls=(0, (4, 3)), zorder=1)
+    ax.text(4.55, 1.4, "separated reactants", ha="right", va="bottom", fontsize=8.5, color=INK_2)
+    # G lies above E everywhere: its label goes above, the one of E below
+    for column, colour, label, shift in (("E", BLUE, "ΔE", -2.7), ("G", ORANGE, "ΔG (298 K)", 2.7)):
         y = levels[column]
         for k, (xi, yi) in enumerate(zip(x, y)):
-            ax.plot([xi - 0.3, xi + 0.3], [yi, yi], color=colour, lw=3, solid_capstyle="butt",
+            ax.plot([xi - 0.28, xi + 0.28], [yi, yi], color=colour, lw=3, solid_capstyle="butt",
                     label=label if k == 0 else None, zorder=3)
-            if k == 0 and column == "E":   # both are 0 at the reactants: one label
+            if k == 0:   # both are 0 at the reactants: no label needed
                 continue
-            text = "0" if k == 0 else f"{yi:.1f}".replace("-", "−")
-            ax.text(xi, yi + shift, text, ha="center", va="center",
-                    fontsize=9, color=INK_2 if k == 0 else colour)
-        ax.plot([x[0] + 0.3, x[1] - 0.3], y[:2], color=colour, lw=0.9, ls=":", zorder=2)
-        ax.plot([x[2] + 0.3, x[3] - 0.3], y[2:], color=colour, lw=0.9, ls=":", zorder=2)
-    ax.text(2, -22, "transition state:\nnext exercises", ha="center", va="center",
-            fontsize=9, color=INK_2, style="italic")
+            ax.text(xi, yi + shift, f"{yi:.1f}".replace("-", "−"), ha="center", va="center",
+                    fontsize=9, color=colour)
+        for k in range(4):
+            ax.plot([x[k] + 0.28, x[k + 1] - 0.28], y[k:k + 2], color=colour, lw=0.9, ls=":", zorder=2)
+    e = levels["E"]
+    # The two wells, and the barrier between them
+    ax.annotate("", xy=(2.42, e[2]), xytext=(2.42, e[1]),
+                arrowprops={"arrowstyle": "<->", "color": INK, "lw": 0.9, "shrinkA": 0, "shrinkB": 0})
+    ax.text(2.5, (e[1] + e[2]) / 2 - 1, f"barrier from the complex: {e[2] - e[1]:.1f}",
+            ha="left", va="center", fontsize=9, color=INK)
+    ax.annotate("", xy=(1.62, e[2]), xytext=(1.62, 0),
+                arrowprops={"arrowstyle": "<->", "color": INK, "lw": 0.9, "shrinkA": 0, "shrinkB": 0})
+    ax.text(1.56, -3, f"{-e[2]:.1f}", ha="right", va="center", fontsize=9, color=INK)
+    ax.text(2.55, -27, f"the transition state lies {-e[2]:.1f} kcal/mol\nbelow the separated reactants:\n"
+            "no net barrier from them", ha="left", va="center", fontsize=9, color=INK)
+    for xi, text in ((1, "well 1"), (3, "well 2")):
+        ax.text(xi, e[xi] - 7, text, ha="center", va="center", fontsize=9, color=INK_2, style="italic")
     ax.set_xticks(x, names)
     ax.set_xlim(-0.6, 4.6)
-    ax.set_ylim(-60, 10)
+    ax.set_ylim(-63, 10)
     ax.set_ylabel("energy relative to reactants (kcal/mol)")
     ax.grid(axis="x", visible=False)
     ax.legend(loc="lower left", fontsize=9)
-    ax.set_title(r"F$^-$ + CH$_3$Cl $\to$ CH$_3$F + Cl$^-$, HF/6-31+G*: the profile so far",
+    ax.set_title(r"F$^-$ + CH$_3$Cl $\to$ CH$_3$F + Cl$^-$, HF/6-31+G*: the double-well profile",
                  loc="left", fontsize=11.5)
     fig.savefig(OUT / "energy_profile.png", bbox_inches="tight")
     plt.close(fig)
@@ -266,7 +288,167 @@ def fig_isomerization():
     print("Written", OUT / "hcn_isomerization.png")
 
 
+# --- Figure 4: the potential energy surface and its minimum energy path (ex3) ---
+def surface():
+    """The 9 x 11 scan as a grid in kcal/mol above F- + CH3Cl, and a bicubic spline of it."""
+    rows = np.loadtxt(HERE / "ex3-potential-energy-surface/scan_raw.txt")
+    ccl, cf = np.unique(rows[:, 0]), np.unique(rows[:, 1])
+    grid = np.empty((len(ccl), len(cf)))
+    for a, b, e in rows:
+        grid[np.searchsorted(ccl, a), np.searchsorted(cf, b)] = (e - reactants()) * HARTREE_TO_KCAL
+    return ccl, cf, grid, RectBivariateSpline(ccl, cf, grid)
+
+
+def steepest_descent(spline, start, direction, step=0.002, limits=((1.6, 3.6), (1.3, 2.9))):
+    """Walk downhill from the saddle point until the energy stops falling."""
+    energy = lambda p: spline(*p)[0, 0]
+    path = [start]
+    p = start + step * direction
+    while True:
+        g = np.array([spline(*p, dx=1)[0, 0], spline(*p, dy=1)[0, 0]])
+        nxt = p - step * g / np.linalg.norm(g)
+        inside = all(lo <= v <= hi for v, (lo, hi) in zip(nxt, limits))
+        if not inside or energy(nxt) >= energy(p):
+            return np.array(path + [p])
+        path.append(p)
+        p = nxt
+
+
+def fig_pes():
+    ccl, cf, grid, spline = surface()
+    ts = read_results("ex4-transition-state/results.txt")["ts_sn2"]
+    complexes = read_results("ex2-ion-dipole-complexes/results.txt")
+    opt = {k: ((float(v["E"]) - reactants()) * HARTREE_TO_KCAL, float(v["r_CCl"]), float(v["r_CF"]))
+           for k, v in complexes.items()}
+    opt["ts"] = ((float(ts["E"]) - reactants()) * HARTREE_TO_KCAL, float(ts["r_CCl"]), float(ts["r_CF"]))
+
+    # The saddle point of the spline, close to the optimised one, and the
+    # direction of negative curvature there
+    grad = lambda p: [spline(*p, dx=1)[0, 0], spline(*p, dy=1)[0, 0]]
+    saddle = root(grad, [opt["ts"][1], opt["ts"][2]]).x
+    hess = np.array([[spline(*saddle, dx=2)[0, 0], spline(*saddle, dx=1, dy=1)[0, 0]],
+                     [spline(*saddle, dx=1, dy=1)[0, 0], spline(*saddle, dy=2)[0, 0]]])
+    values, vectors = np.linalg.eigh(hess)
+    down = vectors[:, np.argmin(values)]
+    side_a, side_b = (steepest_descent(spline, saddle, s * down) for s in (1, -1))
+    # From the reactant valley (short C-Cl) to the product valley
+    if side_a[-1, 0] > side_b[-1, 0]:
+        side_a, side_b = side_b, side_a
+    path = np.vstack([side_a[::-1], side_b[1:]])
+    along = np.concatenate([[0], np.cumsum(np.linalg.norm(np.diff(path, axis=0), axis=1))])
+    energy = spline(path[:, 0], path[:, 1], grid=False)
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5.0),
+                                   gridspec_kw={"width_ratios": [1.12, 1], "wspace": 0.42})
+    # (a) The map
+    fx, fy = np.linspace(1.6, 3.6, 300), np.linspace(1.3, 2.9, 300)
+    fine = spline(fx, fy).T
+    levels = np.arange(-55, 41, 5)
+    filled = ax1.contourf(fx, fy, fine, levels=levels, cmap="magma", extend="max")
+    ax1.contour(fx, fy, fine, levels=levels, colors="white", linewidths=0.45, alpha=0.35)
+    gx, gy = np.meshgrid(ccl, cf)
+    ax1.plot(gx.ravel(), gy.ravel(), ".", color="white", ms=2.2, alpha=0.55)
+    ax1.plot(path[:, 0], path[:, 1], color=AQUA, lw=2.6, solid_capstyle="round")
+    for key in ("f_ch3cl", "ch3f_cl"):
+        ax1.plot(opt[key][1], opt[key][2], "o", ms=8, mfc="white", mec=INK, mew=1.2, zorder=5)
+    ax1.plot(opt["ts"][1], opt["ts"][2], "*", ms=17, mfc=YELLOW, mec=INK, mew=1, zorder=5)
+    for x, y, text, ha, colour in (
+            (1.98, 2.66, r"F$^-\cdots$CH$_3$Cl" + "\nreactant complex", "left", "white"),
+            (3.25, 1.56, r"FCH$_3\cdots$Cl$^-$" + "\nproduct complex", "center", "white"),
+            (2.24, 2.2, "transition state\n(2.133, 2.125)", "left", "white"),
+            (1.64, 1.42, "highest region:\nF and Cl crowd C,\nnever visited", "left", INK)):
+        ax1.text(x, y, text, ha=ha, va="center", fontsize=8.5, color=colour)
+    ax1.set_xlabel("d(C–Cl) (Å)")
+    ax1.set_ylabel("d(C–F) (Å)")
+    ax1.set_aspect("equal")
+    ax1.grid(False)
+    bar = fig.colorbar(filled, ax=ax1, fraction=0.045, pad=0.03)
+    bar.set_label("kcal/mol, relative to F$^-$ + CH$_3$Cl")
+    ax1.set_anchor("N")   # top edge level with panel (b), so the titles line up
+    ax1.set_title("(a) The surface: 99 points, interpolated", loc="left", fontsize=10.5)
+
+    # (b) The same path, stretched out
+    ax2.axhline(0, color=INK_2, lw=0.8, ls=(0, (4, 3)))
+    ax2.text(along[-1], 1.2, "separated reactants", ha="right", va="bottom", fontsize=8.5, color=INK_2)
+    ax2.plot(along, energy, color=AQUA, lw=2.4, label="along the path of the scan")
+    nearest = lambda key: along[np.argmin(np.hypot(path[:, 0] - opt[key][1], path[:, 1] - opt[key][2]))]
+    for key, marker, size, colour in (("f_ch3cl", "o", 8, "white"), ("ts", "*", 16, YELLOW),
+                                      ("ch3f_cl", "o", 8, "white")):
+        ax2.plot(nearest(key), opt[key][0], marker, ms=size, mfc=colour, mec=INK, mew=1.1, zorder=5,
+                 label="optimised (Ex. 2 and 4)" if key == "ts" else None)
+        last = key == "ch3f_cl"   # at the right edge: label on its left
+        ax2.text(nearest(key) + (-0.06 if last else 0.06), opt[key][0] + (2.4 if key == "ts" else -2.6),
+                 f"{opt[key][0]:.1f}".replace("-", "−"), ha="right" if last else "left",
+                 va="center", fontsize=9, color=INK)
+    ax2.set_xlabel("distance along the path (Å)")
+    ax2.set_ylabel("energy relative to F$^-$ + CH$_3$Cl (kcal/mol)")
+    ax2.set_ylim(-60, 8)
+    ax2.legend(loc="lower left", fontsize=9)
+    ax2.set_title("(b) The minimum energy path, stretched out", loc="left", fontsize=10.5)
+    fig.suptitle(r"F$^-$ + CH$_3$Cl, HF/6-31+G*: relaxed scan of d(C–Cl) and d(C–F)",
+                 x=0.07, ha="left", y=0.99, fontsize=11.5)
+    fig.savefig(OUT / "potential_energy_surface.png", bbox_inches="tight")
+    plt.close(fig)
+    print("Written", OUT / "potential_energy_surface.png")
+    print("saddle of the spline", saddle.round(3), "E", round(spline(*saddle)[0, 0], 2))
+    print("path ends", path[0].round(3), round(energy[0], 2), path[-1].round(3), round(energy[-1], 2))
+
+
+# --- Figure 5: the transition vector of the SN2 (ex4) ----------------------------
+def fig_sn2_vector():
+    rows = np.loadtxt(HERE / "ex4-transition-state/transition_vector.txt", skiprows=1)
+    z, xyz, move = rows[:, 0].astype(int), rows[:, 1:4], rows[:, 4:7]
+    c, f = xyz[z == 6][0], xyz[z == 9][0]
+    hydrogens = np.where(z == 1)[0]
+    # The F-C-Cl axis across, and the first H up: the plane of the drawing
+    u = (f - c) / np.linalg.norm(f - c)
+    v = (xyz[hydrogens[0]] - c) - (xyz[hydrogens[0]] - c) @ u * u
+    v /= np.linalg.norm(v)
+    flat = lambda p: np.array([p @ u, p @ v])
+    pos = {k: flat(xyz[k] - c) for k in range(len(z))}
+    names = {6: "C", 9: "F", 17: "Cl", 1: "H"}
+    fig, ax = plt.subplots(figsize=(7.6, 3.6))
+    for k in hydrogens:
+        behind = k != hydrogens[0]   # the other two H are out of the plane
+        ax.plot(*zip(pos[np.where(z == 6)[0][0]], pos[k]), color=INK_2, lw=1.3, alpha=0.5 if behind else 1)
+    for name, ls in ((9, (0, (3, 2))), (17, (0, (3, 2)))):
+        k = np.where(z == name)[0][0]
+        ax.plot(*zip(pos[np.where(z == 6)[0][0]], pos[k]), color=INK_2, lw=1.3, ls=ls)
+    scale = 1.0   # displacements have no unit: 1 is drawn as 1 Å
+    for k in range(len(z)):
+        behind = z[k] == 1 and k != hydrogens[0]
+        radius = 0.24 if z[k] != 1 else 0.17
+        ax.add_patch(plt.Circle(pos[k], radius, fc=SURFACE, ec=INK, lw=1.2, zorder=3, alpha=0.6 if behind else 1))
+        ax.text(*pos[k], names[z[k]], ha="center", va="center", fontsize=8.5, color=INK, zorder=4,
+                alpha=0.6 if behind else 1)
+        d = flat(move[k]) * scale
+        if np.linalg.norm(d) > 0.05:
+            # The short arrows of the H atoms start at the edge of the circle, so they stay visible
+            edge = pos[k] + (radius * d / np.linalg.norm(d) if z[k] == 1 else 0)
+            ax.annotate("", xy=edge + d, xytext=edge, zorder=5,
+                        arrowprops={"arrowstyle": "-|>", "color": AQUA, "lw": 2, "mutation_scale": 12,
+                                    "shrinkA": 0, "shrinkB": 0})
+    ts = read_results("ex4-transition-state/results.txt")["ts_sn2"]
+    ax.text(pos[np.where(z == 9)[0][0]][0] / 2, -0.32, f"{float(ts['r_CF']):.3f} Å", ha="center",
+            fontsize=8.5, color=INK_2)
+    ax.text(pos[np.where(z == 17)[0][0]][0] / 2, -0.32, f"{float(ts['r_CCl']):.3f} Å", ha="center",
+            fontsize=8.5, color=INK_2)
+    ax.text(0.05, -1.3, "The carbon moves most, towards F and away from Cl, through the plane of the H atoms.\n"
+            "The two pale H atoms lie out of the plane, one behind the other.", ha="center", va="center", fontsize=8.5, color=INK_2)
+    ax.set_xlim(-2.75, 2.75)
+    ax.set_ylim(-1.45, 1.45)
+    ax.set_aspect("equal")
+    ax.axis("off")
+    ax.set_title("The SN2 transition state and its imaginary mode, 442i cm$^{-1}$ (arrows: the transition vector)",
+                 loc="left", fontsize=10.5)
+    fig.savefig(OUT / "sn2_transition_vector.png", bbox_inches="tight")
+    plt.close(fig)
+    print("Written", OUT / "sn2_transition_vector.png")
+
+
 if __name__ == "__main__":
     fig_profile()
     fig_orbitals()
     fig_isomerization()
+    fig_pes()
+    fig_sn2_vector()
