@@ -102,11 +102,9 @@ This is the same n → σ\* donation as the anomeric effect in [fluoromethanol](
 - **Charge really moves.** F⁻ has given away about 0.05 e, and Cl⁻ about 0.015 e, again a ratio of about 3. Mulliken charges are not reliable in absolute terms, least of all with diffuse functions, but the comparison between two similar systems is meaningful, and it is the donation that conclusion 1 describes.
 - **The umbrella starts to close.** In the transition state the CH₃ group has to pass through a planar arrangement, with H–C–X = 90°. The H–C–Cl angle has already dropped by 1.4° in F⁻···CH₃Cl, and H–C–F by only 0.1° in the other complex. The structure of the reactant complex already leans towards the reaction.
 
-**The profile takes shape.** With Ex. 1 and these two complexes, four points of the reaction are known:
+**The profile takes shape.** With Ex. 1 and these two complexes, four of the five points of the reaction are known. The product side lies far below the reactant side, and each side has its own well. The fifth point, the transition state between the wells, comes in [Ex. 4](../ex4-transition-state/#the-double-well-profile), and with it the complete profile:
 
-![The energy profile of the reaction so far](../figures/energy_profile.png)
-
-The product side lies far below the reactant side, and each side has its own well. Between them is the transition state, which is what the next exercises have to find.
+![The double-well profile of the reaction](../figures/energy_profile.png)
 
 **ΔG tells a different story from ΔE.** Against separated fragments, the complexes are much less bound in free energy: −8.3 kcal/mol for F⁻···CH₃Cl and only −2.5 kcal/mol for FCH₃···Cl⁻. Two particles becoming one lose their independent translation, which costs 5 to 6 kcal/mol at 298 K and 1 atm. In ΔH the change is tiny (−14.4 and −7.8 kcal/mol), so nearly all of it is entropy.
 
