@@ -272,6 +272,44 @@ def card_double_well():
          "SESSION 04 · EX. 4", draw, "card_double_well.png")
 
 
+# --- 8. Water turns the double well into a barrier (Session 04, extra) ---------
+def card_water():
+    def read(path, column):
+        lines = (S04 / path).read_text().splitlines()
+        k = lines[0].split().index(column)
+        # "-" marks a value a species does not have (the unfinished F- complex in water)
+        return {l.split()[0]: float(l.split()[k]) for l in lines[1:] if l.split()[k] != "-"}
+    ions = read("ex1-reactants-and-products/results.txt", "G")
+    complexes = read("ex2-ion-dipole-complexes/results.txt", "G")
+    ts = read("ex4-transition-state/results.txt", "G")
+    wat = read("extra-water-pcm/results.txt", "G")
+    rel = lambda values, zero: [(v - zero) * HARTREE_TO_KCAL for v in values]
+    gas = rel((ions["f_anion"] + ions["ch3cl"], complexes["f_ch3cl"], ts["ts_sn2"], complexes["ch3f_cl"],
+               ions["cl_anion"] + ions["ch3f"]), ions["f_anion"] + ions["ch3cl"])
+    water = rel((wat["f_anion"] + wat["ch3cl"], wat["ts_sn2"], wat["cl_anion"] + wat["ch3f"]),
+                wat["f_anion"] + wat["ch3cl"])
+
+    def draw(ax):
+        ax.axhline(0, color=INK_2, lw=0.8, ls=(0, (4, 3)))
+        for xs, ys, colour, label in ((range(5), gas, BLUE, "gas"), ((0, 2, 4), water, ORANGE, "water")):
+            xs = list(xs)
+            for k, (x, y) in enumerate(zip(xs, ys)):
+                ax.plot([x - 0.3, x + 0.3], [y, y], color=colour, lw=2.6, solid_capstyle="butt",
+                        label=label if k == 0 else None, zorder=3)
+            for (x1, y1), (x2, y2) in zip(zip(xs, ys), zip(xs[1:], ys[1:])):
+                ax.plot([x1 + 0.3, x2 - 0.3], [y1, y2], color=colour, lw=0.8, ls=":")
+        ax.set_xticks(range(5), ["R", "", "TS", "", "P"], fontsize=7.5)
+        ax.set_xlim(-0.5, 4.5)
+        ax.set_ylim(-52, 30)
+        ax.set_ylabel("ΔG (kcal/mol)", fontsize=8)
+        ax.legend(fontsize=7.5, frameon=False, loc="lower left")
+        ax.grid(axis="x", visible=False)
+
+    card(f"+{water[1]:.1f}", "kcal/mol", "Water turns the double well\ninto a barrier",
+         "The same SN2 with a continuum solvent.\nF⁻ is solvated far more than the transition\nstate, where the charge is shared.",
+         "SESSION 04 · REPORT", draw, "card_water.png")
+
+
 if __name__ == "__main__":
     card_rhf()
     card_acetylene()
@@ -280,3 +318,4 @@ if __name__ == "__main__":
     card_anomeric()
     card_saddle()
     card_double_well()
+    card_water()

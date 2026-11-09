@@ -27,7 +27,7 @@ The aim is to show the whole workflow, not only the final numbers: how each calc
 <table>
 <tr>
 <td width="50%"><a href="sessions/04-sn2-reaction/ex4-transition-state/#the-double-well-profile"><img src="docs/cards/card_double_well.png" alt="-11.5 kcal/mol: a transition state below the reactants"></a></td>
-<td width="50%"></td>
+<td width="50%"><a href="sessions/04-sn2-reaction/report/"><img src="docs/cards/card_water.png" alt="+20.9 kcal/mol: water turns the double well into a barrier"></a></td>
 </tr>
 </table>
 
@@ -51,7 +51,7 @@ Every pattern is shown on the real Gaussian output it reads, and ends with links
 | 01 | [**Linux and Z-matrices**](sessions/01-linux-and-z-matrices/) | HF/3-21G · Gaussian 09 | Describing a molecule the way Gaussian reads it: shared variables that build in symmetry, cis and trans from a single dihedral, and the dummy atoms a linear molecule cannot do without. First single points of water and methanol |
 | 02 | [**Hartree–Fock in practice**](sessions/02-hartree-fock/) | HF, RHF/UHF · STO-3G → 6-31G(d,p) · Gaussian 09 | How far the basis set moves energies and bond lengths. Why restricted HF cannot break H₂, ending 7.6 eV above two H atoms, and how UHF fixes it at the price of spin contamination. [Full report](sessions/02-hartree-fock/report/report.pdf) |
 | 03 | [**Geometries, frequencies and conformers**](sessions/03-geometries-and-conformers/) | HF, B3LYP · STO-3G → 6-311G* · Gaussian 09 | Optimised geometries against experiment, matching the Session 02 scans to 0.001 Å. Normal modes read from the displacement vectors. What B3LYP fixes over HF. Then three conformational problems: the gauche population of 1,2-dichloroethane ([case study and report](sessions/03-geometries-and-conformers/report/)), the anomeric effect in fluoromethanol, and glycine, where imposed symmetry hid two saddle points |
-| 04 | [**An SN2 reaction**](sessions/04-sn2-reaction/) | HF/6-31+G* · Gaussian 09 | F⁻ + CH₃Cl → CH₃F + Cl⁻, one stationary point at a time. Diffuse functions for the anions, frequencies even for single atoms, and ion-dipole complexes where the bond is already 28 % softer in frequency before the reaction starts. A potential energy surface of 99 points, and its pass optimised into the transition state of a double well, 11.5 kcal/mol below the reactants. A first transition state on HCN → CNH. The IRC comes next *(in progress)* |
+| 04 | [**An SN2 reaction**](sessions/04-sn2-reaction/) | HF/6-31+G* · Gaussian 09 | F⁻ + CH₃Cl → CH₃F + Cl⁻, one stationary point at a time. Diffuse functions for the anions, frequencies even for single atoms, and ion-dipole complexes where the bond is already 28 % softer in frequency before the reaction starts. A potential energy surface of 99 points, and its pass optimised into the transition state of a double well, 11.5 kcal/mol below the reactants. Then the same reaction in water, where the double well becomes a barrier of 20.9 kcal/mol ([case study and report](sessions/04-sn2-reaction/report/)). A first transition state on HCN → CNH. The IRC comes next *(in progress)* |
 
 More sessions will be added as the course goes on.
 
