@@ -52,6 +52,7 @@ Every pattern is shown on the real Gaussian output it reads, and ends with links
 | 02 | [**Hartree–Fock in practice**](sessions/02-hartree-fock/) | HF, RHF/UHF · STO-3G → 6-31G(d,p) · Gaussian 09 | How far the basis set moves energies and bond lengths. Why restricted HF cannot break H₂, ending 7.6 eV above two H atoms, and how UHF fixes it at the price of spin contamination. [Full report](sessions/02-hartree-fock/report/report.pdf) |
 | 03 | [**Geometries, frequencies and conformers**](sessions/03-geometries-and-conformers/) | HF, B3LYP · STO-3G → 6-311G* · Gaussian 09 | Optimised geometries against experiment, matching the Session 02 scans to 0.001 Å. Normal modes read from the displacement vectors. What B3LYP fixes over HF. Then three conformational problems: the gauche population of 1,2-dichloroethane ([case study and report](sessions/03-geometries-and-conformers/report/)), the anomeric effect in fluoromethanol, and glycine, where imposed symmetry hid two saddle points |
 | 04 | [**An SN2 reaction**](sessions/04-sn2-reaction/) | HF/6-31+G* · Gaussian 09 | F⁻ + CH₃Cl → CH₃F + Cl⁻, one stationary point at a time. Diffuse functions for the anions, frequencies even for single atoms, and ion-dipole complexes where the bond is already 28 % softer in frequency before the reaction starts. A potential energy surface of 99 points, and its pass optimised into the transition state of a double well, 11.5 kcal/mol below the reactants. Then the same reaction in water, where the double well becomes a barrier of 20.9 kcal/mol ([case study and report](sessions/04-sn2-reaction/report/)). A first transition state on HCN → CNH. The IRC comes next *(in progress)* |
+| 07 | [**Solvent effects**](sessions/07-solvent-effects/) | HF · PCM, SMD · Gaussian 09 | The gas phase is left behind. In water, 1,2-dichloroethane turns from 8 % to 58 % gauche, and the SN2 barrier from the complex rises from 3 to 17 kcal/mol. Along the way, a symmetry number that Gaussian can miss and the 0.65 kcal/mol it costs *(in progress)* |
 
 More sessions will be added as the course goes on.
 
@@ -95,7 +96,8 @@ More sessions will be added as the course goes on.
     │   ├── ex6-conformer-thermochemistry/
     │   ├── ex7-fluoromethanol-rotation/
     │   └── ex8-glycine-conformers/
-    └── 04-sn2-reaction/           # Same layout (in progress)
+    ├── 04-sn2-reaction/           # Same layout (in progress)
+    └── 07-solvent-effects/        # Same layout (in progress)
 ```
 
 Every session follows the same layout. A `report/` folder appears only when the session has a written report.

@@ -153,6 +153,8 @@ pdflatex report && bibtex report && pdflatex report && pdflatex report
 3. HF overestimates the stability of the trans conformer by about 0.7 kcal/mol and, given the exponential dependence of K on ΔG, underestimates the gauche population by a factor of about 3. Including electron correlation with B3LYP improves the result but corrects only about a third of the error: correlation is necessary but not sufficient, and a quantitative description requires a more complete treatment of electron correlation, including dispersion.
 4. All results refer to the gas phase. Since trans has no dipole moment (μ = 0 by symmetry) and gauche does (μ ≈ 3 D), a polar solvent is expected to stabilise gauche and shift the equilibrium. This could be studied with an implicit solvent model.
 
+**Followed up in [Session 07](../../07-solvent-effects/ex4-dichloroethane-in-water/):** with SMD water, ΔG drops from 1.85 to 0.23 kcal/mol and gauche becomes the majority, 58 %.
+
 ## Files and sources
 
 | File | What it is |
