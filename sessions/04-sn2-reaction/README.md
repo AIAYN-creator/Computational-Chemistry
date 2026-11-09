@@ -1,14 +1,29 @@
 # Session 04 — An SN2 Reaction
 
-From structures to reactions: the gas-phase substitution
+From structures to reactions: the substitution
 
 F⁻ + CH₃Cl → CH₃F + Cl⁻
 
-followed at the HF/6-31+G\* level. The first exercises characterise the stationary points on each side, and the next ones build the energy profile between them. A smaller reaction, HCN → CNH, teaches the search for a transition state on three atoms.
+followed at the HF/6-31+G\* level. The first exercises characterise the stationary points on each side, and the next ones build the energy profile between them. A smaller reaction, HCN → CNH, teaches the search for a transition state on three atoms. An extension repeats everything in water.
 
 ![The double-well profile of the reaction](figures/energy_profile.png)
 
-The transition state lies below the separated reactants: in the gas phase, once F⁻ meets CH₃Cl, nothing stops the reaction.
+The transition state lies below the separated reactants: in the gas phase, once F⁻ meets CH₃Cl, nothing stops the reaction. In water it does.
+
+<table>
+<tr>
+<td width="190"><a href="report/"><img src="report/preview.png" width="170" alt="First page of the report"></a></td>
+<td>
+
+### Case study and report: *from a double well to a single barrier*
+
+Exercises 3 and 4, plus an extension in water, told as one study: the surface shows the path, its pass becomes a transition state below the reactants, and a continuum model of water tests whether the solvent turns the double well into a barrier. It does: +20.9 kcal/mol, because water stabilises F⁻ far more than the transition state.
+
+**[Case study: how the work was done](report/)** · **[Report (PDF, 2 pages)](report/report.pdf)**
+
+</td>
+</tr>
+</table>
 
 ## Contents
 
@@ -21,6 +36,8 @@ Each exercise folder has its own README with the task and the reasoning behind e
 | [Ex. 3 — The potential energy surface](ex3-potential-energy-surface/) | Where are the valleys, the path between them and the pass? | HF/6-31+G\*, relaxed 2D scan |
 | [Ex. 4 — The transition state and the double well](ex4-transition-state/) | Is the pass a true transition state, and how high is it? | HF/6-31+G\*, `opt=ts` + freq |
 | [Ex. 8 — HCN to CNH](ex8-hcn-isomerization/) | How is a transition state located and confirmed, on a three-atom reaction? | HF/6-31G\*, opt + freq, `opt=ts` |
+| [Extra — The reaction in water](extra-water-pcm/) | Does a solvent turn the double well into a barrier, and why? | HF/6-31+G\*, PCM (water) |
+| [Case study and report](report/) | Ex. 3, Ex. 4 and the water extension as one study | HF/6-31+G\*, gas and PCM |
 
 Ex. 5 to 7 will be added as their calculations finish. Ex. 8 came before Ex. 3 because it stands alone, and Ex. 3 took long to run.
 
@@ -122,6 +139,27 @@ The route line, what each option does, the transition vector, and the comparison
 
 ---
 
+## Extra — The reaction in water
+
+Every species and the whole scan again, with a continuum model of water: `scrf=(pcm,solvent=water)`.
+
+![The same reaction in the gas phase and in water](figures/gas_vs_water.png)
+
+| ΔG, 298 K (kcal/mol) | Gas phase | Water (PCM) |
+|---|---|---|
+| Transition state, from F⁻ + CH₃Cl | −5.22 | **+20.86** |
+| CH₃F + Cl⁻, from F⁻ + CH₃Cl | −43.37 | −27.88 |
+| Rate constant, 298 K | 3.5 × 10¹⁰ s⁻¹ (from the complex) | 7.8 × 10⁻² M⁻¹ s⁻¹ |
+
+- **The complexes drift apart.** The dielectric screens the ion-dipole attraction, and the wells of the gas phase open into valleys.
+- **The double well becomes a single barrier.** Water stabilises F⁻ by 86.2 kcal/mol and the transition state, where the charge is shared, only by 63.2: the transition state ends up 20.9 kcal/mol above the reactants in ΔG.
+- **The transition state is later,** closer to the products, as Hammond predicts for a less exergonic reaction.
+- **Qualitative only:** PCM has no hydrogen bonds, which are strongest for F⁻, so the real barrier should be even higher.
+
+The complexes that do not survive, the solvation energies, the rate constants and the caveats: [extra README](extra-water-pcm/).
+
+---
+
 ## Reproducing everything
 
 On a machine with Gaussian 09 (`g09` in the `PATH`):
@@ -132,7 +170,9 @@ cd ex2-ion-dipole-complexes && ../run.sh && ./extract.sh && cd ..
 cd ex3-potential-energy-surface && ../run.sh && ./extract.sh && cd ..
 cd ex4-transition-state && ../run.sh && ./extract.sh && cd ..
 cd ex8-hcn-isomerization && ../run.sh && ./extract.sh && cd ..
+cd extra-water-pcm && ../run.sh && ./extract.sh && cd ..
 python plot_figures.py   # numpy, scipy, matplotlib
+cd report && python figure1_pes.py ../ex3-potential-energy-surface/sep.dat ../extra-water-pcm/sep_pcm.dat figure1.pdf
 ```
 
 [`run.sh`](run.sh) is the same launcher as in the previous sessions: it runs every input in a folder and skips the jobs that already finished normally.
