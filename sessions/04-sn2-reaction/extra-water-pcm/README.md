@@ -77,6 +77,7 @@ In the gas phase, once the complex has formed, it crosses the barrier in about 3
 
 - **PCM is a dielectric, not water.** It has no hydrogen bonds, which are especially strong for F⁻, so the real solvation of F⁻ and the real barrier should be even larger. Hartree–Fock also neglects electron correlation. The results are qualitative.
 - **Eight points of the water scan did not converge** within the step limit ([`scan_stopped.txt`](scan_stopped.txt), crosses in panel (b)). Their geometries were nearly converged: the largest energy change Gaussian predicted for the next step was 0.27 kcal/mol, far below the contour spacing of the map.
+- **Symmetry numbers.** In water, CH₃Cl, CH₃F and the transition state were all detected with σ = 1 instead of 3, so the same RT ln 3 error appears on both sides of every difference and cancels: the water barrier and reaction energy are unaffected. The gas-phase transition state is the one that [needs the correction](../ex4-transition-state/#a-symmetry-number-gaussian-missed).
 - **Standard states.** Gaussian gives G at 1 atm. For the bimolecular step in water, the factor RT/P° = 24.5 L/mol in the rate constant is exactly the conversion to the usual 1 M standard state, so k comes out in M⁻¹ s⁻¹.
 
 ## Files

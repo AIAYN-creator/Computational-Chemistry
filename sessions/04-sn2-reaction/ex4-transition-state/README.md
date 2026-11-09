@@ -120,6 +120,29 @@ This is the **double well** of SN2 reactions in the gas phase: two wells, the io
 - **Morse theory** classifies critical points by their index, the number of directions in which the function curves downwards, which is the number of negative eigenvalues of the Hessian. Mass-weighting does not change that number, so the index is the number of imaginary frequencies: 0 for a minimum, 1 for a transition state (and for [planar glycine](../../03-geometries-and-conformers/ex8-glycine-conformers/) in Session 03, whose single imaginary mode led down to the true minimum), 2 for a second-order saddle point.
 - **Brouwer's fixed-point theorem** belongs to a different step, the SCF: orbitals give a field, the field gives new orbitals, and the cycle stops when they no longer change, at a fixed point. Brouwer guarantees that a continuous map of a closed ball into itself has a fixed point, but not that iterating will reach it, which is why an SCF can still fail to converge.
 
+### A symmetry number Gaussian missed
+
+The free energies above are taken from the logs as Gaussian wrote them, and one of them is slightly off. The rotational partition function is divided by the symmetry number σ, so a wrong σ shifts G by RT ln σ. Gaussian sets σ from the point group it detects:
+
+```bash
+grep "Rotational symmetry number" *.log
+```
+
+| | Point group detected | σ | Should be |
+|---|---|---|---|
+| CH₃Cl, CH₃F, both complexes | C₃ᵥ (imposed by the Z-matrix) | 3 | 3 |
+| Transition state | C₁ | **1** | 3 |
+
+The transition state is C₃ᵥ in all but name (its three C–H bonds agree within 0.0002 Å), but its Z-matrix does not impose the symmetry, so Gaussian takes it as C₁. Its G is therefore too low by RT ln 3 = **0.65 kcal/mol**, and every free energy measured from the transition state carries that error:
+
+| | As computed | With σ = 3 |
+|---|---|---|
+| ΔG‡ from the complex (kcal/mol) | 3.06 | **3.71** |
+| k from the complex, 298 K | 3.5 × 10¹⁰ s⁻¹ | 1.2 × 10¹⁰ s⁻¹ |
+| ΔG of the transition state from F⁻ + CH₃Cl (kcal/mol) | −5.22 | −4.57 |
+
+The corrected barrier matches the 3.7 kcal/mol of the class reference. Nothing else changes: ΔE and ΔH do not depend on σ, the transition state stays below the reactants in free energy too, and the double well is untouched. The clean fix is to rerun the transition state with a Z-matrix that shares one variable among the three C–H bonds and one among the three angles, so that Gaussian detects C₃ᵥ by itself. The same detail came up again in [Session 07](../../07-solvent-effects/#the-symmetry-number).
+
 ## How it went
 
 - **The starting geometry was read off the scan** with `grep "^2.2 " sep.dat` and the rows around it, following the path to its highest point.
