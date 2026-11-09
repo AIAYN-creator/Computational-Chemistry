@@ -60,13 +60,32 @@ flowchart LR
 - **Hammond's postulate in both media:** the transition state is early in the gas phase and moves towards the products in water, where the reaction is less exergonic.
 - **The limits of the model:** PCM has no hydrogen bonds, which matter most for F⁻, and HF has no electron correlation, so the results are qualitative.
 
+## Inside the LaTeX source
+
+The full source of the report is in [`source/`](source/): [`report.tex`](source/report.tex), [`bibliografia.bib`](source/bibliografia.bib), and Figure 1 with the script that draws it. The comments in the `.tex` are in Spanish, as they were written.
+
+- **Chemistry with `mhchem`:** `\ce{F- + CH3Cl -> CH3F + Cl-}` sets charges, subscripts and the arrow, and `\ce{F-\bond{...}CH3Cl}` draws the dotted contact of an ion-dipole complex.
+- **A table aligned on the decimal point:** `siunitx` `S` columns with `table-format=-2.2` line up positive and negative values, and the `{--}` cells, in braces, are passed through as text for the complexes that do not exist in water.
+- **One figure, three panels, made in Python:** [`figure1_pes.py`](source/figure1_pes.py) interpolates both scans with a bicubic spline and writes a PDF that LaTeX includes as vector graphics.
+- **Two pages, by formatting alone:** the same compact title, sections, lists and bibliography as the Session 03 report.
+
+### Building it
+
+```bash
+cd source
+python figure1_pes.py ../../ex3-potential-energy-surface/sep.dat ../../extra-water-pcm/sep_pcm.dat figure1.pdf
+pdflatex report && bibtex report && pdflatex report && pdflatex report
+```
+
 ## Files
 
 | File | What it is |
 |---|---|
 | [`report.pdf`](report.pdf) | The report, 2 pages |
-| [`figure1_pes.py`](figure1_pes.py) | Draws Figure 1. Usage: `python figure1_pes.py ../ex3-potential-energy-surface/sep.dat ../extra-water-pcm/sep_pcm.dat figure1.pdf` |
-| [`figure1.pdf`](figure1.pdf), [`figure1.png`](figure1.png) | Figure 1, as in the report and as an image for this page |
 | [`preview.png`](preview.png) | First page of the report |
+| [`figure1.png`](figure1.png) | Figure 1 as an image for this page |
+| [`source/report.tex`](source/report.tex) | LaTeX source of the report |
+| [`source/bibliografia.bib`](source/bibliografia.bib) | Bibliography |
+| [`source/figure1_pes.py`](source/figure1_pes.py), [`source/figure1.pdf`](source/figure1.pdf) | The script that draws Figure 1, and the figure as the report includes it |
 
 The data behind every number are in the exercise folders: [`ex1`](../ex1-reactants-and-products/results.txt), [`ex2`](../ex2-ion-dipole-complexes/results.txt), [`ex4`](../ex4-transition-state/results.txt) and [`extra-water-pcm`](../extra-water-pcm/results.txt).

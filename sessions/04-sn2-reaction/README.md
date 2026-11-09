@@ -172,7 +172,7 @@ cd ex4-transition-state && ../run.sh && ./extract.sh && cd ..
 cd ex8-hcn-isomerization && ../run.sh && ./extract.sh && cd ..
 cd extra-water-pcm && ../run.sh && ./extract.sh && cd ..
 python plot_figures.py   # numpy, scipy, matplotlib
-cd report && python figure1_pes.py ../ex3-potential-energy-surface/sep.dat ../extra-water-pcm/sep_pcm.dat figure1.pdf
+cd report/source && python figure1_pes.py ../../ex3-potential-energy-surface/sep.dat ../../extra-water-pcm/sep_pcm.dat figure1.pdf
 ```
 
 [`run.sh`](run.sh) is the same launcher as in the previous sessions: it runs every input in a folder and skips the jobs that already finished normally.
