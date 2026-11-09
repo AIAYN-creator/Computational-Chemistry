@@ -289,14 +289,29 @@ def fig_isomerization():
 
 
 # --- Figure 4: the potential energy surface and its minimum energy path (ex3) ---
-def surface():
+def surface(path="ex3-potential-energy-surface/scan_raw.txt", zero=None):
     """The 9 x 11 scan as a grid in kcal/mol above F- + CH3Cl, and a bicubic spline of it."""
-    rows = np.loadtxt(HERE / "ex3-potential-energy-surface/scan_raw.txt")
+    zero = reactants() if zero is None else zero
+    rows = np.loadtxt(HERE / path)
     ccl, cf = np.unique(rows[:, 0]), np.unique(rows[:, 1])
     grid = np.empty((len(ccl), len(cf)))
     for a, b, e in rows:
-        grid[np.searchsorted(ccl, a), np.searchsorted(cf, b)] = (e - reactants()) * HARTREE_TO_KCAL
+        grid[np.searchsorted(ccl, a), np.searchsorted(cf, b)] = (e - zero) * HARTREE_TO_KCAL
     return ccl, cf, grid, RectBivariateSpline(ccl, cf, grid)
+
+
+def minimum_energy_path(spline, guess):
+    """Saddle point of the spline near guess, and the path down both sides, short C-Cl first."""
+    grad = lambda p: [spline(*p, dx=1)[0, 0], spline(*p, dy=1)[0, 0]]
+    saddle = root(grad, guess).x
+    hess = np.array([[spline(*saddle, dx=2)[0, 0], spline(*saddle, dx=1, dy=1)[0, 0]],
+                     [spline(*saddle, dx=1, dy=1)[0, 0], spline(*saddle, dy=2)[0, 0]]])
+    values, vectors = np.linalg.eigh(hess)
+    down = vectors[:, np.argmin(values)]   # the direction of negative curvature
+    side_a, side_b = (steepest_descent(spline, saddle, s * down) for s in (1, -1))
+    if side_a[-1, 0] > side_b[-1, 0]:
+        side_a, side_b = side_b, side_a
+    return saddle, np.vstack([side_a[::-1], side_b[1:]])
 
 
 def steepest_descent(spline, start, direction, step=0.002, limits=((1.6, 3.6), (1.3, 2.9))):
@@ -322,19 +337,9 @@ def fig_pes():
            for k, v in complexes.items()}
     opt["ts"] = ((float(ts["E"]) - reactants()) * HARTREE_TO_KCAL, float(ts["r_CCl"]), float(ts["r_CF"]))
 
-    # The saddle point of the spline, close to the optimised one, and the
-    # direction of negative curvature there
-    grad = lambda p: [spline(*p, dx=1)[0, 0], spline(*p, dy=1)[0, 0]]
-    saddle = root(grad, [opt["ts"][1], opt["ts"][2]]).x
-    hess = np.array([[spline(*saddle, dx=2)[0, 0], spline(*saddle, dx=1, dy=1)[0, 0]],
-                     [spline(*saddle, dx=1, dy=1)[0, 0], spline(*saddle, dy=2)[0, 0]]])
-    values, vectors = np.linalg.eigh(hess)
-    down = vectors[:, np.argmin(values)]
-    side_a, side_b = (steepest_descent(spline, saddle, s * down) for s in (1, -1))
-    # From the reactant valley (short C-Cl) to the product valley
-    if side_a[-1, 0] > side_b[-1, 0]:
-        side_a, side_b = side_b, side_a
-    path = np.vstack([side_a[::-1], side_b[1:]])
+    # The saddle point of the spline, close to the optimised one, and the path
+    # from the reactant valley (short C-Cl) to the product valley
+    saddle, path = minimum_energy_path(spline, [opt["ts"][1], opt["ts"][2]])
     along = np.concatenate([[0], np.cumsum(np.linalg.norm(np.diff(path, axis=0), axis=1))])
     energy = spline(path[:, 0], path[:, 1], grid=False)
 
@@ -446,7 +451,80 @@ def fig_sn2_vector():
     print("Written", OUT / "sn2_transition_vector.png")
 
 
+# --- Figure 6: gas phase against water, PCM (extra) ------------------------------
+def fig_water():
+    water = read_results("extra-water-pcm/results.txt")
+    w = lambda key, column: float(water[key][column])
+    zero_w = {c: w("f_anion", c) + w("ch3cl", c) for c in ("E", "G")}
+    gas_ts = read_results("ex4-transition-state/results.txt")["ts_sn2"]
+    maps = (("(a) Gas phase", "ex3-potential-energy-surface/scan_raw.txt", None,
+             (float(gas_ts["r_CCl"]), float(gas_ts["r_CF"]))),
+            ("(b) Water (PCM)", "extra-water-pcm/sep_pcm_raw.txt", zero_w["E"], (2.2306, 2.0714)))
+    stopped = np.loadtxt(HERE / "extra-water-pcm/scan_stopped.txt")
+
+    fig, axes = plt.subplots(1, 3, figsize=(14, 4.6), gridspec_kw={"width_ratios": [1, 1, 1.05], "wspace": 0.32})
+    levels = np.arange(-55, 41, 5)   # the same scale for both maps
+    fx, fy = np.linspace(1.6, 3.6, 300), np.linspace(1.3, 2.9, 300)
+    for ax, (title, path, zero, ts) in zip(axes[:2], maps):
+        ccl, cf, grid, spline = surface(path, zero)
+        filled = ax.contourf(fx, fy, spline(fx, fy).T, levels=levels, cmap="magma", extend="both")
+        ax.contour(fx, fy, spline(fx, fy).T, levels=levels, colors="white", linewidths=0.45, alpha=0.35)
+        saddle, mep = minimum_energy_path(spline, ts)
+        ax.plot(mep[:, 0], mep[:, 1], color=AQUA, lw=2.4, solid_capstyle="round")
+        ax.plot(*ts, "*", ms=15, mfc=YELLOW, mec=INK, mew=1, zorder=5)
+        e_ts = spline(*ts)[0, 0]
+        ax.text(ts[0] + 0.12, ts[1] + 0.12, f"transition state\n{e_ts:+.1f} kcal/mol".replace("-", "−"),
+                ha="left", va="bottom", fontsize=8.5, color="white")
+        ax.set_xlabel("d(C–Cl) (Å)")
+        ax.set_ylabel("d(C–F) (Å)")
+        ax.set_aspect("equal")
+        ax.set_anchor("N")
+        ax.grid(False)
+        ax.set_title(title, loc="left", fontsize=10.5)
+        print(title, "saddle of the spline", saddle.round(3), "path ends", mep[0].round(2), mep[-1].round(2))
+    ax = axes[1]
+    ax.plot(stopped[:, 0], stopped[:, 1], "x", color="white", ms=5, mew=1.2)
+    ax.text(1.65, 2.84, r"F$^-$ drifts away", ha="left", va="top", fontsize=8.5, color="white")
+    ax.text(3.55, 1.62, r"Cl$^-$ drifts away", ha="right", va="bottom", fontsize=8.5, color="white")
+    ax.text(3.55, 2.84, "×: scan point not converged", ha="right", va="top", fontsize=8, color=INK)
+    axes[0].text(1.95, 2.72, "well 1", ha="left", va="top", fontsize=8.5, color="white")
+    axes[0].text(3.4, 1.6, "well 2", ha="center", va="bottom", fontsize=8.5, color="white")
+    bar = fig.colorbar(filled, ax=axes[:2], orientation="horizontal", fraction=0.05, pad=0.16, aspect=40)
+    bar.set_label("kcal/mol, relative to F$^-$ + CH$_3$Cl in each medium")
+
+    # (c) Free energy: the double well against the single barrier
+    ax = axes[2]
+    gas = profile()["G"]
+    wat = {0: 0.0, 2: (w("ts_sn2", "G") - zero_w["G"]) * HARTREE_TO_KCAL,
+           4: (w("ch3f", "G") + w("cl_anion", "G") - zero_w["G"]) * HARTREE_TO_KCAL}
+    ax.axhline(0, color=INK_2, lw=0.8, ls=(0, (4, 3)))
+    for xs, ys, colour, label, shift in ((range(5), gas, BLUE, "gas phase", -2.8),
+                                         (list(wat), list(wat.values()), ORANGE, "water (PCM)", 2.8)):
+        xs, ys = list(xs), list(ys)
+        for k, (x, y) in enumerate(zip(xs, ys)):
+            ax.plot([x - 0.28, x + 0.28], [y, y], color=colour, lw=3, solid_capstyle="butt",
+                    label=label if k == 0 else None, zorder=3)
+            if x:
+                ax.text(x, y + shift, f"{y:.1f}".replace("-", "−"), ha="center", va="center", fontsize=9,
+                        color=colour)
+        for (x1, y1), (x2, y2) in zip(zip(xs, ys), zip(xs[1:], ys[1:])):
+            ax.plot([x1 + 0.28, x2 - 0.28], [y1, y2], color=colour, lw=0.9, ls=":")
+    ax.set_xticks(range(5), ["R", "RC", "TS", "PC", "P"])
+    ax.set_xlim(-0.5, 4.5)
+    ax.set_ylim(-55, 30)
+    ax.set_ylabel("ΔG, 298 K (kcal/mol)")
+    ax.grid(axis="x", visible=False)
+    ax.legend(loc="lower left", fontsize=9)
+    ax.set_title("(c) Free energy: double well or single barrier", loc="left", fontsize=10.5)
+    fig.suptitle(r"F$^-$ + CH$_3$Cl, HF/6-31+G*: the same reaction in the gas phase and in water",
+                 x=0.07, ha="left", y=1.0, fontsize=11.5)
+    fig.savefig(OUT / "gas_vs_water.png", bbox_inches="tight")
+    plt.close(fig)
+    print("Written", OUT / "gas_vs_water.png", {k: round(v, 2) for k, v in wat.items()})
+
+
 if __name__ == "__main__":
+    fig_water()
     fig_profile()
     fig_orbitals()
     fig_isomerization()
