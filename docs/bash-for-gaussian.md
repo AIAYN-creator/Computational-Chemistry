@@ -31,6 +31,8 @@ This guide is built from the scripts in this repository. Each section explains o
 | [`ex3-potential-energy-surface/extract.sh`](../sessions/04-sn2-reaction/ex3-potential-energy-surface/extract.sh) | [3](#3-reading-a-table-of-any-length-with-awk), [4](#4-doing-arithmetic-with-shell-values) |
 | [`ex4-transition-state/extract.sh`](../sessions/04-sn2-reaction/ex4-transition-state/extract.sh) | [2](#2-pulling-one-number-out-of-a-log), [6](#6-gluing-columns-together) |
 | [`ex8-hcn-isomerization/extract.sh`](../sessions/04-sn2-reaction/ex8-hcn-isomerization/extract.sh) | [2](#2-pulling-one-number-out-of-a-log), [6](#6-gluing-columns-together), [9](#9-splitting-file-names-and-default-values) |
+| **Sessions 05–06** | |
+| [`ex6-uv-vis-aldehydes/extract.sh`](../sessions/05-06-excited-states/ex6-uv-vis-aldehydes/extract.sh) | [3](#3-reading-a-table-of-any-length-with-awk), [9](#9-splitting-file-names-and-default-values) |
 
 **Patterns**
 
@@ -256,6 +258,15 @@ awk '/SCF Done/ {e=$5} /! *r1 .* -DE\/DX/ {r1=$3} /! *r5 .* -DE\/DX/ {print $3, 
 - Each `awk` starts with a blank notebook. A second `awk` reading the output file sees only its columns, `$1`, `$2`, `$3`, not the variables of the first.
 
 The points of a 2D scan come in zigzag, so the grid for gnuplot needs `sort -k1,1n -k2,2n` (by column 1, then by column 2, as numbers) and a blank line each time column 1 changes: `awk '{ if (NR > 1 && $1 != prev) print ""; print; prev = $1 }'`. `prev` is noted *last*: noted first, each line would be compared with itself. In [`S04 ex3/extract.sh` L19](../sessions/04-sn2-reaction/ex3-potential-energy-surface/extract.sh#L19) and [L29–L31](../sessions/04-sn2-reaction/ex3-potential-energy-surface/extract.sh#L29-L31).
+
+**Several jobs in one log: the route line as a key.** A chained input (`--Link1--`) writes one log with several jobs, each starting with its route line. Noting the route in a variable and using it as the index of `awk` arrays files every result under its own job, and keeps the best one of each:
+
+```bash
+awk '/^ #/ {r=$1} /Excited State/ {f=substr($9,3); if (f+0 > best[r]+0) {best[r]=f; nm[r]=$7}}
+     END {for (r in nm) print r, nm[r], best[r]}' propenal.log
+```
+
+`substr($9, 3)` drops the `f=` of `f=0.7550`, and `+0` forces a numeric comparison. This is [`S05-06 ex6/extract.sh` L16–L23](../sessions/05-06-excited-states/ex6-uv-vis-aldehydes/extract.sh#L16-L23): seven methods per molecule, the brightest excited state of each.
 
 **In the code:** [`ex3/extract.sh` L31–L35](../sessions/02-hartree-fock/ex3-bond-scans/extract.sh#L31-L35) (the plain version), then reused with a reference energy in [`ex4/extract.sh` L21–L25](../sessions/02-hartree-fock/ex4-rhf-dissociation/extract.sh#L21-L25), [`ex5/extract.sh` L29–L33](../sessions/02-hartree-fock/ex5-uhf-initial-guess/extract.sh#L29-L33) and [`ex6/extract.sh` L18–L24](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L18-L24).
 
