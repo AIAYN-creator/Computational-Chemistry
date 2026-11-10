@@ -53,16 +53,25 @@ The data, the script and a check of every number are in the [Ex. 6 README](../ex
 
 When the numbers were checked against the logs for this repository, the first job of the pentadienal input turned out to have no `opt`: its excited states were computed at the geometry built by GaussView, with C–C single bonds of 1.540 Å instead of about 1.47 Å. Its wavelengths are probably too short, and its numbers need a rerun; the details are in the [exercise README](../ex6-uv-vis-aldehydes/#the-pentadienal-geometry). The report is kept as it was submitted.
 
-## Inside the source
+## Inside the LaTeX source
 
-The LaTeX source of the report is not included; [`source/`](source/) holds Figure 1, drawn directly in `pgfplots` ([`figure_uv.tex`](source/figure_uv.tex)):
+The full source of the report is in [`source/`](source/): [`report.tex`](source/report.tex), [`bibliografia.bib`](source/bibliografia.bib) and Figure 1. The comments in the `.tex` are in Spanish, as they were written, and the preamble is the same as in the Session 03 and 04 reports.
 
-- **Panel (a)** uses symbolic x coordinates, one per basis set, and draws the experimental maxima as dashed lines at `rel axis cs` heights computed from the y range.
-- **Panel (b)** simulates each spectrum inside `pgfplots` itself: every transition becomes a Gaussian in energy, `f·exp(−((1239.84/λ − E)/0.25)²)`, summed in a single `\addplot` expression, and the individual transitions are drawn as `ycomb` bars of height f.
+**Figure 1 is drawn entirely in `pgfplots`** ([`figure_uv.tex`](source/figure_uv.tex)), with no data file and no Python. Overleaf did not render it inside the report, so it is a `standalone` document, compiled on its own to [`figure_uv.pdf`](source/figure_uv.pdf), which the report includes with `\includegraphics`.
+
+- **Panel (a)** uses symbolic x coordinates, one per basis set, and draws the experimental maxima as dashed lines at `rel axis cs` heights computed from the y range: (209 − 150)/(260 − 150) = 0.536 for propenal.
+- **Panel (b)** simulates each spectrum inside `pgfplots` itself: every transition becomes a Gaussian in energy, `f·exp(−((1239.84/λ − E)/0.25)²)`, all of a molecule's states summed in a single `\addplot` expression, and the individual transitions are drawn as `ycomb` bars of height f. The broadening is done in energy, where the band is symmetric, and plotted in wavelength.
+- **The table** uses `siunitx` `S` columns aligned on the decimal point, with `table-format=-2.1` for the differences, which can be negative.
+
+### Building it
 
 ```bash
+cd source
 pdflatex figure_uv.tex
+pdflatex report && bibtex report && pdflatex report && pdflatex report
 ```
+
+The bibliography was not sent with the source, so [`bibliografia.bib`](source/bibliografia.bib) was rebuilt from the reference list of the PDF; it compiles to the same two pages and the same eight references.
 
 ## Files
 
@@ -71,4 +80,6 @@ pdflatex figure_uv.tex
 | [`report.pdf`](report.pdf) | The report, 2 pages |
 | [`preview.png`](preview.png) | First page of the report |
 | [`figure_uv.png`](figure_uv.png) | Figure 1 as an image for this page |
+| [`source/report.tex`](source/report.tex) | LaTeX source of the report |
+| [`source/bibliografia.bib`](source/bibliografia.bib) | Bibliography, rebuilt from the PDF |
 | [`source/figure_uv.tex`](source/figure_uv.tex), [`source/figure_uv.pdf`](source/figure_uv.pdf) | Figure 1: the `pgfplots` source and the figure as the report includes it |
