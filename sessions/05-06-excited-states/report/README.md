@@ -71,8 +71,6 @@ pdflatex figure_uv.tex
 pdflatex report && bibtex report && pdflatex report && pdflatex report
 ```
 
-The bibliography was not sent with the source, so [`bibliografia.bib`](source/bibliografia.bib) was rebuilt from the reference list of the PDF; it compiles to the same two pages and the same eight references.
-
 ## Files
 
 | File | What it is |
@@ -81,5 +79,5 @@ The bibliography was not sent with the source, so [`bibliografia.bib`](source/bi
 | [`preview.png`](preview.png) | First page of the report |
 | [`figure_uv.png`](figure_uv.png) | Figure 1 as an image for this page |
 | [`source/report.tex`](source/report.tex) | LaTeX source of the report |
-| [`source/bibliografia.bib`](source/bibliografia.bib) | Bibliography, rebuilt from the PDF |
+| [`source/bibliografia.bib`](source/bibliografia.bib) | Bibliography |
 | [`source/figure_uv.tex`](source/figure_uv.tex), [`source/figure_uv.pdf`](source/figure_uv.pdf) | Figure 1: the `pgfplots` source and the figure as the report includes it |
