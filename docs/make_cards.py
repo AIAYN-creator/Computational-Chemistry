@@ -310,6 +310,34 @@ def card_water():
          "SESSION 04 · REPORT", draw, "card_water.png")
 
 
+# --- 9. CIS converges, to the wrong answer (Sessions 05-06, Ex. 6) ----------
+def card_cis():
+    rows = [l.split() for l in (ROOT / "sessions/05-06-excited-states/ex6-uv-vis-aldehydes/uv.dat")
+            .read_text().splitlines()[1:]]
+    lam = {(r[0], r[1]): float(r[2]) for r in rows}
+    bases = ["3-21g", "6-31g*", "6-31+g*", "6-311+g*", "6-311++g**"]
+    labels = ["3-21G", "6-31G*", "6-31+G*", "6-311+G*", "6-311++G**"]
+    # Pentadienal is left out: its geometry was never optimised
+    series = (("propenal", "propenal", 209, BLUE), ("butenal", "butenal", 221, ORANGE))
+    cis = lambda mol: [lam[(mol, f"rcis=(nstates=5)/{b}")] for b in bases]
+    gap = 209 - cis("propenal")[-1]
+
+    def draw(ax):
+        x = np.arange(len(bases))
+        for mol, name, exp, colour in series:
+            ax.plot(x, cis(mol), "o-", color=colour, ms=3.5, lw=1.6, label=name)
+            ax.axhline(exp, color=colour, lw=0.9, ls=(0, (4, 3)))
+        ax.text(0, 211, "experiment", fontsize=7.5, color=INK_2, va="bottom")
+        ax.set_xticks(x, labels, fontsize=6.5, rotation=30)
+        ax.set_ylim(150, 232)
+        ax.set_ylabel(r"CIS $\lambda_\mathrm{max}$ (nm)", fontsize=8)
+        ax.legend(fontsize=7.5, frameon=False, loc="center right")
+
+    card(f"{gap:.0f}", "nm", "CIS converges,\nto the wrong answer",
+         "From 3-21G to 6-311++G**, the π→π* band of\npropenal stops short of experiment. The basis\nis not the problem: CIS lacks correlation.",
+         "SESSIONS 05–06 · EX. 6", draw, "card_cis.png")
+
+
 if __name__ == "__main__":
     card_rhf()
     card_acetylene()
@@ -319,3 +347,4 @@ if __name__ == "__main__":
     card_saddle()
     card_double_well()
     card_water()
+    card_cis()

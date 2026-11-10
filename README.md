@@ -30,6 +30,12 @@ The aim is to show the whole workflow, not only the final numbers: how each calc
 <td width="50%"><a href="sessions/04-sn2-reaction/report/"><img src="docs/cards/card_water.png" alt="+20.9 kcal/mol: water turns the double well into a barrier"></a></td>
 </tr>
 </table>
+<table>
+<tr>
+<td width="50%"><a href="sessions/05-06-excited-states/ex6-uv-vis-aldehydes/"><img src="docs/cards/card_cis.png" alt="38 nm: CIS converges, to the wrong answer"></a></td>
+<td width="50%"></td>
+</tr>
+</table>
 
 Each card links to the full story. They are drawn from the session data by [`docs/make_cards.py`](docs/make_cards.py).
 
