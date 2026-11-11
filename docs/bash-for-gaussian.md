@@ -47,6 +47,7 @@ This guide is built from the scripts in this repository. Each section explains o
 9. [Splitting file names and default values](#9-splitting-file-names-and-default-values)
 10. [Bugs worth remembering](#10-bugs-worth-remembering)
 11. [When a batch fails](#11-when-a-batch-fails)
+12. [Fixed-width files: when fields are not fields](#12-fixed-width-files-when-fields-are-not-fields)
 
 ---
 
@@ -482,3 +483,41 @@ Sometimes the terminal stops responding: no prompt, or a prompt that is not the 
 | `~` down the left margin | Inside Vim | Esc, then `:q!` to leave without saving, or `:wq` to save |
 
 **Ctrl+C does not copy.** In a Linux terminal, Ctrl+C is *interrupt*, not *copy*: copy is Ctrl+Shift+C and paste is Ctrl+Shift+V (or Shift+Insert, or the middle mouse button for the last selection). Pressing Ctrl+C to copy a command kills whatever is running instead.
+
+---
+
+## 12. Fixed-width files: when fields are not fields
+
+Everything above relies on `awk` splitting a line at whitespace. That breaks when a file is written in **fixed-width columns**: a number that fills its column touches the next one, and two values become a single field. It already happened once in this repository, in the scan summary of [S04 Ex. 3](../sessions/04-sn2-reaction/ex3-potential-energy-surface/#getting-the-numbers-out), where `-598.58982-598.59118` is one field to `awk`.
+
+The **PDB format** of protein structures, met in a class on molecular docking, is the standard case. Every record is a line of fixed columns:
+
+```
+HETATM 2061  C1  LIG A 301      38.402  12.617  21.094  1.00 24.31           C
+```
+
+| Columns | Content |
+|---|---|
+| 1–6 | Record: `ATOM` for protein or nucleic acid, `HETATM` for everything else (ligands, water `HOH`, ions) |
+| 18–20 | Residue name |
+| 22 | Chain |
+| 31–38, 39–46, 47–54 | x, y, z (Å) |
+| 61–66 | B factor: how much the atom moves, or how poorly it is defined |
+
+With a large coordinate the columns run into each other and `$7` is no longer x. The fix is to cut by **position**, not by field: `cut -c` in the shell, `substr($0, start, length)` in `awk`.
+
+```bash
+# Which hetero groups are in the file (residue name, columns 18-20)
+grep "^HETATM" structure.pdb | cut -c18-20 | sort | uniq -c
+
+# Centroid of one ligand (LIG): the centre of the docking box
+awk '/^HETATM/ && substr($0,18,3)=="LIG" {x+=substr($0,31,8); y+=substr($0,39,8); z+=substr($0,47,8); n++}
+     END {print x/n, y/n, z/n}' structure.pdb
+
+# Keep only chain A of the protein
+awk 'substr($0,1,4)=="ATOM" && substr($0,22,1)=="A"' structure.pdb > chainA.pdb
+```
+
+`uniq -c` counts repeated lines, which only works on sorted input, hence the `sort` before it.
+
+**A structure file is a table of numbers, not prose.** It is tempting to ask a language model to "remove the waters" or "keep chain A" by rewriting the file. Regenerating thousands of lines of coordinates can shift a column or alter a digit without any visible error, and every later step inherits it. The model can write the command; a deterministic tool (`awk`, Open Babel, PyMOL, pdb-tools) should do the transformation. The same holds for a Gaussian log.
