@@ -33,6 +33,9 @@ This guide is built from the scripts in this repository. Each section explains o
 | [`ex8-hcn-isomerization/extract.sh`](../sessions/04-sn2-reaction/ex8-hcn-isomerization/extract.sh) | [2](#2-pulling-one-number-out-of-a-log), [6](#6-gluing-columns-together), [9](#9-splitting-file-names-and-default-values) |
 | **Sessions 05–06** | |
 | [`ex6-uv-vis-aldehydes/extract.sh`](../sessions/05-06-excited-states/ex6-uv-vis-aldehydes/extract.sh) | [3](#3-reading-a-table-of-any-length-with-awk), [9](#9-splitting-file-names-and-default-values) |
+| **Session 07** | |
+| [`ex6-sn2-in-water/extract.sh`](../sessions/07-solvent-effects/ex6-sn2-in-water/extract.sh) | [2](#2-pulling-one-number-out-of-a-log), [9](#9-splitting-file-names-and-default-values) |
+| [`ex8-menshutkin/extract.sh`](../sessions/07-solvent-effects/ex8-menshutkin/extract.sh) | [3](#3-reading-a-table-of-any-length-with-awk) |
 
 **Patterns**
 
@@ -268,6 +271,8 @@ awk '/^ #/ {r=$1} /Excited State/ {f=substr($9,3); if (f+0 > best[r]+0) {best[r]
 ```
 
 `substr($9, 3)` drops the `f=` of `f=0.7550`, and `+0` forces a numeric comparison. This is [`S05-06 ex6/extract.sh` L16–L23](../sessions/05-06-excited-states/ex6-uv-vis-aldehydes/extract.sh#L16-L23): seven methods per molecule, the brightest excited state of each.
+
+**One record per job, and reset.** When every job of a chain should give one row, the record is printed on a line that only a *finished* job reaches, and every variable is emptied afterwards, so nothing leaks from one job into the next. [`S07 ex8/extract.sh`](../sessions/07-solvent-effects/ex8-menshutkin/extract.sh) prints on `Sum of electronic and thermal Free Energies=`: a job that failed never gets there, so it is absent from the table instead of appearing with half-read values. Two more details of the same script: the solvent and ε are read from the `Solvent` banner Gaussian prints, the value it actually used, not from the route line; and `/^ ESP charges:$/` is anchored at both ends, because three different headers of the output contain that string.
 
 **In the code:** [`ex3/extract.sh` L31–L35](../sessions/02-hartree-fock/ex3-bond-scans/extract.sh#L31-L35) (the plain version), then reused with a reference energy in [`ex4/extract.sh` L21–L25](../sessions/02-hartree-fock/ex4-rhf-dissociation/extract.sh#L21-L25), [`ex5/extract.sh` L29–L33](../sessions/02-hartree-fock/ex5-uhf-initial-guess/extract.sh#L29-L33) and [`ex6/extract.sh` L18–L24](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L18-L24).
 
