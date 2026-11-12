@@ -95,11 +95,14 @@ What was never cut: the case for PCM over SMD, the argument for ChelpG charges, 
 
 ## Inside the source
 
-- [`source/`](source/) holds Figure 1 of the report ([`figura_s7.tex`](source/figura_s7.tex), four `pgfplots` panels in one row) and the bibliography. The main `.tex` of the submitted report is not included.
+- [`source/`](source/) holds the submitted report: [`report.tex`](source/report.tex), the bibliography, and Figure 1 ([`figura_s7.tex`](source/figura_s7.tex), four `pgfplots` panels in one row). The two-page tricks are visible in it: the table with `\setlength{	abcolsep}{4pt}` and `siunitx` columns, and the bibliography inside a `multicols` environment at `ootnotesize`.
 - [`extended/`](extended/) holds the complete source of the 12-page version: [`informe_extendido.tex`](extended/informe_extendido.tex), its [`preamble.tex`](extended/preamble.tex), the bibliography and the four figures with their `pgfplots` sources. It adds the derivations, the leave-one-out table, the charge and dipole panels, the Hammond and Leffler plots, the failed calculations and the extraction script.
 
 ```bash
-cd extended
+cd source
+pdflatex figura_s7.tex
+pdflatex report && bibtex report && pdflatex report && pdflatex report
+cd ../extended
 for f in fig*.tex; do pdflatex "$f"; done
 pdflatex informe_extendido && bibtex informe_extendido && pdflatex informe_extendido && pdflatex informe_extendido
 ```
@@ -110,6 +113,7 @@ pdflatex informe_extendido && bibtex informe_extendido && pdflatex informe_exten
 |---|---|
 | [`report.pdf`](report.pdf) | The submitted report, 2 pages |
 | [`preview.png`](preview.png), [`figure.png`](figure.png) | First page and Figure 1, as images for this page |
+| [`source/report.tex`](source/report.tex) | LaTeX source of the submitted report |
 | [`source/figura_s7.tex`](source/figura_s7.tex), [`source/figura_s7.pdf`](source/figura_s7.pdf) | Figure 1 of the report |
 | [`source/bibliografia.bib`](source/bibliografia.bib) | Bibliography (the same file in both versions) |
 | [`extended/`](extended/) | The extended version: PDF, LaTeX source, preamble, bibliography and four figures |
