@@ -95,7 +95,7 @@ What was never cut: the case for PCM over SMD, the argument for ChelpG charges, 
 
 ## Inside the source
 
-- [`source/`](source/) holds the submitted report: [`report.tex`](source/report.tex), the bibliography, and Figure 1 ([`figura_s7.tex`](source/figura_s7.tex), four `pgfplots` panels in one row). The two-page tricks are visible in it: the table with `\setlength{	abcolsep}{4pt}` and `siunitx` columns, and the bibliography inside a `multicols` environment at `ootnotesize`.
+- [`source/`](source/) holds the submitted report: [`report.tex`](source/report.tex), the bibliography, and Figure 1 ([`figura_s7.tex`](source/figura_s7.tex), four `pgfplots` panels in one row). The two-page tricks are visible in it: the table with `\setlength{\tabcolsep}{4pt}` and `siunitx` columns, and the bibliography inside a `multicols` environment at `\footnotesize`.
 - [`extended/`](extended/) holds the complete source of the 12-page version: [`informe_extendido.tex`](extended/informe_extendido.tex), its [`preamble.tex`](extended/preamble.tex), the bibliography and the four figures with their `pgfplots` sources. It adds the derivations, the leave-one-out table, the charge and dipole panels, the Hammond and Leffler plots, the failed calculations and the extraction script.
 
 ```bash
