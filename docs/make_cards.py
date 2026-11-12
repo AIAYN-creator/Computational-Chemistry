@@ -338,6 +338,29 @@ def card_cis():
          "SESSIONS 05–06 · EX. 6", draw, "card_cis.png")
 
 
+# --- 10. The reaction field, not the dielectric constant (Session 07, Ex. 8) -
+def card_axis():
+    rows = np.loadtxt(ROOT / "sessions/07-solvent-effects/ex8-menshutkin/results.dat")
+    eps, f, barrier = rows[:, 0], rows[:, 1], rows[:, 6]
+    r2 = lambda x, y: 1 - ((y - np.polyval(np.polyfit(x, y, 1), x))**2).sum() / ((y - y.mean())**2).sum()
+
+    def draw(ax):
+        m, b = np.polyfit(f, barrier, 1)
+        x = np.linspace(0, 0.5, 50)
+        ax.plot(x, m * x + b, color=BLUE, lw=1.4)
+        ax.plot(f, barrier, "o", color=BLUE, ms=4)
+        ax.text(0.03, 29, f"against ε:  R² = {r2(eps, barrier):.2f}", fontsize=7.5, color=INK_2)
+        ax.text(0.03, 31.5, f"against f(ε): R² = {r2(f, barrier):.2f}", fontsize=7.5, color=BLUE)
+        ax.set_xlim(-0.02, 0.52)
+        ax.set_ylim(25, 50)
+        ax.set_xlabel(r"$f(\varepsilon) = (\varepsilon-1)/(2\varepsilon+1)$", fontsize=8)
+        ax.set_ylabel(r"$\Delta G^\ddagger$ (kcal/mol)", fontsize=8)
+
+    card(f"{r2(f, barrier):.2f}", "R²", "Same points,\na different axis",
+         "The Menshutkin barrier in six media looks\nsaturated against ε. Against f(ε), where ε\nenters a continuum model, it is a straight line.",
+         "SESSION 07 · REPORT", draw, "card_axis.png")
+
+
 if __name__ == "__main__":
     card_rhf()
     card_acetylene()
@@ -348,3 +371,4 @@ if __name__ == "__main__":
     card_double_well()
     card_water()
     card_cis()
+    card_axis()

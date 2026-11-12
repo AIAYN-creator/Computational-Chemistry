@@ -33,7 +33,7 @@ The aim is to show the whole workflow, not only the final numbers: how each calc
 <table>
 <tr>
 <td width="50%"><a href="sessions/05-06-excited-states/ex6-uv-vis-aldehydes/"><img src="docs/cards/card_cis.png" alt="38 nm: CIS converges, to the wrong answer"></a></td>
-<td width="50%"></td>
+<td width="50%"><a href="sessions/07-solvent-effects/report/"><img src="docs/cards/card_axis.png" alt="R2 0.98: same points, a different axis"></a></td>
 </tr>
 </table>
 
@@ -59,7 +59,7 @@ Every pattern is shown on the real Gaussian output it reads, and ends with links
 | 03 | [**Geometries, frequencies and conformers**](sessions/03-geometries-and-conformers/) | HF, B3LYP · STO-3G → 6-311G* · Gaussian 09 | Optimised geometries against experiment, matching the Session 02 scans to 0.001 Å. Normal modes read from the displacement vectors. What B3LYP fixes over HF. Then three conformational problems: the gauche population of 1,2-dichloroethane ([case study and report](sessions/03-geometries-and-conformers/report/)), the anomeric effect in fluoromethanol, and glycine, where imposed symmetry hid two saddle points |
 | 04 | [**An SN2 reaction**](sessions/04-sn2-reaction/) | HF/6-31+G* · Gaussian 09 | F⁻ + CH₃Cl → CH₃F + Cl⁻, one stationary point at a time. Diffuse functions for the anions, frequencies even for single atoms, and ion-dipole complexes where the bond is already 28 % softer in frequency before the reaction starts. A potential energy surface of 99 points, and its pass optimised into the transition state of a double well, 11.5 kcal/mol below the reactants. Then the same reaction in water, where the double well becomes a barrier of 20.9 kcal/mol ([case study and report](sessions/04-sn2-reaction/report/)). A first transition state on HCN → CNH. The IRC comes next *(in progress)* |
 | 05–06 | [**Excited states**](sessions/05-06-excited-states/) | CIS, ZINDO, TD-B3LYP · 3-21G → 6-311++G** · Gaussian 09 | Semiempirical and post-HF methods meet UV–Vis spectra. CIS converges with the basis set to bands 40 nm short of experiment, because what it lacks is correlation; TD-B3LYP cuts the error to 7–15 nm and ZINDO, fitted to spectra, does best on the two shorter molecules ([case study and report](sessions/05-06-excited-states/report/)) |
-| 07 | [**Solvent effects**](sessions/07-solvent-effects/) | HF · PCM, SMD · Gaussian 09 | The gas phase is left behind. In water, 1,2-dichloroethane turns from 8 % to 58 % gauche, and the SN2 barrier from the complex rises from 3 to 17 kcal/mol. Along the way, a symmetry number that Gaussian can miss and the 0.65 kcal/mol it costs *(in progress)* |
+| 07 | [**Solvent effects**](sessions/07-solvent-effects/) | HF · PCM, SMD · Gaussian 09 | The gas phase is left behind. In water, 1,2-dichloroethane turns from 8 % to 58 % gauche, and the SN2 barrier from the complex rises from 3 to 17 kcal/mol. The Menshutkin reaction in six media shows that solvent effects only look saturated against ε: against the Onsager function f(ε) every quantity is a straight line ([case study and report](sessions/07-solvent-effects/report/)). Along the way, a symmetry number that Gaussian can miss and the 0.65 kcal/mol it costs *(in progress)* |
 
 More sessions will be added as the course goes on.
 
