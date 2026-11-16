@@ -31,7 +31,7 @@ Data: [`results.txt`](results.txt) for water; the gas rows come from [Session 04
 | Barrier, transition state − complex | ΔE‡ (kcal/mol) | ΔG‡ (kcal/mol) | k (n = 1), 298 K |
 |---|---|---|---|
 | Gas phase | 2.99 | 3.06 | 3.5 × 10¹⁰ s⁻¹ |
-| Water | 14.11 | 16.68 | ≈ 3.6 s⁻¹ |
+| Water | 14.11 | 16.68 | ≈ 3.7 s⁻¹ |
 
 - **The "complex" in water is not a complex.** F⁻ ends 4.63 Å from the carbon, against 2.59 Å in the gas phase: the dielectric screens the ion-dipole attraction. Its lowest frequency is a tiny imaginary one (14i cm⁻¹), the sign of a flat region, not of a minimum. ΔE‡ from it, 14.11 kcal/mol, is almost the same as from the separated reactants (14.03): there is no well.
 - **The barrier rises by about 13.6 kcal/mol and k falls by ten orders of magnitude.** Water stabilises F⁻, whose charge is concentrated, much more than the transition state, where it is shared.

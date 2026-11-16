@@ -50,7 +50,7 @@ flowchart LR
 ## How the work was done
 
 1. **A map before any search** ([Ex. 3](../ex3-potential-energy-surface/)). A relaxed scan of d(C–F) and d(C–Cl), 99 optimisations, located both valleys and the pass. Its energies matched the reference data of the session, and its valleys fell on the complexes optimised independently in [Ex. 2](../ex2-ion-dipole-complexes/).
-2. **The transition state from the pass** ([Ex. 4](../ex4-transition-state/)). Started from the highest point of the path with a planar CH₃ group, the search converged to a saddle point 0.01 Å from the one on the map, with a single imaginary frequency whose mode is the Walden inversion.
+2. **The transition state from the pass** ([Ex. 4](../ex4-transition-state/)). Started from the highest point of the path with a planar CH₃ group, the search converged to a saddle point 0.004 Å from the one on the map, with a single imaginary frequency whose mode is the Walden inversion.
 3. **The double well, and a hypothesis.** The transition state lies 11.5 kcal/mol below the separated reactants. That can only change if something stabilises the reactants more than the transition state: a solvent that prefers concentrated charge.
 4. **Everything again in water** ([extra](../extra-water-pcm/)). The same seven species and the same scan with PCM. The complexes drift apart, the transition state rises to +20.9 kcal/mol, and the solvation energies (F⁻ −86.2, transition state −63.2 kcal/mol) account for the change.
 
