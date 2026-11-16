@@ -42,7 +42,7 @@ The other exercises of the session will be added as they are done.
 | K = 2 exp(−ΔG/RT) | 0.088 | 1.37 |
 | Gauche (%) | 8.1 | **57.7** |
 
-- **Water turns the equilibrium around.** Gauche, the only conformer with a dipole moment, is stabilised more, and becomes the majority. The prediction of the [Session 03 report](../../03-geometries-and-conformers/report/), confirmed.
+- **Water turns the equilibrium around.** Gauche, the only conformer with a dipole moment, is stabilised more, and becomes the majority. The prediction of the [Session 03 report](../03-geometries-and-conformers/report/), confirmed.
 - **A small change in ΔG, a large one in K:** 1.6 kcal/mol is enough, because K is exponential.
 - **The factor 2 of the two gauche conformers decides the conclusion:** without it, gauche would still be the minority in water (41 %).
 
@@ -90,7 +90,7 @@ grep "Rotational symmetry number" *.log
 grep "Full point group" *.log | tail -2
 ```
 
-When the error is the same in both structures, it cancels in ΔG (the two conformers of Ex. 4). When only one of them is detected correctly, it does not (the SN2 transition state of Ex. 6, and of [Session 04](../../04-sn2-reaction/ex4-transition-state/#a-symmetry-number-gaussian-missed)).
+When the error is the same in both structures, it cancels in ΔG (the two conformers of Ex. 4). When only one of them is detected correctly, it does not (the SN2 transition state of Ex. 6, and of [Session 04](../04-sn2-reaction/ex4-transition-state/#a-symmetry-number-gaussian-missed)).
 
 ---
 
