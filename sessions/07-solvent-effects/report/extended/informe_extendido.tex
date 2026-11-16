@@ -20,6 +20,7 @@
 \DeclareSIUnit\calorie{cal}         % ¡usar \kilo\calorie, no \kilo\cal!
 \DeclareSIUnit\atm{atm}
 \DeclareSIUnit\hartree{\ensuremath{E_\mathrm{h}}}
+\DeclareSIUnit\debye{D}
 \usepackage[version=4]{mhchem}
 
 % ---------- Figuras y tablas ----------
@@ -71,7 +72,7 @@ report submitted for session~7 of the Computational Chemistry course, where a
 two-page limit applied. The argument, the data and the conclusions are the same;
 what the submitted version could not contain were the derivations, the secondary
 observables, the failed calculations and the discussion of the method's limits.
-All input and output files, scripts and figure sources are in the repository.}}
+The input templates, extraction and analysis scripts, extracted data, figure sources and the Gaussian output files of the main calculations are in the repository.}}
 \end{center}
 
 \section{Introduction}
@@ -165,7 +166,7 @@ the monopole and dipole members of that family.
 Two features are common to all of them. First, $\varepsilon$ never appears alone:
 it always appears inside a function of itself. Second, every one of those functions
 is \emph{bounded}: the Born factor runs from 0 to 1, the Onsager factor from 0 to
-$1/2$, and the general Kirkwood factor from 0 to $(\ell+1)/\ell$. The physical
+$1/2$, and the general Kirkwood factor from 0 to 1. The physical
 reason is that the reaction field is produced by the polarisation of the medium,
 and that polarisation saturates: beyond a certain $\varepsilon$ the medium already
 behaves essentially as a perfect conductor, and making it nominally more polar adds
