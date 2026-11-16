@@ -13,7 +13,7 @@ Until now every calculation described an isolated molecule, in the gas phase. Re
 
 The Menshutkin reaction H₃N + CH₃Cl in six media. Correlated with ε, as the exercise asks, nothing is linear; against the Onsager function f(ε) = (ε − 1)/(2ε + 1), where ε actually enters the theory, every quantity is a straight line, and the line predicts new solvents within 1.5 kcal/mol.
 
-**[Case study: how the work was done](report/)** · **[Report (PDF, 2 pages)](report/report.pdf)** · **[Extended version (PDF, 12 pages)](report/extended/informe_extendido.pdf)**
+**[Case study: how the work was done](report/)** · **[Report (PDF, 2 pages)](report/report.pdf)** · **[Extended version (PDF, 9 pages)](report/extended/informe_extendido.pdf)**
 
 </td>
 </tr>
@@ -28,7 +28,7 @@ Each exercise folder has its own README with the task and the reasoning behind e
 | [Ex. 4 — 1,2-Dichloroethane in water](ex4-dichloroethane-in-water/) | Does a polar solvent shift the trans–gauche equilibrium? | HF/6-31G\*, SMD (water) |
 | [Ex. 6 — The SN2 reaction in water](ex6-sn2-in-water/) | How high is the barrier from the reactant complex in water? | HF/6-31+G\*, PCM (water) |
 | [Ex. 8 — The Menshutkin reaction in six media](ex8-menshutkin/) | How do the transition state and the barrier depend on the solvent? | HF/6-31+G\*, PCM (five solvents and gas) |
-| [Case study and report](report/) | Ex. 8 as one study, with a 12-page extended version | |
+| [Case study and report](report/) | Ex. 8 as one study, with a 9-page extended version | |
 
 The other exercises of the session will be added as they are done.
 

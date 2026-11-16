@@ -4,19 +4,23 @@
 
 <table>
 <tr>
-<td width="190"><a href="report.pdf"><img src="preview.png" width="170" alt="First page of the report"></a></td>
+<td width="190"><a href="extended/informe_extendido.pdf"><img src="extended/preview.png" width="170" alt="First page of the extended version"></a></td>
 <td>
 
-### Report: *The reaction field, not the dielectric constant*
+### *The reaction field, not the dielectric constant*
 **Solvent effects on the Menshutkin reaction H₃N + CH₃Cl**
 
 The exercise asks for correlations with the dielectric constant. None appears. Against the Onsager function f(ε), which is where ε actually enters the theory of the method, every quantity becomes a straight line, and the line predicts new solvents.
 
-**[Read the report (PDF, 2 pages)](report.pdf)** · **[Extended version (PDF, 12 pages)](extended/informe_extendido.pdf)**
+**[Extended version (PDF, 9 pages)](extended/informe_extendido.pdf)**: the full argument, with the derivations, the cross-validation, the charges and dipoles, Hammond and Leffler, the comparison with experiment, the limits of the analysis and the failed calculations.
+
+**[Submitted report (PDF, 2 pages)](report.pdf)**: the same argument within the two-page limit of the course.
 
 </td>
 </tr>
 </table>
+
+Every number in both versions can be traced to the calculations: the inputs, the extraction and analysis scripts, the data and the Gaussian outputs are in [Ex. 8](../ex8-menshutkin/), and the scripts reproduce the tables of the report.
 
 ## The question
 
@@ -90,13 +94,13 @@ What was never cut: the case for PCM over SMD, the argument for ChelpG charges, 
 
 - Propagate the uncertainty of the fits to their slopes (six points, two parameters).
 - Repeat with a correlated method (MP2 or B3LYP) and see whether the *slope* changes, not only the absolute values.
-- Add one or two explicit water molecules to the chloride and see how much of the factor of two against experiment hydrogen bonds explain.
+- Test the explanation of the factor of two against experiment: a better model system (trimethylamine and methyl iodide) or a correlated method should give a less polarised transition state and a flatter slope. Explicit water molecules on the chloride would bear on the water point only, since heptane and acetonitrile are both aprotic.
 - Check the symmetry numbers: done in the [Ex. 8 README](../ex8-menshutkin/#beyond-the-report-the-symmetry-numbers). The error cancels in ΔG‡ by luck, and does not touch any slope.
 
 ## Inside the source
 
 - [`source/`](source/) holds the submitted report: [`report.tex`](source/report.tex), the bibliography, and Figure 1 ([`figura_s7.tex`](source/figura_s7.tex), four `pgfplots` panels in one row). The two-page tricks are visible in it: the table with `\setlength{\tabcolsep}{4pt}` and `siunitx` columns, and the bibliography inside a `multicols` environment at `\footnotesize`.
-- [`extended/`](extended/) holds the complete source of the 12-page version: [`informe_extendido.tex`](extended/informe_extendido.tex), its [`preamble.tex`](extended/preamble.tex), the bibliography and the four figures with their `pgfplots` sources. It adds the derivations, the leave-one-out table, the charge and dipole panels, the Hammond and Leffler plots, the failed calculations and the extraction script.
+- [`extended/`](extended/) holds the extended version and its sources: [`informe_extendido.tex`](extended/informe_extendido.tex), its [`preamble.tex`](extended/preamble.tex), the bibliography and the four figures with their `pgfplots` sources. It adds the derivations, the leave-one-out table, the charge and dipole panels, the Hammond and Leffler plots, the failed calculations and the extraction script. The PDF is the revised version; the LaTeX source in the folder is still that of the first draft, and will be replaced by the revised one.
 
 ```bash
 cd source
@@ -115,5 +119,5 @@ pdflatex informe_extendido && bibtex informe_extendido && pdflatex informe_exten
 | [`preview.png`](preview.png), [`figure.png`](figure.png) | First page and Figure 1, as images for this page |
 | [`source/report.tex`](source/report.tex) | LaTeX source of the submitted report |
 | [`source/figura_s7.tex`](source/figura_s7.tex), [`source/figura_s7.pdf`](source/figura_s7.pdf) | Figure 1 of the report |
-| [`source/bibliografia.bib`](source/bibliografia.bib) | Bibliography (the same file in both versions) |
-| [`extended/`](extended/) | The extended version: PDF, LaTeX source, preamble, bibliography and four figures |
+| [`source/bibliografia.bib`](source/bibliografia.bib) | Bibliography of the submitted report |
+| [`extended/`](extended/) | The extended version: PDF, first-page preview, LaTeX source, preamble, bibliography and four figures |
