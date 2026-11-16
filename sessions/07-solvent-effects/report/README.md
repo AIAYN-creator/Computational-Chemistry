@@ -100,7 +100,7 @@ What was never cut: the case for PCM over SMD, the argument for ChelpG charges, 
 ## Inside the source
 
 - [`source/`](source/) holds the submitted report: [`report.tex`](source/report.tex), the bibliography, and Figure 1 ([`figura_s7.tex`](source/figura_s7.tex), four `pgfplots` panels in one row). The two-page tricks are visible in it: the table with `\setlength{\tabcolsep}{4pt}` and `siunitx` columns, and the bibliography inside a `multicols` environment at `\footnotesize`.
-- [`extended/`](extended/) holds the extended version and its sources: [`informe_extendido.tex`](extended/informe_extendido.tex), its [`preamble.tex`](extended/preamble.tex), the bibliography and the four figures with their `pgfplots` sources. It adds the derivations, the leave-one-out table, the charge and dipole panels, the Hammond and Leffler plots, the failed calculations and the extraction script. The PDF is the revised version; the LaTeX source in the folder is still that of the first draft, and will be replaced by the revised one.
+- [`extended/`](extended/) holds the extended version and its sources: [`informe_extendido.tex`](extended/informe_extendido.tex), self-contained with its own preamble, its bibliography, and the four figures with their `pgfplots` sources. It adds the derivations, the leave-one-out table, the charge and dipole panels, the Hammond and Leffler plots, the failed calculations and the extraction script.
 
 ```bash
 cd source
@@ -120,4 +120,4 @@ pdflatex informe_extendido && bibtex informe_extendido && pdflatex informe_exten
 | [`source/report.tex`](source/report.tex) | LaTeX source of the submitted report |
 | [`source/figura_s7.tex`](source/figura_s7.tex), [`source/figura_s7.pdf`](source/figura_s7.pdf) | Figure 1 of the report |
 | [`source/bibliografia.bib`](source/bibliografia.bib) | Bibliography of the submitted report |
-| [`extended/`](extended/) | The extended version: PDF, first-page preview, LaTeX source, preamble, bibliography and four figures |
+| [`extended/`](extended/) | The extended version: PDF, first-page preview, LaTeX source, bibliography and four figures |

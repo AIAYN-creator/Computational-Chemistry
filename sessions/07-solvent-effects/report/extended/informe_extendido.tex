@@ -1,4 +1,60 @@
-\input{preamble}
+\documentclass[10pt,a4paper]{article}
+
+% ---------- Codificación e idioma ----------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}            % acentos y guiones bien en el PDF
+\usepackage[english]{babel}
+\DeclareUnicodeCharacter{2212}{-} % el signo menos Unicode no rompe la compilación
+
+% ---------- Página ----------
+\usepackage[a4paper,margin=2cm]{geometry}   % 2 cm: límite de 2 páginas
+\usepackage{microtype}              % mejor reparto de espacios, ahorra líneas
+\usepackage{multicol}
+
+% ---------- Matemáticas ----------
+\usepackage{amsmath,amssymb,amsthm}
+
+% ---------- Unidades y química ----------
+\usepackage{siunitx}
+\sisetup{per-mode=symbol}           % kcal/mol en vez de kcal mol^-1
+\DeclareSIUnit\calorie{cal}         % ¡usar \kilo\calorie, no \kilo\cal!
+\DeclareSIUnit\atm{atm}
+\DeclareSIUnit\hartree{\ensuremath{E_\mathrm{h}}}
+\usepackage[version=4]{mhchem}
+
+% ---------- Figuras y tablas ----------
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+% ---------- Otros ----------
+\usepackage[normalem]{ulem}         % normalem: \emph sigue siendo cursiva
+
+% ---------- Compactación (para el límite de 2 páginas) ----------
+\usepackage{titling}                % título más compacto
+\setlength{\droptitle}{-1.6cm}
+\pretitle{\begin{center}\large\bfseries}\posttitle{\par\end{center}\vspace{-0.6em}}
+\preauthor{\begin{center}\normalsize}\postauthor{\par\end{center}\vspace{-0.9em}}
+\predate{\begin{center}\small}\postdate{\par\end{center}\vspace{-1.2em}}
+\usepackage{titlesec}               % secciones con menos espacio alrededor
+\titleformat{\section}{\large\bfseries}{\thesection}{0.6em}{}
+\titlespacing*{\section}{0pt}{1.1ex plus 0.3ex}{0.5ex}
+\usepackage[shortlabels]{enumitem}  % listas sin espacios extra
+\setlist{nosep, leftmargin=*}
+\setlength{\intextsep}{6pt plus 2pt minus 2pt}       % espacio alrededor de figuras/tablas [H]
+\captionsetup{skip=4pt}
+\setlength{\parskip}{0pt}
+\usepackage{etoolbox}               % bibliografía más pequeña y sin huecos
+\apptocmd{\thebibliography}{\footnotesize\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}{}{}
+
+% ---------- Referencias (siempre al final y en este orden) ----------
+\usepackage[hidelinks]{hyperref}
+\usepackage[capitalise,noabbrev]{cleveref}
+
 
 \title{The reaction field, not the dielectric constant:\\
 solvent effects on the Menshutkin reaction \ce{H3N + CH3Cl}\\
@@ -98,11 +154,13 @@ analytically, the resulting stabilisation is
   \label{eq:onsager}
 \end{align}
 %
+
+\newpage
 and the generalisation to a charge distribution of arbitrary multipole order in a
-spherical cavity, due to Kirkwood~\cite{Kirkwood1934}, has the same structure: each
-multipole order $\ell$ contributes a term proportional to
-$(\ell+1)(\varepsilon-1)/[\ell + (\ell+1)\varepsilon]$, of which
-\cref{eq:born,eq:onsager} are the cases $\ell = 0$ and $\ell = 1$.
+spherical cavity, due to Kirkwood~\cite{Kirkwood1934}, has the same structure: a sum
+of terms, one per multipole order, each the product of a factor depending only on the
+solute and a bounded function of $\varepsilon$ alone. \Cref{eq:born,eq:onsager} are
+the monopole and dipole members of that family.
 
 Two features are common to all of them. First, $\varepsilon$ never appears alone:
 it always appears inside a function of itself. Second, every one of those functions
@@ -127,7 +185,7 @@ appearance is a property of the axis, not of the chemistry.
 \begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{fig1_compresion.pdf}
-  \caption{(a) The Kirkwood--Onsager function for the six media used here. The five
+  \caption{(a) The Kirkwood-Onsager function for the six media used here. The five
     solvents span only $0.19 \leq f \leq 0.49$ of the available range, and the two
     most polar are nearly coincident. (b) Its derivative: the sensitivity of the
     reaction field to $\varepsilon$ falls as $\varepsilon^{-2}$, so beyond
@@ -201,7 +259,7 @@ for a reason.
 
 \subsection{Media}
 
-Five solvents were used --- heptane, benzene, chloroform, acetonitrile and water ---
+Five solvents were used: heptane, benzene, chloroform, acetonitrile and water;
 together with the gas phase as the $\varepsilon = 1$ limit. The gas phase is not
 decorative: it fixes $f(\varepsilon) = 0$ exactly, which anchors the origin of the
 abscissa. Without it the five solvents span only $0.19 \leq f \leq 0.49$, and a
@@ -322,6 +380,7 @@ are the same, the calculations are the same, and only the abscissa changes
     reaction free energy in the six media. The last two rows give the coefficient of
     determination of a linear fit of each column against $\varepsilon$ and against
     $f(\varepsilon)$.}
+    \vspace{5mm}
   \label{tab:data}
   \small
   \begin{tabular}{l S[table-format=2.4] S[table-format=1.3]
@@ -593,29 +652,30 @@ about \SI{5.6}{\kilo\calorie\per\mole} over the same range of polarity
   \end{tabular}
 \end{table}
 
+\newpage
 The direction is right and the order of magnitude is right; the effect is
-overestimated by nearly a factor of two. Three contributions are expected, and it is
-worth separating them because they are not equally fundamental.
+overestimated by nearly a factor of two. The discrepancy is in the \emph{slope} of
+the solvent response rather than in any absolute barrier, and that is the quantity
+that has to be explained.
 
-The first is the system. The experimental data are for tertiary amines and alkyl
-iodides, not for \ce{NH3} and \ce{CH3Cl}; a more nucleophilic amine and a better
-leaving group give a different, and generally earlier, TS. This is a comparison of
-trends between related systems, not of absolute barriers, and only the trends should
-be expected to agree.
+The most likely cause is that the transition state computed here is more polarised
+than the one the experiments probe, and two independent reasons push in that same
+direction. First, the model system. \ce{NH3} is a far weaker nucleophile than a
+tertiary amine, and chloride a far poorer leaving group than iodide, so the TS of the
+model reaction is later and carries more separated charge than that of the measured
+one. Second, the method. Hartree--Fock neglects electron correlation and is known to
+exaggerate the ionic character of a polarised species, which inflates the dipole of
+the TS further. Since the response of a solute to a reaction field scales with
+$\mu^{2}$ (\cref{eq:onsager}), a TS whose dipole is too large necessarily responds
+too strongly to a change of medium, and the computed slope comes out too steep.
 
-The second is the method. Hartree--Fock has no electron correlation, and there is no
-reason for the correlation energy to cancel between a pair of neutral closed-shell
-molecules and a strongly polarised TS. Correlation typically stabilises the more
-polarisable species, which here is the TS, so a correlated method would be expected
-to lower the barriers --- but not uniformly across media, so the slope would change
-too.
-
-The third is the solvent model, and it is the most interesting. A continuum contains
-no solvent molecules and therefore no specific hydrogen bonds. In protic media the
-developing chloride is stabilised by hydrogen bonding that PCM represents only as
-bulk polarisation of a dielectric. The effect of adding explicit solvent molecules
-would not be a uniform shift: it would act mainly at the polar end of the series,
-where it would stabilise the TS further.
+It is worth noting explicitly what does \emph{not} explain this particular number.
+The absence of explicit solvent molecules, and hence of specific hydrogen bonding,
+is a genuine limitation of a continuum model, but heptane and acetonitrile are both
+aprotic: no hydrogen bonds are available to either of them. That limitation bears on
+the water point, which does not enter this comparison, and it would be expected to
+stabilise the developing chloride further and so to make the computed effect larger
+still, not smaller.
 
 \subsection{What this analysis cannot say}
 \label{sec:limits}
@@ -673,12 +733,16 @@ that has not been propagated.
   \item Against experiment the model reproduces the direction and the order of
     magnitude of the solvent effect (\SI{9.5}{} against
     \SI{5.6}{\kilo\calorie\per\mole} between heptane and acetonitrile) but
-    overestimates it, as expected from a method without electron correlation and a
-    continuum model without hydrogen bonds.
+    overestimates its slope, as expected from a transition state that is more
+    polarised than the one measured: both the model system and the neglect of
+    electron correlation exaggerate its charge separation, and the response to a
+    reaction field scales with $\mu^{2}$.
 \end{enumerate}
 
-\appendix
+\bibliographystyle{unsrt}
+\bibliography{bibliografia}
 
+\appendix
 \section{Calculations that failed, and what they showed}
 \label{app:failures}
 
@@ -737,9 +801,6 @@ emitted on the thermochemistry line rather than on \texttt{Normal termination},
 because a job that failed never reaches the former --- which is why the failed jobs
 simply do not appear in the output rather than appearing with corrupt values.
 
-{\small
-\bibliographystyle{unsrt}
-\bibliography{bibliografia}
-}
+
 
 \end{document}
