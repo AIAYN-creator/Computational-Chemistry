@@ -14,6 +14,7 @@ S01 = ROOT / "sessions/01-linux-and-z-matrices"
 S02 = ROOT / "sessions/02-hartree-fock"
 S03 = ROOT / "sessions/03-geometries-and-conformers"
 S04 = ROOT / "sessions/04-sn2-reaction"
+S08 = ROOT / "sessions/08-molecular-dynamics"
 OUT = ROOT / "docs/cards"
 OUT.mkdir(exist_ok=True)
 
@@ -361,6 +362,29 @@ def card_axis():
          "SESSION 07 · REPORT", draw, "card_axis.png")
 
 
+# --- 11. The temperature noise is the canonical one (Session 08, Ex. 1) -------
+def card_canonical():
+    d = np.loadtxt(S08 / "ex1-water/energies.dat")
+    T = d[d[:, 0] > 10, 3]                      # production: after 10 ps
+    ndof = 9999                                 # DEGREES OF FREEDOM, from the NAMD log
+    mean, width = T.mean(), T.mean() * np.sqrt(2 / ndof)
+
+    def draw(ax):
+        ax.hist(T, bins=22, density=True, color=BLUE, alpha=0.35, edgecolor=BLUE, lw=0.5)
+        x = np.linspace(284, 316, 200)
+        ax.plot(x, np.exp(-(x - mean) ** 2 / (2 * width ** 2)) / (width * np.sqrt(2 * np.pi)), color=INK, lw=1.4)
+        ax.text(284.8, 0.075, "predicted\nwidth,\nnot fitted:\n" r"$\langle T\rangle\sqrt{2/N}$",
+                fontsize=7, color=INK, va="top")
+        ax.set_xlim(284, 316)
+        ax.set_ylim(0, 0.105)
+        ax.set_yticks([])
+        ax.set_xlabel("T (K), 900 samples", fontsize=8)
+
+    card(f"{ndof}", "degrees of freedom", "Temperature noise,\npredicted by N alone",
+         f"1111 TIP3P waters, 100 ps at 300 K. Measured\nσT/⟨T⟩ = {T.std() / mean:.5f} ± 0.0004; canonical\nprediction √(2/N) = {np.sqrt(2 / ndof):.5f}.",
+         "SESSION 08 · EX. 1", draw, "card_canonical.png")
+
+
 if __name__ == "__main__":
     card_rhf()
     card_acetylene()
@@ -372,3 +396,4 @@ if __name__ == "__main__":
     card_water()
     card_cis()
     card_axis()
+    card_canonical()

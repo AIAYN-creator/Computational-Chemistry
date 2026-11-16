@@ -36,6 +36,12 @@ The aim is to show the whole workflow, not only the final numbers: how each calc
 <td width="50%"><a href="sessions/07-solvent-effects/report/"><img src="docs/cards/card_axis.png" alt="R2 0.98: same points, a different axis"></a></td>
 </tr>
 </table>
+<table>
+<tr>
+<td width="50%"><a href="sessions/08-molecular-dynamics/ex1-water/#energy-and-temperature"><img src="docs/cards/card_canonical.png" alt="9999 degrees of freedom: temperature noise, predicted by N alone"></a></td>
+<td width="50%"></td>
+</tr>
+</table>
 
 Each card links to the full story. They are drawn from the session data by [`docs/make_cards.py`](docs/make_cards.py).
 
@@ -60,6 +66,7 @@ Every pattern is shown on the real Gaussian output it reads, and ends with links
 | 04 | [**An SN2 reaction**](sessions/04-sn2-reaction/) | HF/6-31+G* · Gaussian 09 | F⁻ + CH₃Cl → CH₃F + Cl⁻, one stationary point at a time. Diffuse functions for the anions, frequencies even for single atoms, and ion-dipole complexes where the bond is already 28 % softer in frequency before the reaction starts. A potential energy surface of 99 points, and its pass optimised into the transition state of a double well, 11.5 kcal/mol below the reactants. Then the same reaction in water, where the double well becomes a barrier of 20.9 kcal/mol ([case study and report](sessions/04-sn2-reaction/report/)). A first transition state on HCN → CNH. The IRC comes next *(in progress)* |
 | 05–06 | [**Excited states**](sessions/05-06-excited-states/) | CIS, ZINDO, TD-B3LYP · 3-21G → 6-311++G** · Gaussian 09 | Semiempirical and post-HF methods meet UV–Vis spectra. CIS converges with the basis set to bands 40 nm short of experiment, because what it lacks is correlation; TD-B3LYP cuts the error to 7–15 nm and ZINDO, fitted to spectra, does best on the two shorter molecules ([case study and report](sessions/05-06-excited-states/report/)) |
 | 07 | [**Solvent effects**](sessions/07-solvent-effects/) | HF · PCM, SMD · Gaussian 09 | The gas phase is left behind. In water, 1,2-dichloroethane turns from 8 % to 58 % gauche, and the SN2 barrier from the complex rises from 3 to 17 kcal/mol. The Menshutkin reaction in six media shows that solvent effects only look saturated against ε: against the Onsager function f(ε) every quantity is a straight line ([case study and report](sessions/07-solvent-effects/report/)). Along the way, a symmetry number that Gaussian can miss and the 0.65 kcal/mol it costs *(in progress)* |
+| 08 | [**Molecular dynamics**](sessions/08-molecular-dynamics/) | Classical MD · AMBER, CHARMM · NAMD, VMD | From one structure to an ensemble: water, a sodium ion and the protein ubiquitin, 100 ps each. The temperature of water fluctuates exactly as the canonical ensemble predicts from its 9999 degrees of freedom, and its energy fluctuation gives a heat capacity 50 % too high, because a water meant to be rigid runs as three classical springs. TIP3P gets the hydrogen bond but not the tetrahedral second shell; Na⁺ holds 5.8 waters at 2.38 Å, as X-ray diffraction finds *(in progress)* |
 
 More sessions will be added as the course goes on.
 
@@ -105,18 +112,20 @@ More sessions will be added as the course goes on.
     │   └── ex8-glycine-conformers/
     ├── 04-sn2-reaction/           # Same layout (in progress)
     ├── 05-06-excited-states/      # Sessions 05 and 06, taught together
-    └── 07-solvent-effects/        # Same layout (in progress)
+    ├── 07-solvent-effects/        # Same layout (in progress)
+    └── 08-molecular-dynamics/     # NAMD and VMD; analysis scripts in Python (in progress)
 ```
 
 Every session follows the same layout. A `report/` folder appears only when the session has a written report.
 
 **Where to start:** a session README ([02](sessions/02-hartree-fock/), [03](sessions/03-geometries-and-conformers/)) for the results, an exercise README for the reasoning behind each step, and the [Bash guide](docs/bash-for-gaussian.md) for how the scripts work.
 
-**What is tracked:** inputs, scripts, extracted data, figures, reports and their READMEs. Raw Gaussian outputs (`.log`, `.chk`) are left out, since everything the analysis needs is in the extracted data, and every figure can be rebuilt from the repository alone. [`.gitattributes`](.gitattributes) keeps Unix line endings on scripts and inputs, so they run on Linux even after passing through Windows.
+**What is tracked:** inputs, scripts, extracted data, figures, reports and their READMEs. Raw Gaussian outputs (`.log`, `.chk`) are left out, since everything the analysis needs is in the extracted data, and every figure can be rebuilt from the repository alone. The molecular dynamics trajectories and logs of Session 08 are left out for the same reason, and for their size. [`.gitattributes`](.gitattributes) keeps Unix line endings on scripts and inputs, so they run on Linux even after passing through Windows.
 
 ## Tools
 
 - **Electronic structure:** Gaussian 09
+- **Molecular dynamics:** NAMD (simulation), VMD (visualisation and analysis)
 - **Automation:** Bash on Linux: job launching, input generation with `sed`, output parsing with `grep`/`awk`. See the **[Bash for Gaussian guide](docs/bash-for-gaussian.md)**
 - **Figures:** Python (NumPy, Matplotlib); PGFPlots/TikZ in the reports
 - **Reports:** LaTeX
