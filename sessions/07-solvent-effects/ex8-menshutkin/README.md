@@ -38,7 +38,7 @@ Three decisions came before the first calculation:
 
 Each species is one input with the six media chained by `--Link1--`, each job starting from the geometry of the previous one, and the order of each chain was chosen on purpose. The Z-matrix, the route lines and the order are in [`inputs.md`](inputs.md). Charges are ChelpG (`pop=chelpg`), fitted to the electrostatic potential, the same quantity that generates the reaction field; Mulliken charges, which assign each basis function to its centre, are unreliable with diffuse functions.
 
-[`extract.sh`](extract.sh) reads the 33 converged jobs into [`jobs.dat`](jobs.dat), one record per job, and [`analyze.py`](analyze.py) computes the barriers, the fits, the cross-validation and the comparison with experiment, writing [`results.dat`](results.dat). Both were rerun here: the four logs available reproduce `jobs.dat` exactly, and `analyze.py` reproduces every number below.
+[`extract.sh`](extract.sh) reads the 33 converged jobs into [`jobs.dat`](jobs.dat), one record per job, and [`analyze.py`](analyze.py) computes the barriers, the fits, the cross-validation and the comparison with experiment, writing [`results.dat`](results.dat). Both were rerun for this repository: the four logs in [`logs/`](logs/) (the complex, the transition state, NH₃ and CH₃Cl, 21 of the 33 jobs) reproduce their rows of `jobs.dat` exactly, and `analyze.py` reproduces every number below. Unlike the other sessions, this exercise keeps its Gaussian outputs, so that the numbers of the report can be checked against them.
 
 ## Results
 
@@ -98,7 +98,12 @@ The complex is held by a dipole-dipole interaction, which the dielectric screens
 
 ### Against experiment
 
-The calculation puts the barrier 9.5 kcal/mol lower in acetonitrile than in heptane. Published relative rates of Menshutkin reactions (Reichardt and Welton), converted with ΔΔG‡ = RT ln k_rel, give about 5.6 kcal/mol from hexane to acetonitrile: the right direction and order of magnitude, overestimated by nearly a factor of two. The experimental reactions use tertiary amines and alkyl iodides, HF has no correlation, and PCM has no hydrogen bonds.
+The calculation puts the barrier 9.5 kcal/mol lower in acetonitrile than in heptane. Published relative rates of Menshutkin reactions (Reichardt and Welton), converted with ΔΔG‡ = RT ln k_rel, give about 5.6 kcal/mol from hexane to acetonitrile: the right direction and order of magnitude, overestimated by nearly a factor of two. The discrepancy is in the *slope* of the solvent response, not in any absolute barrier, and two independent reasons push it the same way:
+
+- **The model system.** NH₃ is a far weaker nucleophile than the tertiary amines of the experiments, and chloride a far poorer leaving group than iodide, so the transition state computed here is later and carries more separated charge than the one measured.
+- **The method.** Hartree–Fock neglects electron correlation and exaggerates the ionic character of polarised species, which inflates the dipole of the transition state further.
+
+Since the response to a reaction field scales with μ² (Onsager), a transition state whose dipole is too large responds too strongly to a change of medium. What does *not* explain this number is the lack of hydrogen bonds in PCM: heptane and acetonitrile are both aprotic. That limitation bears on the water point, where it would make the computed effect larger still, not smaller.
 
 ## Conclusions
 
@@ -107,7 +112,7 @@ The calculation puts the barrier 9.5 kcal/mol lower in acetonitrile than in hept
 3. **The correlations the exercise asks for are one correlation,** and only their slopes carry independent information.
 4. **The slopes are chemically sensible.** The solvent swings the reaction free energy by 129 kcal/mol, turns the reaction exergonic above ε ≈ 8, and moves the transition state earlier (Leffler α = 0.15), which leaves it less polarised in water than in vacuum.
 5. **The reactant complex does not survive above ε ≈ 2.3,** and is above the separated reactants in free energy even where it exists.
-6. **Against experiment the direction and order of magnitude are right,** and the size is overestimated, as expected from HF and a continuum without hydrogen bonds.
+6. **Against experiment the direction and order of magnitude are right** (9.5 against 5.6 kcal/mol from heptane to acetonitrile), and the slope is overestimated, as expected from a transition state that is more polarised than the one measured: both the model system and the neglect of electron correlation exaggerate its charge separation, and the response to a reaction field scales with μ².
 
 ## Beyond the report: the symmetry numbers
 
@@ -138,5 +143,6 @@ The expectation was that the error would not cancel in the bimolecular barrier, 
 | [`jobs.dat`](jobs.dat) | Species, solvent, ε, E, G, distances, ChelpG charge on Cl, dipole, imaginary frequency |
 | [`analyze.py`](analyze.py) | Barriers, fits, cross-validation, Hammond and Leffler, experiment; writes `results.dat` |
 | [`results.dat`](results.dat) | The main table, one row per medium |
+| [`logs/`](logs/) | Gaussian outputs of the complex (`rc.log`), the transition state (`ts.log`), NH₃ and CH₃Cl: six media each, except the complex, which converges in three and fails in chloroform |
 
 The figures are drawn in `pgfplots`; their sources are in [`report/extended/`](../report/extended/).
