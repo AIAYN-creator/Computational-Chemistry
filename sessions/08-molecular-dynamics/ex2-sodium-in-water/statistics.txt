@@ -1,0 +1,6 @@
+samples (t > 10 ps)    900
+TOTAL (kcal/mol)       mean -8699.52   sd 72.03
+TEMP (K)               mean 299.70   sd 4.122
+degrees of freedom     10227
+sd(T)/<T> measured     0.01375
+sqrt(2/N) canonical    0.01398

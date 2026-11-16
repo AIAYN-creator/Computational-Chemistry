@@ -21,3 +21,12 @@ Gau-*
 Thumbs.db
 *.swp
 *~
+
+# Molecular dynamics trajectories and restart files
+*.dcd
+*.coor
+*.vel
+*.xsc
+
+# Python
+__pycache__/
