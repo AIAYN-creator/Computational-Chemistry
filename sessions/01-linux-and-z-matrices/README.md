@@ -44,6 +44,8 @@ Values read from the outputs into [`results.txt`](single-points/results.txt).
 | [Session 02, Ex. 2](../02-hartree-fock/ex2-basis-sets/): rounded geometry | 0.96 | 104.5° | −75.58550 |
 | [Session 03, Ex. 1](../03-geometries-and-conformers/ex1-optimized-geometries/): optimised | 0.9667 | 107.65° | −75.58596 |
 
+![Water through the first three sessions: Z-matrix, energy against basis set, optimised angle and IR spectrum](../../docs/banner.png)
+
 The closer the geometry is to the 3-21G minimum, the lower the energy, and the optimised one is lowest of all. Both dipoles are also well above experiment (1.86 D for water, 1.70 D for methanol), the same Hartree–Fock overestimation that Session 03 measures in detail.
 
 ## Files

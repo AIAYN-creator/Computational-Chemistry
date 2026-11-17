@@ -80,6 +80,7 @@ More sessions will be added as the course goes on.
 ├── docs/
 │   ├── bash-for-gaussian.md       # Bash patterns used in every session, linked to the exact script lines
 │   ├── make_cards.py              # Builds the featured-findings cards from the session data
+│   ├── make_banner.py             # Builds banner.png, water through Sessions 01 to 03 (shown in Session 01)
 │   └── cards/
 └── sessions/
     ├── 01-linux-and-z-matrices/   # Z-matrices and first calculations (no report)

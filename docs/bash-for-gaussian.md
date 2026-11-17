@@ -17,13 +17,13 @@ This guide is built from the scripts in this repository. Each section explains o
 | [`ex6-rhf-vs-uhf/extract.sh`](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh) | [2](#2-pulling-one-number-out-of-a-log), [3](#3-reading-a-table-of-any-length-with-awk), [4](#4-doing-arithmetic-with-shell-values), [6](#6-gluing-columns-together), [7](#7-functions-write-it-once) |
 | **Session 03** | |
 | [`ex1-optimized-geometries/generate.sh`](../sessions/03-geometries-and-conformers/ex1-optimized-geometries/generate.sh) | [5](#5-generating-inputs-from-a-template), [8](#8-mapping-names-with-case), [9](#9-splitting-file-names-and-default-values) |
+| [`ex1-optimized-geometries/extract.sh`](../sessions/03-geometries-and-conformers/ex1-optimized-geometries/extract.sh) | [1](#1-running-every-job-in-a-folder-safely), [2](#2-pulling-one-number-out-of-a-log), [9](#9-splitting-file-names-and-default-values) |
 | [`ex4-hf-vs-b3lyp/generate.sh`](../sessions/03-geometries-and-conformers/ex4-hf-vs-b3lyp/generate.sh) | [5](#5-generating-inputs-from-a-template) |
 | [`ex4-hf-vs-b3lyp/extract.sh`](../sessions/03-geometries-and-conformers/ex4-hf-vs-b3lyp/extract.sh) | [2](#2-pulling-one-number-out-of-a-log) |
 | [`ex5-dichloroethane-scan/extract.sh`](../sessions/03-geometries-and-conformers/ex5-dichloroethane-scan/extract.sh) | [3](#3-reading-a-table-of-any-length-with-awk) |
 | [`ex6-conformer-thermochemistry/extract.sh`](../sessions/03-geometries-and-conformers/ex6-conformer-thermochemistry/extract.sh) | [2](#2-pulling-one-number-out-of-a-log) |
 | [`ex7-fluoromethanol-rotation/extract.sh`](../sessions/03-geometries-and-conformers/ex7-fluoromethanol-rotation/extract.sh) | [3](#3-reading-a-table-of-any-length-with-awk) |
 | [`ex8-glycine-conformers/extract.sh`](../sessions/03-geometries-and-conformers/ex8-glycine-conformers/extract.sh) | [2](#2-pulling-one-number-out-of-a-log), [9](#9-splitting-file-names-and-default-values) |
-| [`ex1-optimized-geometries/extract.sh`](../sessions/03-geometries-and-conformers/ex1-optimized-geometries/extract.sh) | [1](#1-running-every-job-in-a-folder-safely), [2](#2-pulling-one-number-out-of-a-log), [9](#9-splitting-file-names-and-default-values) |
 | **Session 04** | |
 | [`run.sh`](../sessions/04-sn2-reaction/run.sh) (same file as in Sessions 02 and 03) | [1](#1-running-every-job-in-a-folder-safely) |
 | [`ex1-reactants-and-products/extract.sh`](../sessions/04-sn2-reaction/ex1-reactants-and-products/extract.sh) | [2](#2-pulling-one-number-out-of-a-log), [9](#9-splitting-file-names-and-default-values) |
@@ -36,6 +36,8 @@ This guide is built from the scripts in this repository. Each section explains o
 | **Session 07** | |
 | [`ex6-sn2-in-water/extract.sh`](../sessions/07-solvent-effects/ex6-sn2-in-water/extract.sh) | [2](#2-pulling-one-number-out-of-a-log), [9](#9-splitting-file-names-and-default-values) |
 | [`ex8-menshutkin/extract.sh`](../sessions/07-solvent-effects/ex8-menshutkin/extract.sh) | [3](#3-reading-a-table-of-any-length-with-awk) |
+| **Session 08** (NAMD logs) | |
+| [`extract.sh`](../sessions/08-molecular-dynamics/extract.sh) | [2](#2-pulling-one-number-out-of-a-log), [4](#4-doing-arithmetic-with-shell-values) |
 
 **Patterns**
 
@@ -298,7 +300,7 @@ REF_LIH=$(awk -v eh="$EH" -v eli="$ELI" 'BEGIN { printf "%.10f", eh + eli }')
 
 **A value from a sort.** `sort -n -k3 file | head -1` sorts as numbers by column 3, so the lowest energy comes first, and `-v` hands it to the next `awk`: [`S04 ex3/extract.sh` L22–L29](../sessions/04-sn2-reaction/ex3-potential-energy-surface/extract.sh#L22-L29). Mind the sign: the reference is negative, so E − E_min is a sum, and writing `$3-598.59` gives −750 000 kcal/mol.
 
-**In the code:** ΔE at every point in [`ex4/extract.sh` L21–L25](../sessions/02-hartree-fock/ex4-rhf-dissociation/extract.sh#L21-L25) and [`ex5/extract.sh` L29–L33](../sessions/02-hartree-fock/ex5-uhf-initial-guess/extract.sh#L29-L33). The `BEGIN` block, building the references of H₂ and LiH: [`ex6/extract.sh` L35–L36](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L35-L36).
+**In the code:** ΔE at every point in [`ex4/extract.sh` L21–L25](../sessions/02-hartree-fock/ex4-rhf-dissociation/extract.sh#L21-L25) and [`ex5/extract.sh` L29–L33](../sessions/02-hartree-fock/ex5-uhf-initial-guess/extract.sh#L29-L33). The `BEGIN` block, building the references of H₂ and LiH: [`ex6/extract.sh` L35–L36](../sessions/02-hartree-fock/ex6-rhf-vs-uhf/extract.sh#L35-L36). Means and standard deviations in a single pass, accumulating the sum and the sum of squares, σ = √(⟨x²⟩ − ⟨x⟩²), with the result printed in the `END` block: [`S08 extract.sh` L26–L41](../sessions/08-molecular-dynamics/extract.sh#L26-L41), which reads a NAMD log instead of a Gaussian one.
 
 ---
 
