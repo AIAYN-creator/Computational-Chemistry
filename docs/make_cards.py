@@ -385,6 +385,36 @@ def card_canonical():
          "SESSION 08 · EX. 1", draw, "card_canonical.png")
 
 
+# --- 12. Water turns the equilibrium around (Session 07, Ex. 4) -------------
+def card_gauche_water():
+    rows = [l.split() for l in (ROOT / "sessions/07-solvent-effects/ex4-dichloroethane-in-water/thermo.txt")
+            .read_text().splitlines()[1:]]
+    G = {(r[0], r[1]): float(r[5]) for r in rows}
+    R, T = 1.987204e-3, 298.15
+    pops = {}
+    for medium in ("gas", "water"):
+        dG = (G[("gauche", medium)] - G[("trans", medium)]) * HARTREE_TO_KCAL
+        K = 2 * np.exp(-dG / (R * T))              # two mirror-image gauche conformers
+        pops[medium] = 100 * K / (1 + K)
+
+    def draw(ax):
+        x = np.arange(2)
+        ax.bar(x, [100] * 2, width=0.6, color=SURFACE, edgecolor=INK_2, lw=0.8, zorder=1)
+        ax.bar(x, list(pops.values()), width=0.6, color=[BLUE, AQUA], zorder=2)
+        for xi, p in zip(x, pops.values()):
+            ax.text(xi, p + 3, f"{p:.0f} %", ha="center", fontsize=8.5, color=INK)
+        ax.axhline(50, color=INK_2, lw=0.8, ls=(0, (4, 3)), zorder=3)
+        ax.text(0.5, 52, "half", fontsize=7, color=INK_2, ha="center")
+        ax.set_xticks(x, ["gas phase", "water (SMD)"], fontsize=8)
+        ax.set_ylim(0, 100)
+        ax.set_ylabel("gauche at 298 K (%)", fontsize=8)
+        ax.grid(axis="x", visible=False)
+
+    card(f"{pops['water']:.0f}", "% gauche", "Water turns the\nequilibrium around",
+         f"1,2-dichloroethane, HF/6-31G*: {pops['gas']:.0f} % gauche in\nthe gas phase, the majority in water. ΔG\nmoves by 1.6 kcal/mol; K is exponential.",
+         "SESSION 07 · EX. 4", draw, "card_gauche_water.png")
+
+
 if __name__ == "__main__":
     card_rhf()
     card_acetylene()
@@ -397,3 +427,4 @@ if __name__ == "__main__":
     card_cis()
     card_axis()
     card_canonical()
+    card_gauche_water()
