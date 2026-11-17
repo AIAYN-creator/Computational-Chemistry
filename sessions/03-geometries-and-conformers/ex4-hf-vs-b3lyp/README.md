@@ -26,8 +26,11 @@ Optimise hydrogen peroxide (HOOH), acetylene (HCCH) and hydrogen cyanide (HCN) w
 | **HCN** (6-311G*) | | | | | |
 | r(C≡N) (Å) | 1.1268 | 1.1489 | 1.156 | −0.029 | −0.007 |
 | r(C–H) (Å) | 1.0581 | 1.0681 | 1.064 | −0.006 | +0.004 |
+| **HCCH** (6-31G*) | | | | | |
+| r(C≡C) (Å) | 1.1855 | 1.2050 | 1.2028 | −0.017 | +0.002 |
+| r(C–H) (Å) | 1.0569 | 1.0666 | 1.0617 | −0.005 | +0.005 |
 
-Experimental values: H₂O₂, semi-experimental equilibrium structure from Herberth, Giesen and Yamada, *J. Mol. Spectrosc.* **2019**, 362, 37 ([arXiv:2105.09186](https://arxiv.org/abs/2105.09186)); NIST CCCBDB lists only an older 1962 fit (1.475 Å, 0.950 Å, 94.8°, 119.8°). HCN: NIST CCCBDB. All six optimisations converged ("Stationary point found").
+Experimental values: H₂O₂, semi-experimental equilibrium structure from Herberth, Giesen and Yamada, *J. Mol. Spectrosc.* **2019**, 362, 37 ([arXiv:2105.09186](https://arxiv.org/abs/2105.09186)); NIST CCCBDB lists only an older 1962 fit (1.475 Å, 0.950 Å, 94.8°, 119.8°). HCN: NIST CCCBDB. HCCH: experimental (empirical) equilibrium structure from Tamassia, Cané, Fusina and Di Lonardo, *Phys. Chem. Chem. Phys.* **2016**, 18, 1937 ([doi:10.1039/C5CP05997F](https://doi.org/10.1039/C5CP05997F)), fitted to the measured rotational constants of the isotopologues; the values are their most precise fit, re(CC) = 120.2817(12) pm and re(CH) = 106.1689(23) pm. All six optimisations of the final inputs converged ("Stationary point found"); for HCCH, these are the reruns with the corrected Z-matrix described below.
 
 ![HF vs B3LYP: error against experiment](../figures/hf_vs_b3lyp.png)
 
@@ -61,17 +64,19 @@ H 1 rch 3 90.0 2 180.0
 H 2 rch 4 90.0 1 180.0
 ```
 
-This is exactly the Z-matrix already written in [Session 01](../../01-linux-and-z-matrices/z-matrices/hcch.zmat). Converting both Z-matrices to Cartesian coordinates confirms the diagnosis: the original one gives 129.8° for the second H, the same as Gaussian, and the corrected one gives 180.0° for both. The bent results (HF: r(C≡C) = 1.1965 Å, r(C–H) = 1.0624 Å; B3LYP: 1.2162 Å and 1.0730 Å) are kept in [`results.txt`](results.txt) for the record, but they are not the geometry of acetylene and are left out of the comparison. The inputs in this folder are the ones that were run. The calculation with the corrected Z-matrix is pending.
+This is exactly the Z-matrix already written in [Session 01](../../01-linux-and-z-matrices/z-matrices/hcch.zmat). Converting both Z-matrices to Cartesian coordinates confirms the diagnosis: the original one gives 129.8° for the second H, the same as Gaussian, and the corrected one gives 180.0° for both.
+
+**The rerun.** With the corrected Z-matrix, both methods give a linear molecule, point group D∞h (printed by Gaussian as `D*H`), and the bond lengths in the table above. The bent molecule had bonds 0.006 to 0.011 Å longer than the linear one (HF: r(C≡C) = 1.1965 Å, r(C–H) = 1.0624 Å; B3LYP: 1.2162 Å and 1.0730 Å, kept here for the record), so the constraint did not only bend the molecule: it also stretched its bonds. The inputs in this folder are now the corrected ones.
 
 **Lesson:** "Stationary point found" means the optimiser found the minimum *of the coordinates it was allowed to change*. It says nothing about whether the constraints were right. Checking the point group in the output (Cs where D∞h was expected) is the quickest way to catch this kind of error.
 
 ## Conclusions
 
-1. **HF systematically shortens bonds between heavy atoms.** The largest errors appear in bonds involving lone pairs or multiple bonds: the O–O bond of HOOH is 0.055 Å too short, and the C≡N bond of HCN 0.029 Å too short. As in [Ex. 1](../ex1-optimized-geometries/), this reflects the lack of electron correlation in the Hartree–Fock method.
+1. **HF systematically shortens bonds between heavy atoms.** The largest errors appear in bonds involving lone pairs or multiple bonds: the O–O bond of HOOH is 0.055 Å too short, the C≡N bond of HCN 0.029 Å and the C≡C bond of HCCH 0.017 Å. As in [Ex. 1](../ex1-optimized-geometries/), this reflects the lack of electron correlation in the Hartree–Fock method.
 
 2. **B3LYP largely corrects these errors.** With B3LYP, the O–O and C≡N distances fall within 0.007 Å of experiment, and the H–O–O angle improves from +2.1° (HF) to −0.3°. Including electron correlation, even approximately through the exchange–correlation functional, is essential to describe these bonds accurately.
 
-3. **Acetylene.** The HCCH results are not compared here: the Z-matrix produced a bent molecule (see [above](#acetylene-came-out-bent)), so its bond lengths do not describe acetylene. This conclusion will be completed once the corrected calculation is run.
+3. **Acetylene follows the same pattern.** With the corrected Z-matrix (see [above](#acetylene-came-out-bent)), HF shortens the C≡C bond by 0.017 Å and B3LYP leaves it at +0.002 Å, as for O–O and C≡N. For the C–H bond both methods miss by about 0.005 Å, with opposite signs, as in HCN: in bonds to hydrogen, correlation matters much less.
 
 4. **The HOOH dihedral angle is the most sensitive parameter.** Both methods overestimate it, HF by 2.3° and B3LYP by 4.8°: B3LYP, which improves every other parameter, is worse here. The torsional potential energy surface of H₂O₂ is very flat, so small errors in the computed energy shift the position of the minimum considerably.
 
@@ -88,7 +93,7 @@ Both scripts are commented line by line.
 
 | File | What it is |
 |---|---|
-| [`hooh_hf.com`](hooh_hf.com), [`hcch_hf.com`](hcch_hf.com), [`hcn_hf.com`](hcn_hf.com) | Hand-written HF inputs, used as templates (HCCH as run, with the Z-matrix error) |
+| [`hooh_hf.com`](hooh_hf.com), [`hcch_hf.com`](hcch_hf.com), [`hcn_hf.com`](hcn_hf.com) | Hand-written HF inputs, used as templates (HCCH with one dummy atom per carbon, the corrected rerun) |
 | [`generate.sh`](generate.sh) | Builds the B3LYP inputs and runs all six jobs |
 | [`extract.sh`](extract.sh) | Prints the optimised variables of every output |
 | [`results.txt`](results.txt) | Output of `extract.sh` |

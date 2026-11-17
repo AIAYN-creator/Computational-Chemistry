@@ -108,7 +108,7 @@ H₂O₂ (6-31G*), HCN (6-311G*) and HCCH (6-31G*) are optimised with Hartree–
 - **HF shortens bonds between heavy atoms**, most where there are lone pairs or multiple bonds: O–O by 0.055 Å, C≡N by 0.029 Å.
 - **B3LYP brings both within 0.007 Å of experiment**, and the H–O–O angle from +2.1° to −0.3°.
 - **The H–O–O–H dihedral defeats both methods** (+2.3° and +4.8°): the torsional surface is very flat, so a small error in the energy moves the minimum a long way.
-- **Acetylene came out bent.** The Z-matrix defines the second H relative to a dummy atom that sits on the first carbon, so the C–C–H angle stayed at about 130°. The diagnosis, the corrected Z-matrix and the lesson are in the exercise README; the corrected run is pending.
+- **Acetylene came out bent.** The Z-matrix defines the second H relative to a dummy atom that sits on the first carbon, so the C–C–H angle stayed at about 130°. Rerun with one dummy atom per carbon, it is linear (D∞h) with both methods: HF shortens C≡C by 0.017 Å, and B3LYP lands 0.002 Å from experiment. The diagnosis and the lesson are in the exercise README.
 
 Full table and conclusions: [Ex. 4 README](ex4-hf-vs-b3lyp/).
 

@@ -239,13 +239,17 @@ def fig_nh3_modes():
 # H2O2: semi-experimental equilibrium structure, Herberth, Giesen & Yamada,
 # J. Mol. Spectrosc. 2019, 362, 37 (CCCBDB only lists a 1962 fit).
 # HCN: NIST CCCBDB.
+# HCCH: experimental (empirical) equilibrium structure, most precise fit,
+# Tamassia, Cane, Fusina & Di Lonardo, Phys. Chem. Chem. Phys. 2016, 18, 1937.
 EXP_EX4 = {
     ("hooh", "roo"): 1.4518, ("hooh", "roh"): 0.962, ("hooh", "a"): 100.0, ("hooh", "z"): 113.7,
     ("hcn", "rcn"): 1.156, ("hcn", "rch"): 1.064,
+    ("hcch", "rcc"): 1.2028, ("hcch", "rch"): 1.0617,
 }
 LABELS_EX4 = {
     ("hooh", "roo"): r"O–O (H$_2$O$_2$)", ("hooh", "roh"): r"O–H (H$_2$O$_2$)",
     ("hcn", "rcn"): "C≡N (HCN)", ("hcn", "rch"): "C–H (HCN)",
+    ("hcch", "rcc"): "C≡C (HCCH)", ("hcch", "rch"): "C–H (HCCH)",
     ("hooh", "a"): r"∠H–O–O (H$_2$O$_2$)", ("hooh", "z"): r"H–O–O–H dihedral (H$_2$O$_2$)",
 }
 
@@ -267,11 +271,12 @@ def fig_hf_vs_b3lyp():
     data = load_ex4()
     panels = [
         ("Bond lengths", "error against experiment (Å)",
-         [("hooh", "roo"), ("hooh", "roh"), ("hcn", "rcn"), ("hcn", "rch")]),
+         [("hooh", "roo"), ("hooh", "roh"), ("hcn", "rcn"), ("hcn", "rch"),
+          ("hcch", "rcc"), ("hcch", "rch")]),
         ("Angles", "error against experiment (°)", [("hooh", "a"), ("hooh", "z")]),
     ]
-    fig, axes = plt.subplots(1, 2, figsize=(10, 3.4),
-                             gridspec_kw={"width_ratios": [1.25, 1], "wspace": 0.55})
+    fig, axes = plt.subplots(1, 2, figsize=(10, 3.9),
+                             gridspec_kw={"width_ratios": [1.25, 1], "wspace": 0.75})
     for ax, (title, xlabel, keys) in zip(axes, panels):
         ax.axvline(0, color=INK_2, lw=1, ls=":")
         for i, key in enumerate(keys):
@@ -292,8 +297,8 @@ def fig_hf_vs_b3lyp():
         ax.set_xlim(-lim, lim)
         ax.annotate("experiment", xy=(0, 1), xycoords=("data", "axes fraction"),
                     xytext=(3, -12), textcoords="offset points", fontsize=8, color=INK_2)
-    axes[0].legend(loc="lower left", fontsize=8.5)
-    fig.suptitle(r"H$_2$O$_2$ (6-31G*) and HCN (6-311G*): HF vs B3LYP optimised geometries",
+    axes[0].legend(loc="upper right", fontsize=8.5)
+    fig.suptitle(r"H$_2$O$_2$ and HCCH (6-31G*), HCN (6-311G*): HF vs B3LYP optimised geometries",
                  x=0.01, ha="left", fontsize=11.5, y=1.02)
     save(fig, "hf_vs_b3lyp.png")
 
