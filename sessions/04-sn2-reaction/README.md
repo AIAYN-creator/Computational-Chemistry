@@ -109,6 +109,8 @@ The pass of the map, optimised as a transition state.
 | Barrier from F⁻···CH₃Cl, ΔE‡ / ΔG‡ (kcal/mol) | 2.99 / 3.06 |
 | Relative to F⁻ + CH₃Cl, ΔE / ΔG (kcal/mol) | **−11.52 / −5.22** |
 
+The free energies are as Gaussian printed them. It took the transition state as C₁ (σ = 1) instead of C₃ᵥ (σ = 3), so its G is 0.65 kcal/mol too low: with σ = 3, ΔG‡ = 3.71 and ΔG = −4.57 kcal/mol ([details](ex4-transition-state/#a-symmetry-number-gaussian-missed)). Nothing qualitative changes.
+
 - **A double well.** Two ion-dipole complexes, separated by a barrier of only 3 kcal/mol, which does not reach the level of the separated reactants.
 - **A negative barrier is not an error.** A transition state only has to lie above the two wells it connects. From F⁻ + CH₃Cl there is no net barrier, and in the gas phase the reaction is almost as fast as the collisions.
 - **Reactant-like, as Hammond predicts** for a strongly exothermic reaction: the umbrella is at 82.7°, short of planar, and most of the charge is still on F.
@@ -154,6 +156,7 @@ Every species and the whole scan again, with a continuum model of water: `scrf=(
 - **The complexes drift apart.** The dielectric screens the ion-dipole attraction, and the wells of the gas phase open into valleys.
 - **The double well becomes a single barrier.** Water stabilises F⁻ by 86.2 kcal/mol and the transition state, where the charge is shared, only by 63.2: the transition state ends up 20.9 kcal/mol above the reactants in ΔG.
 - **The transition state is later,** closer to the products, as Hammond predicts for a less exergonic reaction.
+- **The gas-phase rate constant** carries the symmetry-number error above: 1.2 × 10¹⁰ s⁻¹ with σ = 3. In water the same error appears in every species and cancels.
 - **Qualitative only:** PCM has no hydrogen bonds, which are strongest for F⁻, so the real barrier should be even higher.
 
 The complexes that do not survive, the solvation energies, the rate constants and the caveats: [extra README](extra-water-pcm/).

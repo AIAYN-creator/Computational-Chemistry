@@ -30,6 +30,14 @@ The full discussion is in the **[report](../report/report.pdf)**, and the summar
 - UHF leaves RHF at the Coulson–Fischer point, ≈ 1.2 Å for H₂ and ≈ 2.2 Å for LiH, and reaches the correct limit. Below the curves, ⟨Ŝ²⟩ shows the cost: it rises from 0 to 1 right where the curves split.
 - Here the UHF curves split from RHF smoothly. In Ex. 5, at STO-3G, the split was an abrupt jump, most likely the SCF falling back into the restricted solution. A smooth onset of ⟨Ŝ²⟩ is a good sign that the scan followed one solution all the way.
 
+## Known slips in the submitted report
+
+The [report](../report/report.pdf) is kept as it was submitted. Checking it against the data for this repository turned up:
+
+- **The LiH equilibrium values cannot be traced to the data.** The report gives r<sub>e</sub> = 1.64 Å and D<sub>e</sub> = 1.42 eV. The scan stored here goes in steps of 0.3 Å: its lowest point is at 1.8 Å, 1.35 eV below the separated atoms, and a parabola through the three lowest points gives 1.65 Å and 1.39 eV. The conclusions do not change: D<sub>e</sub> is still about 45 % below experiment.
+- **The H₂ values come from two scans.** r<sub>e</sub> = 0.735 Å is the 3-21G result of the finer scan of [Ex. 3](../ex3-bond-scans/) (0.03 Å steps), and D<sub>e</sub> = 3.55 eV is the lowest point of the 0.25 Å scan of this exercise. A parabola through the three lowest points of that coarse scan would give 0.80 Å, which shows why the finer scan is the right source.
+- **Two typos in the Methods:** "writting" for *writing*, and "Linux System" with a capital S.
+
 ## Scripts
 
 [`extract.sh`](extract.sh), commented line by line, does for H₂ and LiH what Ex. 4 and 5 did for H₂ alone. The two repeated operations, reading a scan relative to a reference and reading ⟨Ŝ²⟩, are written once as Bash functions (`scan` and `s2`), and the loop only picks the right reference energy for each molecule. The first version repeated the extraction for each molecule, with the number of points fixed by hand (39 and 22). Now adding a third molecule only takes another reference energy. Pattern: [functions: write it once](../../../docs/bash-for-gaussian.md#7-functions-write-it-once).

@@ -155,6 +155,13 @@ pdflatex report && bibtex report && pdflatex report && pdflatex report
 
 **Followed up in [Session 07](../../07-solvent-effects/ex4-dichloroethane-in-water/):** with SMD water, ΔG drops from 1.85 to 0.23 kcal/mol and gauche becomes the majority, 58 %.
 
+## Known slips in the submitted version
+
+The PDF and its LaTeX source are kept as they were submitted. Checked against the data for this repository:
+
+- **The scan range.** The Methods say the dihedral was varied "from 180° to 0°"; the scan went on to −20°, the point that checks the symmetry E(φ) = E(−φ) ([Ex. 5](../ex5-dichloroethane-scan/#half-a-turn-is-enough)).
+- **The Gaussian citation.** The author field of the `.bib` entry is `Frisch, M. J. et. all`, which BibTeX reads as a single name and prints as "M. J. et. all Frisch". It should be `Frisch, M. J. and others`, which prints "M. J. Frisch et al.", as in the Session 04 report.
+
 ## Files and sources
 
 | File | What it is |

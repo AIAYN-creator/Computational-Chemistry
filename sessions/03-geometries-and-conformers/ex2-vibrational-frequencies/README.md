@@ -49,9 +49,9 @@ The diagram matches the displacement vectors printed in the output: in the bend,
 
 - 1827 cm⁻¹ (A₁): H–O–H bending
 - 4070 cm⁻¹ (A₁): symmetric O–H stretching
-- 4189 cm⁻¹ (B₂): asymmetric O–H stretching
+- 4189 cm⁻¹ (B₂): antisymmetric O–H stretching
 
-The bending mode has a force constant about five times smaller than the stretching modes (2.1 vs. 10–11 mDyne/Å), which is why its frequency is much lower. The asymmetric stretch lies slightly above the symmetric one.
+The bending mode has a force constant about five times smaller than the stretching modes (2.1 vs. 10–11 mDyne/Å), which is why its frequency is much lower. The antisymmetric stretch lies slightly above the symmetric one.
 
 **Symmetry and spectroscopy.** The two A₁ modes preserve the C₂ᵥ symmetry, while the B₂ mode breaks it. The bend dominates the IR spectrum (107 km/mol) and the symmetric stretch dominates the Raman spectrum (75.5 Å⁴/amu), which illustrates how the two techniques complement each other. Moreover, only the totally symmetric (A₁) modes give polarised Raman bands (depolarisation ratio below 0.75).
 

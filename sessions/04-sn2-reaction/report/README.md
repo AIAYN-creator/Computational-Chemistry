@@ -77,6 +77,19 @@ python figure1_pes.py ../../ex3-potential-energy-surface/sep.dat ../../extra-wat
 pdflatex report && bibtex report && pdflatex report && pdflatex report
 ```
 
+## Known slips in the submitted version
+
+The PDF and its LaTeX source are kept as they were submitted. Checked against the data of the exercises:
+
+| In the report | From the data | Where it comes from |
+|---|---|---|
+| H–C–F ≈ 72° in the reactant complex | **73°** | 180° − 107.05° ([Ex. 2](../ex2-ion-dipole-complexes/comparison.txt)) |
+| H–C–F ≈ 109° in the product complex | **108°** | 108.35° ([Ex. 2](../ex2-ion-dipole-complexes/comparison.txt)) |
+| −TΔS ≈ +6 kcal/mol at the transition state | **+6.8** | ΔG − ΔH = −5.22 − (−12.03) ([Ex. 4](../ex4-transition-state/)) |
+| Reactants stabilised by 25.6 kcal/mol more than the TS | **25.5** | 86.2 + 2.5 − 63.2 ([extra](../extra-water-pcm/)) |
+
+None of them changes an argument. Two more numbers carry the symmetry-number error of the gas-phase transition state, which was found after submission: ΔG‡ from the complex is 3.71 kcal/mol with σ = 3, not 3.06, and the rate constant 1.2 × 10¹⁰ s⁻¹, not 3.5 × 10¹⁰ ([Ex. 4](../ex4-transition-state/#a-symmetry-number-gaussian-missed)).
+
 ## Files
 
 | File | What it is |

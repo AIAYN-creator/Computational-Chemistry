@@ -23,7 +23,7 @@ A Z-matrix places each atom relative to atoms already placed: a distance to one,
 
 **Dummy atoms.** An atom cannot be defined at 180° from the previous two: the dihedral that should place the next atom becomes undefined. In acetylene each carbon gets a dummy atom `X`, 1 Å away at 90° from the C–C axis. Each H is then placed at 90° from *its own carbon's* dummy with a dihedral of 180°, which puts it on the axis. Converting the Z-matrix to Cartesian coordinates gives exactly 180° for both C–C–H angles ([`plot_figures.py`](plot_figures.py) checks it). This detail came back later: in [Session 03, Ex. 4](../03-geometries-and-conformers/ex4-hf-vs-b3lyp/#acetylene-came-out-bent), an acetylene input with a single dummy atom optimised to a bent molecule.
 
-**Neither cis nor trans.** The two H₂O₂ Z-matrices are the planar extremes. The real molecule is skewed, with a dihedral of about 114°, and finding it takes an optimisation: [Session 03, Ex. 4](../03-geometries-and-conformers/ex4-hf-vs-b3lyp/) gets 116° with HF and 118° with B3LYP.
+**Neither cis nor trans.** The two H₂O₂ Z-matrices are the planar extremes. The real molecule is skewed, with a dihedral of about 114°, and finding it takes an optimisation: [Session 03, Ex. 4](../03-geometries-and-conformers/ex4-hf-vs-b3lyp/) gets 116.0° with HF and 118.5° with B3LYP.
 
 ## First calculations
 
