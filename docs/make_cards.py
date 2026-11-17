@@ -3,14 +3,12 @@
 Usage (from the repository root):  python docs/make_cards.py
 Every number and every curve comes from the data files of the sessions.
 """
-import importlib.util
 from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
 
 ROOT = Path(__file__).resolve().parent.parent
-S01 = ROOT / "sessions/01-linux-and-z-matrices"
 S02 = ROOT / "sessions/02-hartree-fock"
 S03 = ROOT / "sessions/03-geometries-and-conformers"
 S04 = ROOT / "sessions/04-sn2-reaction"
@@ -81,51 +79,6 @@ def card_rhf():
     card(f"{error:.1f}", "eV", "Restricted Hartree–Fock\ncannot break a bond",
          "At 10 Å, RHF keeps H₂ 50 % ionic and\nends far above two H atoms. UHF fixes\nit, at the price of spin contamination.",
          "SESSION 02 · REPORT", draw, "card_rhf.png")
-
-
-# --- 2. The acetylene that came out bent (Session 03, Ex. 4) -----------------
-def card_acetylene():
-    spec = importlib.util.spec_from_file_location("s01", S01 / "plot_figures.py")
-    s01 = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(s01)
-
-    lines = (S03 / "ex4-hf-vs-b3lyp/results.txt").read_text().splitlines()
-    i = lines.index("== hcch_hf.log")
-    variables = {l.split()[1]: float(l.split()[2]) for l in lines[i + 1:i + 3]}
-    bent_atoms, _ = s01.read_zmatrix(S03 / "ex4-hf-vs-b3lyp/hcch_hf.com")
-    good_atoms, good_vars = s01.read_zmatrix(S01 / "z-matrices/hcch.zmat")
-    good_vars.update({"r1": variables["rcc"], "r2": variables["rch"]})
-    bent = s01.to_cartesian(bent_atoms, variables)
-    good = s01.to_cartesian(good_atoms, good_vars)
-
-    def angle(a, b, c):
-        u, v = a - b, c - b
-        return np.degrees(np.arccos(u @ v / np.linalg.norm(u) / np.linalg.norm(v)))
-
-    theta = angle(bent[0], bent[1], bent[4])
-
-    def draw(ax):
-        for pos, idx, y0, colour, label in ((good, [5, 0, 1, 4], 0.9, AQUA, "intended: linear"),
-                                            (bent, [3, 0, 1, 4], -0.5, ORANGE, "optimised: bent")):
-            # project onto the plane of the molecule: C-C along x
-            c1, c2 = pos[0], pos[1]
-            ex = (c2 - c1) / np.linalg.norm(c2 - c1)
-            other = pos[idx[-1]] - c1
-            ey = other - (other @ ex) * ex
-            ey = ey / np.linalg.norm(ey) if np.linalg.norm(ey) > 1e-6 else np.array([0, 1, 0])
-            xy = np.array([[(pos[k] - c1) @ ex, (pos[k] - c1) @ ey + y0] for k in idx])
-            ax.plot(xy[:, 0], xy[:, 1], color="#8a8986", lw=3, zorder=1)
-            ax.scatter(xy[1:3, 0], xy[1:3, 1], s=120, color="#5c5f66", edgecolor=INK, zorder=2)
-            ax.scatter(xy[[0, 3], 0], xy[[0, 3], 1], s=60, color="#e4e3df", edgecolor=INK, zorder=2)
-            ax.text(-1.15, y0 + 0.32, label, fontsize=7.5, color=colour, fontweight="bold")
-        ax.set_xlim(-1.3, 2.6)
-        ax.set_ylim(-1.35, 1.5)
-        ax.set_aspect("equal")
-        ax.axis("off")
-
-    card(f"{theta:.0f}", "°", "“Stationary point found”\ndoes not mean right",
-         "One dummy atom for two carbons left the\nsecond H off the axis. The optimiser\nconverged, to the wrong molecule.",
-         "SESSION 03 · EX. 4", draw, "card_acetylene.png")
 
 
 # --- 3. The gauche population of 1,2-dichloroethane (Session 03 report) ------
@@ -417,7 +370,6 @@ def card_gauche_water():
 
 if __name__ == "__main__":
     card_rhf()
-    card_acetylene()
     card_gauche()
     card_agreement()
     card_anomeric()

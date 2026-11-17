@@ -20,26 +20,26 @@ The aim is to show the whole workflow, not only the final numbers: how each calc
 </table>
 <table>
 <tr>
-<td width="50%"><a href="sessions/03-geometries-and-conformers/ex4-hf-vs-b3lyp/#acetylene-came-out-bent"><img src="docs/cards/card_acetylene.png" alt="130 degrees: Stationary point found does not mean right"></a></td>
 <td width="50%"><a href="sessions/03-geometries-and-conformers/ex1-optimized-geometries/#cross-checks-with-session-02"><img src="docs/cards/card_agreement.png" alt="0.001 Angstrom: two methods, two sessions, one bond length"></a></td>
-</tr>
-</table>
-<table>
-<tr>
 <td width="50%"><a href="sessions/04-sn2-reaction/ex4-transition-state/#the-double-well-profile"><img src="docs/cards/card_double_well.png" alt="-11.5 kcal/mol: a transition state below the reactants"></a></td>
+</tr>
+</table>
+<table>
+<tr>
 <td width="50%"><a href="sessions/04-sn2-reaction/report/"><img src="docs/cards/card_water.png" alt="+20.9 kcal/mol: water turns the double well into a barrier"></a></td>
-</tr>
-</table>
-<table>
-<tr>
 <td width="50%"><a href="sessions/05-06-excited-states/ex6-uv-vis-aldehydes/"><img src="docs/cards/card_cis.png" alt="38 nm: CIS converges, to the wrong answer"></a></td>
-<td width="50%"><a href="sessions/07-solvent-effects/report/"><img src="docs/cards/card_axis.png" alt="R2 0.98: same points, a different axis"></a></td>
 </tr>
 </table>
 <table>
 <tr>
+<td width="50%"><a href="sessions/07-solvent-effects/report/"><img src="docs/cards/card_axis.png" alt="R2 0.98: same points, a different axis"></a></td>
 <td width="50%"><a href="sessions/08-molecular-dynamics/ex1-water/#energy-and-temperature"><img src="docs/cards/card_canonical.png" alt="9999 degrees of freedom: temperature noise, predicted by N alone"></a></td>
+</tr>
+</table>
+<table>
+<tr>
 <td width="50%"><a href="sessions/07-solvent-effects/ex4-dichloroethane-in-water/"><img src="docs/cards/card_gauche_water.png" alt="58 % gauche: water turns the equilibrium around"></a></td>
+<td width="50%"></td>
 </tr>
 </table>
 
