@@ -69,6 +69,15 @@ C_V = σ_E² / (k_B T²) = 114 ± 10 J mol⁻¹ K⁻¹ per mole of water
 
 with the uncertainty from six blocks. Real liquid water has 75.3 J mol⁻¹ K⁻¹ at constant pressure (NIST), and C_V differs from C_P by about 1 % for water. Most of the excess has a simple cause: the three springs of each molecule are classical oscillators, and each takes R = 8.3 J mol⁻¹ K⁻¹ by equipartition, 25 J mol⁻¹ K⁻¹ in total. The real O–H stretch (about 3600 cm⁻¹, 17 k_BT at 300 K) is in its quantum ground state and takes none. Removing them leaves 89 ± 10 J mol⁻¹ K⁻¹: classical nuclei explain two thirds of the error, and the force field the rest. Fixing the geometry with `rigidBonds` would remove those three modes from the simulation.
 
+### Reading the log
+
+Four details of the NAMD log that are easy to misread:
+
+- **TEMPAVG is not a running average.** It is the mean temperature over the steps since the previous energy line, the last 100 steps, which is why it fluctuates almost as much as TEMP. NAMD gives no cumulative averages of T or E: they are computed from [`energies.dat`](energies.dat).
+- **TOTAL and TOTAL3** are both the total energy. TOTAL3 uses an estimate of the kinetic energy with less high-frequency noise, meant for spotting a drift in NVE. With a thermostat, TOTAL is the one to use.
+- **A negative total energy means nothing by itself.** The zero of a force field is arbitrary; here the electrostatics dominate, −11 401 kcal/mol of potential energy against 2 979 of kinetic energy.
+- **The pressure is not controlled in NVT:** −870 ± 1466 bar over the run, with a standard deviation larger than the mean. NAMD computes it from the virial theorem. A negative mean says that, at this density and with this cutoff, the liquid pulls inwards; a barostat (NPT) would let the volume adjust.
+
 ### Radial distribution function
 
 ![Oxygen-oxygen radial distribution function of TIP3P water](../figures/g_OO.png)

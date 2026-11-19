@@ -6,7 +6,7 @@
 
 One Na⁺ ion in 1136 TIP3P water molecules, 100 ps of Langevin dynamics at 300 K. Compute the Na–O and Na–H radial distribution functions and the coordination number of the ion.
 
-The exercise is done in class on Wednesday. The data here come from the trajectory provided by the course, analysed in advance; the VMD session will be added when it is done.
+Done in class on 18 November, in VMD; the class session is summarised [below](#in-vmd), after the analysis of the trajectory.
 
 ## The system and the input
 
@@ -22,7 +22,7 @@ The water is again the triangle of three springs of Ex. 1, with no angle term. T
 
 ## Approach
 
-[`../extract.sh`](../extract.sh) takes the energy table and the averages ([`energies.dat`](energies.dat), [`statistics.txt`](statistics.txt)). In VMD the radial distribution functions use the selections `name Na+` against `name O`, and `name Na+` against `name H1 H2`, with **Use PBC**. [`../analyze.py`](../analyze.py) computes the same functions from the trajectory, in [`g_NaO.dat`](g_NaO.dat) and [`g_NaH.dat`](g_NaH.dat), with columns r, g(r) and n(r).
+[`../extract.sh`](../extract.sh) takes the energy table and the averages ([`energies.dat`](energies.dat), [`statistics.txt`](statistics.txt)). In VMD the radial distribution functions use the selections `name 'Na+'` against `name O`, and `name 'Na+'` against `name H1 or name H2`, with **Use PBC** (details [below](#in-vmd)). [`../analyze.py`](../analyze.py) computes the same functions from the trajectory, in [`g_NaO.dat`](g_NaO.dat) and [`g_NaH.dat`](g_NaH.dat), with columns r, g(r) and n(r).
 
 There is only one ion, so each frame gives one reference instead of 1111. The curves are noisier than g_OO, and the 400 frames are what makes them usable.
 
@@ -45,6 +45,17 @@ There is only one ion, so each frame gives one reference instead of 1111. The cu
 ### Temperature
 
 σ_T/⟨T⟩ = 0.01375 ± 0.0002, against √(2/10227) = 0.01398: the canonical width again, within about one standard error. See [Ex. 1](../ex1-water/#energy-and-temperature) for what this test means.
+
+## In VMD
+
+What was done by hand in class, on the same trajectory:
+
+- **Loading.** The final `.coor` is loaded as a PDB file, then the `.dcd` into the same molecule, once: 401 frames. Loading the `.dcd` twice gives 801, and the molecule has to be deleted and loaded again. Frame 0 is the `.coor`, the *last* structure of the run, so analyses start at frame 1. [`analyze.py`](../analyze.py) reads only the 400 frames of the `.dcd`.
+- **Selecting the ion:** `name 'Na+'`, `resname 'Na+'` or `index 0`. The quotes are needed because `+` is a special character, and a keyword is needed in front: `'Na+'` alone does not parse. The ion has no bonds, so the *Lines* style does not show it; *VDW* or *CPK* does.
+- **Radial distribution functions:** *Extensions → Analysis → Radial Pair Distribution Function*, frames 1 to −1, **Use PBC**, **Display int(g(r))**, **Save to File**. The saved files have three columns: r, g(r) and its integral, the running coordination number.
+- **One frame against the average.** `within 2.8 of name 'Na+'` selects 5 oxygens and no hydrogen in frame 0. Averaged over the 400 frames the first shell holds 5.8: the coordination number fluctuates, because waters come and go.
+- **The first shell is exchanged.** Distances between the ion and single oxygens, followed with *Labels → Bonds → Graph*, show waters that start about 8 Å away and end in the first shell at about 2.5 Å: within 100 ps the first shell trades molecules with the solvent. The five distance traces were saved in class; they are not in the repository yet.
+- **The open question of the class,** how far the hydrogens sit if each water points its dipole away from the ion, is answered in the results above: 3.06 Å from the geometry, 3.08 Å from g_NaH.
 
 ## Conclusions
 

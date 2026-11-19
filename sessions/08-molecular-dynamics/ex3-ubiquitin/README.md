@@ -6,7 +6,7 @@
 
 Ubiquitin, a protein of 76 residues, in a box of water, 100 ps of Langevin dynamics at 300 K with the CHARMM force field. Compute the RMSD of the protein against time and the average RMSD of each residue, and find the most mobile regions.
 
-The exercise is done in class on Wednesday. The data here come from the trajectory provided by the course, analysed in advance; the VMD session will be added when it is done.
+Done in class on 18 November, in VMD; the class session is summarised [below](#in-vmd). It is also the exercise of the session report, which will be added when it is written.
 
 ## The system and the input
 
@@ -24,11 +24,11 @@ The water here is flexible in the usual way, with an O–H spring and an H–O�
 
 The log was written by an input named `ubq_wb_eq_OK.namd`, started from restart files (`1_restart_.coor`, `1_restart_.vel`), while the course provides `ubq_md.namd`, `initial.coor` and `initial.vel`. Every parameter printed in the log matches `ubq_md.namd`; only the file names differ.
 
-**The run starts cold.** The first energy line reads 211 K, and the thermostat brings the system to 300 K within 0.3 ps. As in the other exercises, the first 10 ps are left out of the averages.
+**The run starts cold, and the velocities say why.** The first energy line reads 211 K, and the temperature reaches 300 K within 0.3 ps. The starting velocities, `initial.vel`, are a restart written at step 50 500 of an earlier run, and their kinetic energy over the 21 153 degrees of freedom of this run gives exactly 211.2 K. The earlier run was the equilibration of the NAMD tutorial, with `rigidBonds all`: the 629 X–H bonds of the protein and the three bonds of each of the 1940 waters held fixed, 6449 constraints. Spread over the 14 704 degrees of freedom left by those constraints, the same kinetic energy is **303.8 K**. The velocities come from a run at 300 K; this one starts without constraints, so the 6449 bond vibrations begin with no kinetic energy, and the thermostat and equipartition fill them in a fraction of a picosecond. As in the other exercises, the first 10 ps are left out of the averages.
 
 ## Approach
 
-The course provides `residue_rmsd.tcl`, a VMD script from the NAMD tutorial. For every frame, it fits the whole protein onto frame 0, computes the RMSD of the heavy atoms of each residue, and averages it over the trajectory. [`../analyze.py`](../analyze.py) repeats that calculation and adds the RMSD of the whole backbone against time, fitted on the backbone itself, the usual measure of whether the fold is stable: [`rmsd_time.dat`](rmsd_time.dat) and [`rmsd_residue.dat`](rmsd_residue.dat). The reference is the first frame of the `.dcd`, at 0.25 ps, as in the Tcl script.
+The course provides `residue_rmsd.tcl`, a VMD script from the NAMD tutorial. For every frame, it fits the whole protein onto frame 0, computes the RMSD of the heavy atoms of each residue, and averages it over the trajectory. [`../analyze.py`](../analyze.py) repeats that calculation and adds the RMSD of the whole backbone against time, fitted on the backbone itself, the usual measure of whether the fold is stable: [`rmsd_time.dat`](rmsd_time.dat) and [`rmsd_residue.dat`](rmsd_residue.dat). The reference is the first frame of the `.dcd`, at 0.25 ps. In VMD the Tcl script uses frame 0, which is that same frame only if the `.dcd` is loaded on its own: when the final `.coor` is loaded first, as in [Ex. 2](../ex2-sodium-in-water/#in-vmd), frame 0 is the *last* structure of the run.
 
 ## Results
 
@@ -55,6 +55,14 @@ The measured value is 9 % low, about six standard errors. Three explanations can
 - **Not the number of degrees of freedom:** KINETIC/TEMP in the log gives back 21153 = 3 × 7051.
 
 What is left differs between the runs: a protein with its stiff bonds and angles, a different force field, and a different NAMD build (2.9b3 with CUDA, against 2.9 and 2.8b3 on CPUs). The cause is not settled yet; it is a question to bring to class.
+
+## In VMD
+
+What was done by hand in class:
+
+- **The fold:** representation `protein`, style *NewCartoon*, coloured by *Secondary Structure*, which VMD recomputes in every frame: a long α helix over a β sheet, a short 3₁₀ helix, and the C-terminal tail ending in two glycines. A second representation, `water` in *Lines*, shows the box. *QuickSurf* draws the surface, where pockets and active sites show, but it is heavy on the virtual machine, which renders without a GPU.
+- **RMSD against time:** *Extensions → Analysis → RMSD Trajectory Tool*, selection `protein`, **noh** (heavy atoms only: `noh` means no hydrogens), **Align**, which superimposes every frame on the reference frame by least squares before measuring. In class it rose from 0.35 to 0.8 Å in about 9 ps and reached a plateau of 0.85–0.95 Å from about 32 ps (frame 130) to the end: under 1 Å, a very rigid protein. The numbers differ from the curve above because the reference frame and the fit differ; the shape, a fast rise and a plateau below 1 Å, is the same.
+- **RMSD per residue:** `source residue_rmsd.tcl` in the Tk Console. The console speaks **Tcl, not Bash**: `ls` and `mv` work because Tcl passes unknown commands to the shell, but a Bash `for` loop does not (Tcl has `foreach`, and `file rename` instead of `mv`). In a selection, `protein and name CA` is the intersection, atom by atom; `or` is the union.
 
 ## Conclusions
 

@@ -14,7 +14,7 @@ The three simulations were run beforehand and are provided by the course: liquid
 | [Ex. 2 — A sodium ion in water](ex2-sodium-in-water/) | How many waters does Na⁺ hold, and how are they oriented? | Na⁺ + 1136 waters, AMBER |
 | [Ex. 3 — Ubiquitin in a water box](ex3-ubiquitin/) | Is the fold stable, and which residues move most? | 76 residues + 1940 waters, CHARMM |
 
-Exercises 2 and 3 are done in class on Wednesday 18 November. Their data come from the course trajectories, analysed in advance.
+Exercises 2 and 3 were done in class on 18 November, in VMD; the exercise READMEs collect what was seen there next to the analysis of the trajectories. The session report is on Ex. 3, and it will be added when it is written.
 
 ## The common setup
 
