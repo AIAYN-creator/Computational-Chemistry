@@ -311,7 +311,7 @@ def card_axis():
         ax.set_ylabel(r"$\Delta G^\ddagger$ (kcal/mol)", fontsize=8)
 
     card(f"{r2(f, barrier):.2f}", "R²", "Same points,\na different axis",
-         "The Menshutkin barrier in six media looks\nsaturated against ε. Against f(ε), where ε\nenters a continuum model, it is a straight line.",
+         "The Menshutkin barrier saturates against ε,\nas the reaction field does. Against f(ε),\nwhich holds that saturation, it is a straight line.",
          "SESSION 07 · REPORT", draw, "card_axis.png")
 
 

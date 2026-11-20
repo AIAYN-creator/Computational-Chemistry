@@ -71,7 +71,7 @@ The other exercises of the session will be added as they are done.
 | against ε | 0.510 | 0.527 | 0.576 | 0.549 | 0.447 | 0.464 |
 | against f(ε) | 0.995 | 0.998 | 0.999 | 1.000 | 0.977 | 0.983 |
 
-- **The effect does not saturate; the axis does.** ε never appears alone in the theory of a continuum model, only inside f(ε), which compresses the polar end: acetonitrile and water differ by 43 in ε and by 0.011 in f(ε).
+- **The saturation is real, and it belongs to the dielectric.** ε never appears alone in the theory of a continuum model, only inside f(ε), which tends to 1/2 and compresses the polar end: acetonitrile and water differ by 43 in ε and by 0.011 in f(ε). Against f(ε), where the saturation already is, the solute responds linearly.
 - **A predictive line:** ΔG‡ = −32.2 f(ε) + 43.6 kcal/mol, within 1.5 kcal/mol for a solvent left out of the fit.
 - **A transition state less polarised in water than in vacuum.** The solvent swings the reaction free energy by 129 kcal/mol, and Hammond's postulate moves the transition state earlier (Leffler α = 0.15).
 - **One variable, five correlations.** In a continuum model f(ε) is the only knob, so the correlations are not independent: only their slopes inform.

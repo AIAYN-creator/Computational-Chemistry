@@ -60,7 +60,7 @@ Barriers and reaction free energies are measured from the separated reactants, N
 
 ![Barrier against epsilon and against f(epsilon), distances and reaction free energy](../report/figure.png)
 
-*(a) The barrier against ε: a straight line fails, R² = 0.45; the curve is the model of (b) mapped back onto this axis. (b) The same barriers against f(ε). (c) The transition state distances and (d) the reaction free energy against f(ε).*
+*(a) The barrier against ε: a straight line fails, R² = 0.45; the curve is the model of (b) mapped back onto this axis. (b) The same barriers against f(ε): the solid line fits the five solvents; the square is the gas phase, left out of that fit (see the predictive model below); dashed, the fit including it. (c) The transition state distances and (d) the reaction free energy against f(ε).*
 
 **Not one quantity correlates with ε; all of them are straight lines against f(ε).** The points and the calculations are the same; only the axis changes.
 
@@ -107,7 +107,7 @@ Since the response to a reaction field scales with μ² (Onsager), a transition 
 
 ## Conclusions
 
-1. **Correlated against ε, as requested, none of the six quantities is linear** (0.45 ≤ R² ≤ 0.58). Against f(ε) = (ε − 1)/(2ε + 1), all of them are (0.977 ≤ R² ≤ 0.9998). The apparent saturation of solvent effects is a property of the axis, not of the chemistry.
+1. **Correlated against ε, as requested, none of the six quantities is linear** (0.45 ≤ R² ≤ 0.58). Against f(ε) = (ε − 1)/(2ε + 1), all of them are (0.977 ≤ R² ≤ 0.9998). The saturation against ε is real, but it belongs to the dielectric response, f(ε) → 1/2, not to the solute: against the reaction field every quantity responds linearly.
 2. **The line predicts the barrier of a solvent left out of the fit within 1.5 kcal/mol,** but should not be extrapolated to the gas phase.
 3. **The correlations the exercise asks for are one correlation,** and only their slopes carry independent information.
 4. **The slopes are chemically sensible.** The solvent swings the reaction free energy by 129 kcal/mol, turns the reaction exergonic above ε ≈ 8, and moves the transition state earlier (Leffler α = 0.15), which leaves it less polarised in water than in vacuum.
