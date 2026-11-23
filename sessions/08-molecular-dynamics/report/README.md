@@ -97,7 +97,7 @@ The full source is in [`source/`](source/): [`report.tex`](source/report.tex), [
 - **Secondary structure as a bar above the axis.** Each residue becomes a rectangle placed with `get_xaxis_transform()`: x in data units, so it lines up with the residue, and y in axis units, so it sits above the plot whatever the scale.
 - **Log axes with plain numbers.** `FixedLocator` and `ScalarFormatter` print 2, 5, 10, 20, 50 instead of powers of ten.
 
-`plot_ubq.py` is the final version, the one that drew the submitted figures. It reads the RMSD from `ubq_rmsd_ini.dat`, computed in VMD with `measure rmsd` against `initial.coor`; that file is not in the repository yet, so until it is the script stops at that line.
+`plot_ubq.py` is the final version, the one that drew the submitted figures. It reads the RMSD from [`ubq_rmsd_ini.dat`](source/ubq_rmsd_ini.dat), computed in VMD with `measure rmsd` against `initial.coor`, and with the data of this folder it draws both figures identical, pixel for pixel, to the submitted ones.
 
 ### Building it
 
@@ -116,7 +116,7 @@ pdflatex report && bibtex report && pdflatex report && pdflatex report
 | [`source/report.tex`](source/report.tex), [`source/bibliografia.bib`](source/bibliografia.bib) | LaTeX source and bibliography |
 | [`source/plot_ubq.py`](source/plot_ubq.py) | Draws both figures and prints the numbers of the text |
 | [`source/ubq_ET.dat`](source/ubq_ET.dat) | Step, total energy and temperature, from the NAMD log |
-| `source/ubq_rmsd_ini.dat` | Heavy-atom RMSD per frame against `initial.coor`, from VMD `measure rmsd`: the series of Figure 1c (to be added) |
+| [`source/ubq_rmsd_ini.dat`](source/ubq_rmsd_ini.dat) | Heavy-atom RMSD per frame against `initial.coor`, from VMD `measure rmsd`: the series of Figure 1c |
 | [`source/ubq_rmsd.dat`](source/ubq_rmsd.dat) | The same RMSD from the VMD RMSD Trajectory Tool, as done in class; not used by the report |
 | [`source/ubq_rmsf_ca.dat`](source/ubq_rmsf_ca.dat) | Residue, name, secondary structure and C<sub>α</sub> RMSF, from VMD |
 | [`source/1ubq_bfac_ca.dat`](source/1ubq_bfac_ca.dat) | C<sub>α</sub> B factors of PDB 1UBQ |
