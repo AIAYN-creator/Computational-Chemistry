@@ -74,7 +74,8 @@ For this repository the numbers of the report were checked independently, from t
 - **The RMSF is reproduced** to within 0.01 Å for every residue, with the same fit and window.
 - **The RMSD of the text is reproduced exactly.** Against `initial.coor`, the plateau is 0.949 ± 0.068 Å and the last 10 ps average 1.085 Å: the 0.95(7) and 1.09 Å of the report.
 - **The 211 K of the first step** is the kinetic energy of velocities taken from an equilibration run with `rigidBonds all`, spread over the 21 153 degrees of freedom of this one: [Ex. 3](../ex3-ubiquitin/#the-system-and-the-input) explains it.
-- **Not checked here:** the C<sub>α</sub> RMSD of 1.06 Å between the starting structure and 1UBQ, which needs the coordinates of 1UBQ.
+- **The starting structure against 1UBQ is reproduced**, from the C<sub>α</sub> coordinates of the [PDB entry](https://www.rcsb.org/structure/1UBQ): 1.06 Å without superposition, with the largest deviation, 1.99 Å, at Gly10. After a least-squares fit the RMSD is 0.70 Å: part of the difference is a rigid-body shift of the whole protein, and the rest a change of shape.
+- **The B factors of [`1ubq_bfac_ca.dat`](source/1ubq_bfac_ca.dat)** are identical to those of the PDB entry, all 76.
 
 ## Known slips in the submitted version
 
