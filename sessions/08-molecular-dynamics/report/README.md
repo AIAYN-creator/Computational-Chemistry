@@ -72,7 +72,7 @@ flowchart LR
 For this repository the numbers of the report were checked independently, from the trajectory, with the reader of [`analyze.py`](../analyze.py):
 
 - **The RMSF is reproduced** to within 0.01 Å for every residue, with the same fit and window.
-- **The RMSD of the text is reproduced exactly.** Against `initial.coor`, the plateau is 0.949 ± 0.068 Å and the last 10 ps average 1.085 Å: the 0.95(7) and 1.09 Å of the report.
+- **The RMSD is reproduced exactly.** Against `initial.coor`, the plateau is 0.949 ± 0.068 Å and the last 10 ps average 1.085 Å: the 0.95(7) and 1.09 Å of the report. With this series in place of `ubq_rmsd_ini.dat`, `plot_ubq.py` draws Figure 1 identical, pixel for pixel, to the submitted one, and Figure 2 too.
 - **The 211 K of the first step** is the kinetic energy of velocities taken from an equilibration run with `rigidBonds all`, spread over the 21 153 degrees of freedom of this one: [Ex. 3](../ex3-ubiquitin/#the-system-and-the-input) explains it.
 - **The starting structure against 1UBQ is reproduced**, from the C<sub>α</sub> coordinates of the [PDB entry](https://www.rcsb.org/structure/1UBQ): 1.06 Å without superposition, with the largest deviation, 1.99 Å, at Gly10. After a least-squares fit the RMSD is 0.70 Å: part of the difference is a rigid-body shift of the whole protein, and the rest a change of shape.
 - **The B factors of [`1ubq_bfac_ca.dat`](source/1ubq_bfac_ca.dat)** are identical to those of the PDB entry, all 76.
@@ -85,20 +85,19 @@ The PDF and its source are kept as they were submitted.
 |---|---|
 | Crystal maxima "such as 34–35 or 52" missing from the simulation | The maxima in that region are 32–33 (B = 14.0 Å²) and 39 (15.0 Å²); 34–35 have 10.1 and 6.3. Neither appears in the simulation, so the point stands |
 | σ_T/⟨T⟩ = 0.89(1) % "over the plateau" | 0.90(1) % over 32–100 ps; 0.89 % is the value over 10–100 ps |
-| RMSD plateau 0.95(7) Å, against Figure 1c | Figure 1c plots the series exported from VMD, which runs 0.02 Å lower (plateau 0.92(6) Å, last 10 ps 1.05 Å) and lacks frame 1. The text values come from the full trajectory, as above |
 | Reference 1: "refined at 1.8 å resolution" | `unsrt` lowercases titles; the `.bib` needs `{{\AA}}` to keep the capital |
 
 None of them changes a conclusion.
 
 ## Inside the source
 
-The full source is in [`source/`](source/): [`report.tex`](source/report.tex), [`bibliografia.bib`](source/bibliografia.bib), the four data files and [`plot_ubq.py`](source/plot_ubq.py), which draws both figures from them. The comments are in Spanish, as they were written.
+The full source is in [`source/`](source/): [`report.tex`](source/report.tex), [`bibliografia.bib`](source/bibliografia.bib), the data files and [`plot_ubq.py`](source/plot_ubq.py), which draws both figures from them. The comments are in Spanish, as they were written.
 
 - **Running averages in one line:** `np.cumsum(x) / np.arange(1, len(x) + 1)`, the mean of every value seen up to each point.
 - **Secondary structure as a bar above the axis.** Each residue becomes a rectangle placed with `get_xaxis_transform()`: x in data units, so it lines up with the residue, and y in axis units, so it sits above the plot whatever the scale.
 - **Log axes with plain numbers.** `FixedLocator` and `ScalarFormatter` print 2, 5, 10, 20, 50 instead of powers of ten.
 
-`plot_ubq.py` reproduces Figure 1 and every number of Figure 2. The labels of each secondary-structure element in the submitted Figure 2 (β1 to β5, α1) come from a later version of the script, not yet in the repository.
+`plot_ubq.py` is the final version, the one that drew the submitted figures. It reads the RMSD from `ubq_rmsd_ini.dat`, computed in VMD with `measure rmsd` against `initial.coor`; that file is not in the repository yet, so until it is the script stops at that line.
 
 ### Building it
 
@@ -117,7 +116,8 @@ pdflatex report && bibtex report && pdflatex report && pdflatex report
 | [`source/report.tex`](source/report.tex), [`source/bibliografia.bib`](source/bibliografia.bib) | LaTeX source and bibliography |
 | [`source/plot_ubq.py`](source/plot_ubq.py) | Draws both figures and prints the numbers of the text |
 | [`source/ubq_ET.dat`](source/ubq_ET.dat) | Step, total energy and temperature, from the NAMD log |
-| [`source/ubq_rmsd.dat`](source/ubq_rmsd.dat) | Heavy-atom RMSD per frame, from the VMD RMSD Trajectory Tool |
+| `source/ubq_rmsd_ini.dat` | Heavy-atom RMSD per frame against `initial.coor`, from VMD `measure rmsd`: the series of Figure 1c (to be added) |
+| [`source/ubq_rmsd.dat`](source/ubq_rmsd.dat) | The same RMSD from the VMD RMSD Trajectory Tool, as done in class; not used by the report |
 | [`source/ubq_rmsf_ca.dat`](source/ubq_rmsf_ca.dat) | Residue, name, secondary structure and C<sub>α</sub> RMSF, from VMD |
 | [`source/1ubq_bfac_ca.dat`](source/1ubq_bfac_ca.dat) | C<sub>α</sub> B factors of PDB 1UBQ |
 | [`source/fig1_ubq_tiempo.pdf`](source/fig1_ubq_tiempo.pdf), [`source/fig2_ubq_bfactors.pdf`](source/fig2_ubq_bfactors.pdf) | The figures as the report includes them |
