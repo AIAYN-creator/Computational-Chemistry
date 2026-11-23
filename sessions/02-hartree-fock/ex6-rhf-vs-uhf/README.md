@@ -36,6 +36,7 @@ The [report](../report/report.pdf) is kept as it was submitted. Checking it agai
 
 - **The LiH equilibrium values cannot be traced to the data.** The report gives r<sub>e</sub> = 1.64 Å and D<sub>e</sub> = 1.42 eV. The scan stored here goes in steps of 0.3 Å: its lowest point is at 1.8 Å, 1.35 eV below the separated atoms, and a parabola through the three lowest points gives 1.65 Å and 1.39 eV. The conclusions do not change: D<sub>e</sub> is still about 45 % below experiment.
 - **The H₂ values come from two scans.** r<sub>e</sub> = 0.735 Å is the 3-21G result of the finer scan of [Ex. 3](../ex3-bond-scans/) (0.03 Å steps), and D<sub>e</sub> = 3.55 eV is the lowest point of the 0.25 Å scan of this exercise. A parabola through the three lowest points of that coarse scan would give 0.80 Å, which shows why the finer scan is the right source.
+- **The experimental r<sub>e</sub> of LiH is 1.5949 Å** (NIST Diatomic Spectral Database, as listed by [CCCBDB](https://cccbdb.nist.gov/expgeom2x.asp?casno=7580678&charge=0)), so 1.595 Å, not the 1.596 Å of Table 1.
 - **Two typos in the Methods:** "writting" for *writing*, and "Linux System" with a capital S.
 
 ## Scripts

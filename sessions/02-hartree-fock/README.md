@@ -93,7 +93,7 @@ The same comparison at HF/3-21G for H₂ and LiH, written up in the [report](rep
 | | r<sub>e</sub> HF (Å) | r<sub>e</sub> exp. (Å) | D<sub>e</sub> HF (eV) | D<sub>e</sub> exp. (eV) | r<sub>CF</sub> (Å) | RHF error at r<sub>max</sub> (eV) |
 |---|---|---|---|---|---|---|
 | H₂  | 0.735 | 0.741 | 3.55 | 4.75 | ≈ 1.2 | 7.62 |
-| LiH | 1.64  | 1.596 | 1.42 | 2.52 | ≈ 2.2 | 4.13 |
+| LiH | 1.64  | 1.595 | 1.42 | 2.52 | ≈ 2.2 | 4.13 |
 
 Experimental values: Huber & Herzberg (1979). The HF values are those of the report. For H₂, r<sub>e</sub> comes from the finer 3-21G scan of [Ex. 3](ex3-bond-scans/) and D<sub>e</sub> from the lowest point of the 0.25 Å scan. The LiH values cannot be reproduced from the published scan, whose step is 0.3 Å: it gives 1.65 Å and 1.39 eV with a parabola through the three lowest points ([details](ex6-rhf-vs-uhf/#known-slips-in-the-submitted-report)).
 
