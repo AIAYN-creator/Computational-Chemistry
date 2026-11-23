@@ -5,7 +5,7 @@ Fig. 2: factores B de la MD frente a los del cristal 1UBQ, residuo a residuo.
 
 Archivos de entrada (en la misma carpeta):
   ubq_ET.dat        paso, TOTAL (kcal/mol), TEMP (K)        <- log de NAMD
-  ubq_rmsd.dat      fotograma, RMSD (A)                      <- RMSD Trajectory Tool
+  ubq_rmsd_ini.dat  fotograma, RMSD (A) frente a initial.coor  <- measure rmsd (VMD)
   ubq_rmsf_ca.dat   resid, resname, estructura, RMSF (A)     <- measure rmsf (VMD)
   1ubq_bfac_ca.dat  resid, B (A^2)                           <- PDB 1UBQ, Calfa
 """
@@ -45,7 +45,7 @@ def media_acumulada(x):
 paso, E, T = np.loadtxt("ubq_ET.dat", unpack=True)
 t = paso * 1.0e-3                       # pasos (1 fs) -> ps
 
-frame, rmsd = np.genfromtxt("ubq_rmsd.dat", unpack=True)  # salta la linea vacia
+frame, rmsd = np.genfromtxt("ubq_rmsd_ini.dat", unpack=True)  # salta la linea vacia
 t_rmsd = (frame + 1) * DT_FRAME         # el fotograma 0 se escribe en el paso 250
 
 res = np.loadtxt("ubq_rmsf_ca.dat", usecols=0).astype(int)
@@ -118,10 +118,12 @@ for r, s in zip(res, ss):
         a1.add_patch(Rectangle((r - 0.5, y0), 1, h, color=ss_color[s],
                                transform=a1.get_xaxis_transform(),
                                clip_on=False, lw=0))
-for s, x, txt in [("H", 29, r"$\alpha$"), ("E", 4, r"$\beta$"), ("G", 39, r"$3_{10}$")]:
+# una etiqueta por elemento (nomenclatura habitual de la ubiquitina)
+for x, txt in [(4, r"$\beta1$"), (14, r"$\beta2$"), (28.5, r"$\alpha1$"), (39, r"$3_{10}$"),
+               (43, r"$\beta3$"), (48.5, r"$\beta4$"), (68.5, r"$\beta5$")]:
     a1.text(x, y0 + h + 0.03, txt, transform=a1.get_xaxis_transform(),
-            ha="center", va="bottom", fontsize=7, color=GRIS)
-a1.text(1.0, 0.04, "(a)", transform=a1.transAxes, ha="right")
+            ha="center", va="bottom", fontsize=6.5, color=GRIS)
+a1.text(0.40, 0.90, "(a)", transform=a1.transAxes, ha="center")   # zona alta central, sin datos
 
 # --- (b) dispersion MD frente a cristal
 lims = [1.5, 70]
