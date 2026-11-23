@@ -11,7 +11,7 @@ The three simulations were run beforehand and are provided by the course: liquid
 <td width="190"><a href="report/"><img src="report/preview.png" width="170" alt="First page of the report"></a></td>
 <td>
 
-### Case study and report: *one molecule against many copies*
+### Case study and report: *One molecule versus many copies*
 
 Ex. 3, ubiquitin, set against the crystal it started from. The trajectory is thermally equilibrated in 1 ps and structurally in 30 ps. Its flexibility agrees with the crystal B factors on the C-terminal tail and not on the core, which it underestimates by a factor of 2.8; a correlation of 0.82 over the chain falls to 0.39 without the six tail residues.
 
@@ -82,11 +82,26 @@ The NAMD inputs are course material and are not reproduced here; every setting t
 
 - **The fold is stable:** the backbone stays within 0.6–0.8 Å of the starting structure after the first 5 ps.
 - **The C-terminal tail moves most**, Arg74–Gly76 at about 2 Å, three times the average residue, followed by a surface loop around Asn60.
-- **An open question:** the temperature of this run fluctuates 9 % less than the canonical prediction, six standard errors away, while both water runs agree with it.
+- **An open question:** the temperature of this run fluctuates 9 % less than the canonical prediction over 10–100 ps (8 % over the 32–100 ps plateau of the report), six standard errors away, while both water runs agree with it.
 
 ![RMSD of ubiquitin against time and per residue](figures/ubiquitin_rmsd.png)
 
 [Ex. 3 README](ex3-ubiquitin/).
+
+---
+
+## The report: *One molecule versus many copies*
+
+Against the crystal B factors of 1UBQ, 100 ps of MD get the flexibility of the C-terminal tail right, but underestimate the core about 3 times and miss the finer ranking of its flexible regions.
+The correlation is r = 0.82 over the whole chain and 0.39 in the core: six tail residues set the global number.
+
+**Open questions**
+
+- **σ_T/⟨T⟩ is 8 % below the canonical prediction** (0.90 % against 0.97 % over 32–100 ps), while the water run of Ex. 1 matches it. The count of degrees of freedom is right, and the cause is not known; a rerun with Δt = 0.5 fs or with constrained X–H bonds would locate it.
+- **The initial velocities correspond to 211 K.** The report gives the number without the reason. The reason is in [Ex. 3](ex3-ubiquitin/#the-system-and-the-input): they come from an equilibration with `rigidBonds all`, and spread over the degrees of freedom of that run they are 303.8 K. What remains open is whether starting with the bond vibrations empty leaves any trace after the first picosecond.
+- **The RMSF has not converged.** Split into two halves, 32–66 and 66–100 ps, the core profiles correlate with each other only with r = 0.62, and with the crystal with r = 0.40 and 0.28. The whole window gives a larger mean RMSF of the core (0.343 Å) than either half (0.308 and 0.338 Å), because it also catches the slow drift of the structure. A longer run, or several independent ones, would tell how much of the comparison with the crystal survives.
+
+[Case study and report](report/).
 
 ---
 
