@@ -368,6 +368,41 @@ def card_gauche_water():
          "SESSION 07 · EX. 4", draw, "card_gauche_water.png")
 
 
+# --- 13. One correlation, set by six residues (Session 08 report) ------------
+def card_bfactors():
+    src = S08 / "report/source"
+    res = np.loadtxt(src / "ubq_rmsf_ca.dat", usecols=0).astype(int)
+    rmsf = np.loadtxt(src / "ubq_rmsf_ca.dat", usecols=3)
+    B_x = np.loadtxt(src / "1ubq_bfac_ca.dat", usecols=1)
+    B_md = 8 * np.pi ** 2 / 3 * rmsf ** 2          # RMSF -> isotropic B
+    core = res <= 70                               # residues 71-76: the C-terminal tail
+    r_all = np.corrcoef(B_x, B_md)[0, 1]
+    r_core = np.corrcoef(B_x[core], B_md[core])[0, 1]
+
+    def draw(ax):
+        lims = [1.5, 70]
+        ax.plot(lims, lims, color=INK_2, lw=0.8, ls=(0, (4, 3)))
+        ax.scatter(B_x[core], B_md[core], s=12, color=BLUE, lw=0, zorder=2)
+        ax.scatter(B_x[~core], B_md[~core], s=22, facecolor="white", edgecolor=ORANGE, lw=1.2, zorder=3)
+        ax.set_xscale("log")
+        ax.set_yscale("log")
+        ax.set_xlim(lims)
+        ax.set_ylim(lims)
+        for axis in (ax.xaxis, ax.yaxis):
+            axis.set_major_locator(plt.FixedLocator([2, 5, 10, 20, 50]))
+            axis.set_major_formatter(plt.ScalarFormatter())
+            axis.set_minor_formatter(plt.NullFormatter())
+        ax.text(1.8, 50, f"all 76: r = {r_all:.2f}", fontsize=7.5, color=INK_2)
+        ax.text(1.8, 34, f"tail removed: r = {r_core:.2f}", fontsize=7.5, color=BLUE)
+        ax.text(19, 8.5, "tail", fontsize=7.5, color=ORANGE)
+        ax.set_xlabel(r"$B$, crystal 1UBQ (Å$^2$)", fontsize=8)
+        ax.set_ylabel(r"$B$, 100 ps of MD (Å$^2$)", fontsize=8)
+
+    card(f"{r_all:.2f}", "r", "One correlation,\nset by six residues",
+         f"Ubiquitin flexibility, MD against crystal.\nWithout the six residues of the tail,\nr falls from {r_all:.2f} to {r_core:.2f}.",
+         "SESSION 08 · REPORT", draw, "card_bfactors.png")
+
+
 if __name__ == "__main__":
     card_rhf()
     card_gauche()
@@ -380,3 +415,4 @@ if __name__ == "__main__":
     card_axis()
     card_canonical()
     card_gauche_water()
+    card_bfactors()

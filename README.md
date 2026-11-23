@@ -39,7 +39,7 @@ The aim is to show the whole workflow, not only the final numbers: how each calc
 <table>
 <tr>
 <td width="50%"><a href="sessions/07-solvent-effects/ex4-dichloroethane-in-water/"><img src="docs/cards/card_gauche_water.png" alt="58 % gauche: water turns the equilibrium around"></a></td>
-<td width="50%"></td>
+<td width="50%"><a href="sessions/08-molecular-dynamics/report/"><img src="docs/cards/card_bfactors.png" alt="r 0.82: one correlation, set by six residues"></a></td>
 </tr>
 </table>
 
