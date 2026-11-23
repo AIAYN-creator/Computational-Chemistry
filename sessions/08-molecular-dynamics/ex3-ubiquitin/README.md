@@ -6,7 +6,7 @@
 
 Ubiquitin, a protein of 76 residues, in a box of water, 100 ps of Langevin dynamics at 300 K with the CHARMM force field. Compute the RMSD of the protein against time and the average RMSD of each residue, and find the most mobile regions.
 
-Done in class on 18 November, in VMD; the class session is summarised [below](#in-vmd). It is also the exercise of the session report, which will be added when it is written.
+Done in class on 18 November, in VMD; the class session is summarised [below](#in-vmd). It is also the exercise of the [session report](../report/), which sets the flexibility of the trajectory against the B factors of the crystal.
 
 ## The system and the input
 

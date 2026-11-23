@@ -6,6 +6,21 @@ Until Session 07, every calculation was one structure: a minimum, a transition s
 
 The three simulations were run beforehand and are provided by the course: liquid water, a sodium ion in water, and the protein ubiquitin in water, 100 ps each at 300 K. This session is therefore about analysis, not setup. It is also the first one without Gaussian.
 
+<table>
+<tr>
+<td width="190"><a href="report/"><img src="report/preview.png" width="170" alt="First page of the report"></a></td>
+<td>
+
+### Case study and report: *one molecule against many copies*
+
+Ex. 3, ubiquitin, set against the crystal it started from. The trajectory is thermally equilibrated in 1 ps and structurally in 30 ps. Its flexibility agrees with the crystal B factors on the C-terminal tail and not on the core, which it underestimates by a factor of 2.8; a correlation of 0.82 over the chain falls to 0.39 without the six tail residues.
+
+**[Case study: how the work was done](report/)** · **[Report (PDF, 2 pages)](report/report.pdf)**
+
+</td>
+</tr>
+</table>
+
 ## Contents
 
 | Exercise | Question | System |
@@ -13,8 +28,9 @@ The three simulations were run beforehand and are provided by the course: liquid
 | [Ex. 1 — Liquid water](ex1-water/) | Are the temperature fluctuations the canonical ones? How well does TIP3P reproduce the structure of water? | 1111 TIP3P waters, AMBER |
 | [Ex. 2 — A sodium ion in water](ex2-sodium-in-water/) | How many waters does Na⁺ hold, and how are they oriented? | Na⁺ + 1136 waters, AMBER |
 | [Ex. 3 — Ubiquitin in a water box](ex3-ubiquitin/) | Is the fold stable, and which residues move most? | 76 residues + 1940 waters, CHARMM |
+| [Case study and report](report/) | Ex. 3 against the B factors of the crystal, 1UBQ | |
 
-Exercises 2 and 3 were done in class on 18 November, in VMD; the exercise READMEs collect what was seen there next to the analysis of the trajectories. The session report is on Ex. 3, and it will be added when it is written.
+Exercises 2 and 3 were done in class on 18 November, in VMD; the exercise READMEs collect what was seen there next to the analysis of the trajectories. The [session report](report/) is on Ex. 3.
 
 ## The common setup
 
